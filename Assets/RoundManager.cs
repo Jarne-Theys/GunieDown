@@ -22,56 +22,31 @@ public class RoundManager : MonoBehaviour
     {
         humanPlayerScore++;
         Debug.Log("Player 1 scored! Player 1: " + humanPlayerScore + " Player 2: " + aiPlayerScore);
-        roundNumber++;
-        ResetStats();
     }
 
     public void aiPlayerScored()
     {
         aiPlayerScore++;
         Debug.Log("Player 2 scored! Player 1: " + humanPlayerScore + " Player 2: " + aiPlayerScore);
-        roundNumber++;
-        ResetStats();
     }
 
     private void ResetStats()
     {
         humanPlayerStats.ResetStats();
         aiPlayerStats.ResetStats();
-        roundNumber++;
     }
 
     void Start()
     {
-        PowerupScreen.SetActive(true);
         humanPlayerStats = humanPlayer.GetComponent<PlayerStats>();
         aiPlayerStats = aiPlayer.GetComponent<PlayerStats>();
-
-        Debug.Log("Before healthboost: " + humanPlayerStats);
-
-        Powerup healthBoost = new HealthBoost();
-        humanPlayerStats.ApplyPowerup(healthBoost);
-
-        Debug.Log("After one healthboost: " + humanPlayerStats);
-
-        humanPlayerStats.ApplyPowerup(healthBoost);
-
-        Debug.Log("After two healthboosts: " + humanPlayerStats);
-
-        ResetStats();
-
         PowerupScreen.SetActive(false);
+
     }
 
     void Update()
     {
         roundText.text = "Round: " + roundNumber + " Score: " + humanPlayerScore + " - " + aiPlayerScore;
-
-        if (aiPlayerStats.Health <= 0 || humanPlayerStats.Health <= 0)
-        {
-            humanPlayer.GetComponent<PlayerMovement>().enabled = false;
-            aiPlayer.GetComponent<PlayerMovement>().enabled = false;
-        }
 
         if (aiPlayerStats.Health <= 0)
         {
@@ -81,5 +56,37 @@ public class RoundManager : MonoBehaviour
         {
             aiPlayerScored();
         }
+        else {
+            return;
+        }
+
+        ResetStats();
+
+        humanPlayer.GetComponent<PlayerMovement>().enabled = false;
+        humanPlayer.GetComponent<PlayerShoot>().enabled = false;
+        //TODO: Disable AI player movement
+        //aiPlayer.GetComponent<PlayerMovement>().enabled = false;
+
+        PowerupScreen.SetActive(true);
+    }
+
+    public void Continue()
+    {
+        humanPlayer.transform.position = SpawnPositions.humanPlayerSpawn;
+        aiPlayer.transform.position = SpawnPositions.aiPlayerSpawn;
+
+        Powerup healthBoost = new HealthBoost();
+        humanPlayerStats.ApplyPowerup(healthBoost);
+
+        roundNumber++;
+
+        ResetStats();
+
+        PowerupScreen.SetActive(false);
+
+        humanPlayer.GetComponent<PlayerMovement>().enabled = true;
+        humanPlayer.GetComponent<PlayerShoot>().enabled = true;
+        //TODO: Disable AI player movement
+        //aiPlayer.GetComponent<PlayerMovement>().enabled = true;
     }
 }
