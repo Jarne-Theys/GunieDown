@@ -8,7 +8,6 @@ public class BulletMove : MonoBehaviour
     public int bulletDamage;
     void Start()
     {
-        StartCoroutine(MoveForwards());
         BulletStats bulletStats = GetComponent<BulletStats>();
         bulletSpeed = bulletStats.Speed;
         bulletDamage = bulletStats.Damage;
@@ -42,12 +41,8 @@ public class BulletMove : MonoBehaviour
         Destroy(gameObject);
     }
 
-    IEnumerator MoveForwards()
+    private void FixedUpdate()
     {
-        while (true)
-        {
-            transform.position += transform.forward * bulletSpeed * Time.deltaTime;
-            yield return null;
-        }
+        transform.position += transform.forward * bulletSpeed * Time.deltaTime;
     }
 }

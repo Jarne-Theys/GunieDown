@@ -10,8 +10,7 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField] private float jumpForce = 5f;
     private float currentMoveSpeed;
-    [SerializeField] private float moveSpeed = 5f;
-    [SerializeField] private float crouchMoveSpeed = 2f;
+
     [SerializeField] private LayerMask groundLayer;
 
     private InputAction moveAction;
@@ -23,11 +22,15 @@ public class PlayerMovement : MonoBehaviour
     private float jumpCooldown = 1f;
     private float jumpCooldownTimer;
 
+    private PlayerStats PlayerStats;
+
     private void Start()
     {
         moveAction = InputSystem.actions.FindAction("Move");
         jumpAction = InputSystem.actions.FindAction("Jump");
         crouchAction = InputSystem.actions.FindAction("Crouch");
+
+        PlayerStats = GetComponent<PlayerStats>();
     }
 
     private void Update()
@@ -67,14 +70,14 @@ public class PlayerMovement : MonoBehaviour
 
         if (crouchAction.IsPressed())
         {
-            currentMoveSpeed = Mathf.Lerp(currentMoveSpeed, crouchMoveSpeed, Time.deltaTime * crouchTransitionSpeedMultiplier);
+            currentMoveSpeed = Mathf.Lerp(currentMoveSpeed, (float)(PlayerStats.MovementSpeed/2.5), Time.deltaTime * crouchTransitionSpeedMultiplier);
             Vector3 currentScale = transform.localScale;
             float newYScale = Mathf.Lerp(currentScale.y, 0.5f, Time.deltaTime * crouchTransitionSpeedMultiplier);
             transform.localScale = new Vector3(currentScale.x, newYScale, currentScale.z);
         }
         else
         {
-            currentMoveSpeed = Mathf.Lerp(currentMoveSpeed, moveSpeed, Time.deltaTime * crouchTransitionSpeedMultiplier);
+            currentMoveSpeed = Mathf.Lerp(currentMoveSpeed, PlayerStats.MovementSpeed, Time.deltaTime * crouchTransitionSpeedMultiplier);
             Vector3 currentScale = transform.localScale;
             float newYScale = Mathf.Lerp(currentScale.y, 1f, Time.deltaTime * crouchTransitionSpeedMultiplier);
             transform.localScale = new Vector3(currentScale.x, newYScale, currentScale.z);
