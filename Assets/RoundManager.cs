@@ -1,5 +1,8 @@
+using NUnit.Framework;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class RoundManager : MonoBehaviour
 {
@@ -15,8 +18,18 @@ public class RoundManager : MonoBehaviour
     private PlayerStats aiPlayerStats;
 
     [SerializeField] GameObject PowerupScreen;
+    public GameObject PowerupButtonPrefab;
+    public Transform PowerupButtonContainer;
 
     [SerializeField] TMP_Text roundText;
+
+    List<Powerup> allPowerups = new List<Powerup>
+    {
+        new HealthBoost(),
+        new DamageBoost(),
+        new BulletSpeedBoost(),
+        new ArmorBoost()
+    };
 
     public void humanPlayerScored()
     {
@@ -61,22 +74,52 @@ public class RoundManager : MonoBehaviour
         }
 
         ResetStats();
+        ShowPowerupSelection();
+    }
 
+    public void ShowPowerupSelection()
+    {
         humanPlayer.GetComponent<PlayerMovement>().enabled = false;
         humanPlayer.GetComponent<PlayerShoot>().enabled = false;
         //TODO: Disable AI player movement
         //aiPlayer.GetComponent<PlayerMovement>().enabled = false;
 
         PowerupScreen.SetActive(true);
+
+        // Clear previous buttons
+        foreach (Transform child in PowerupButtonContainer)
+        {
+            Destroy(child.gameObject);
+        }
+
+        // Select 2-3 random power-ups
+        List<Powerup> chosenPowerups = new List<Powerup>();
+        while (chosenPowerups.Count < 3)
+        {
+            Powerup randomPowerup = allPowerups[Random.Range(0, allPowerups.Count)];
+            if (!chosenPowerups.Contains(randomPowerup))
+                chosenPowerups.Add(randomPowerup);
+        }
+
+        // Create buttons dynamically
+        foreach (Powerup powerup in chosenPowerups)
+        {
+            GameObject buttonObj = Instantiate(PowerupButtonPrefab, PowerupButtonContainer);
+            Button button = buttonObj.GetComponent<Button>();
+            TextMeshProUGUI buttonText = buttonObj.GetComponentInChildren<TextMeshProUGUI>();
+
+            buttonText.text = powerup.Name + "\n" + powerup.Description;
+
+            button.onClick.AddListener(() => ApplyPowerupAndContinue(powerup));
+        }
     }
 
-    public void Continue()
+    public void ApplyPowerupAndContinue(Powerup selectedPowerup)
     {
+        humanPlayerStats.ApplyPowerup(selectedPowerup);
+
         humanPlayer.transform.position = SpawnPositions.humanPlayerSpawn;
         aiPlayer.transform.position = SpawnPositions.aiPlayerSpawn;
-
-        Powerup healthBoost = new HealthBoost();
-        humanPlayerStats.ApplyPowerup(healthBoost);
 
         roundNumber++;
 
@@ -86,7 +129,5 @@ public class RoundManager : MonoBehaviour
 
         humanPlayer.GetComponent<PlayerMovement>().enabled = true;
         humanPlayer.GetComponent<PlayerShoot>().enabled = true;
-        //TODO: Disable AI player movement
-        //aiPlayer.GetComponent<PlayerMovement>().enabled = true;
     }
 }

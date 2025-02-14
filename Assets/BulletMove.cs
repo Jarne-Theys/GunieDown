@@ -4,8 +4,8 @@ using UnityEngine;
 public class BulletMove : MonoBehaviour
 {
     [SerializeField] private GameObject hitParticleSystemPrefab;
-    public float bulletSpeed;
-    public int bulletDamage;
+    float bulletSpeed;
+    int bulletDamage;
     void Start()
     {
         BulletStats bulletStats = GetComponent<BulletStats>();
