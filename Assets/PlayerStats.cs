@@ -12,6 +12,12 @@ public class PlayerStats : MonoBehaviour
     public int MaxArmor = 0;
     public float MaxMovementSpeed = 5f;
 
+    private float healthMultiplier = 1f;
+    private float armorAddition = 0;
+    private float bulletDamageMultiplier = 1f;
+    private float bulletSpeedMultiplier = 1f;
+    private float movementSpeedMultiplier = 1f;
+
     [SerializeField] private int armor;
     [SerializeField] private int health;
     [SerializeField] private int bulletDamage = 10;
@@ -62,7 +68,19 @@ public class PlayerStats : MonoBehaviour
 
     public void ApplyPowerup(Powerup powerup)
     {
-        powerup.Apply(this);
+        // Apply cumulative multipliers
+        healthMultiplier *= powerup.HealthMultiplier;
+        armorAddition += powerup.ArmorAddition;
+        bulletDamageMultiplier *= powerup.BulletDamageMultiplier;
+        bulletSpeedMultiplier *= powerup.BulletSpeedMultiplier;
+        movementSpeedMultiplier *= powerup.MovementSpeedMultiplier;
+
+        // Recalculate stats based on cumulative effects
+        MaxHealth = (int)(OriginalMaxHealth * healthMultiplier);
+        MaxArmor = (int)(OriginalMaxArmor + armorAddition);
+        MaxMovementSpeed = OriginalMaxMovementSpeed * movementSpeedMultiplier;
+        BulletDamage = (int)(OriginalBulletDamage * bulletDamageMultiplier);
+        BulletSpeed = OriginalBulletSpeed * bulletSpeedMultiplier;
     }
 
     public override string ToString()

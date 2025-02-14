@@ -28,7 +28,7 @@ public class RoundManager : MonoBehaviour
         new HealthBoost(),
         new DamageBoost(),
         new BulletSpeedBoost(),
-        new ArmorBoost()
+        //new ArmorBoost()
     };
 
     public void humanPlayerScored()

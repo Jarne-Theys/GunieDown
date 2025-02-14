@@ -5,20 +5,15 @@ public abstract class Powerup
     public string Name { get; protected set; } = "Powerup name";
     public string Description { get; protected set; } = "Powerup description";
 
-    public float HealthMultiplier { get; protected set; } = 1;
-    public float ArmorAddition { get; protected set; } = 01;
-    public float BulletDamageMultiplier { get; protected set; } = 1;
+    public float HealthMultiplier { get; protected set; } = 1f;
+    public float ArmorAddition { get; protected set; } = 0f;
+    public float BulletDamageMultiplier { get; protected set; } = 1f;
     public float BulletSpeedMultiplier { get; protected set; } = 1f;
     public float MovementSpeedMultiplier { get; protected set; } = 1f;
 
     public virtual void Apply(PlayerStats player)
     {
-        player.MaxHealth = (int)(player.OriginalMaxHealth * HealthMultiplier);
-        player.MaxArmor = (int)(player.OriginalMaxArmor + ArmorAddition);
-        player.MaxMovementSpeed = player.OriginalMaxMovementSpeed * MovementSpeedMultiplier;
-
-        player.BulletDamage = (int)(player.OriginalBulletDamage * BulletDamageMultiplier);
-        player.BulletSpeed = player.OriginalBulletSpeed * BulletSpeedMultiplier;
+        player.ApplyPowerup(this);
     }
 }
 

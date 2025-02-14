@@ -19,7 +19,7 @@ public class PlayerMovement : MonoBehaviour
 
     private bool isGrounded;
     private bool isJumpReady;
-    private float jumpCooldown = 1f;
+    public float jumpCooldown = 0.1f;
     private float jumpCooldownTimer;
 
     private PlayerStats PlayerStats;
