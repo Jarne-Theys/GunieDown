@@ -70,16 +70,33 @@ public class PlayerMovement : MonoBehaviour
 
         if (crouchAction.IsPressed())
         {
-            currentMoveSpeed = Mathf.Lerp(currentMoveSpeed, (float)(PlayerStats.MovementSpeed/2.5), Time.deltaTime * crouchTransitionSpeedMultiplier);
+            currentMoveSpeed = Mathf.Lerp(currentMoveSpeed, (float)(PlayerStats.MovementSpeed / 2.5), Time.deltaTime * crouchTransitionSpeedMultiplier);
             Vector3 currentScale = transform.localScale;
-            float newYScale = Mathf.Lerp(currentScale.y, 0.5f, Time.deltaTime * crouchTransitionSpeedMultiplier);
+            Vector3 currentPosition = transform.position;
+
+            // Desired crouch height (assuming normal scale.y = 1)
+            float targetHeight = 0.5f;
+            float newYScale = Mathf.Lerp(currentScale.y, targetHeight, Time.deltaTime * crouchTransitionSpeedMultiplier);
+
+            float scaleChange = newYScale - currentScale.y;
+
+            transform.position += new Vector3(0, scaleChange * 0.5f, 0);
+
             transform.localScale = new Vector3(currentScale.x, newYScale, currentScale.z);
         }
+
         else
         {
             currentMoveSpeed = Mathf.Lerp(currentMoveSpeed, PlayerStats.MovementSpeed, Time.deltaTime * crouchTransitionSpeedMultiplier);
             Vector3 currentScale = transform.localScale;
-            float newYScale = Mathf.Lerp(currentScale.y, 1f, Time.deltaTime * crouchTransitionSpeedMultiplier);
+            Vector3 currentPosition = transform.position;
+
+            float targetHeight = 1f;
+            float newYScale = Mathf.Lerp(currentScale.y, targetHeight, Time.deltaTime * crouchTransitionSpeedMultiplier);
+
+            float scaleChange = newYScale - currentScale.y;
+
+            transform.position += new Vector3(0, scaleChange * 0.5f, 0);
             transform.localScale = new Vector3(currentScale.x, newYScale, currentScale.z);
         }
 
