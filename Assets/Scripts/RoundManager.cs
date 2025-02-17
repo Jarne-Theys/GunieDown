@@ -26,7 +26,7 @@ public class RoundManager : MonoBehaviour
     List<Powerup> allPowerups = new List<Powerup>
     {
         new HealthBoost(),
-        new DamageBoost(),
+        new BulletDamageBoost(),
         new BulletSpeedBoost(),
         //new ArmorBoost()
     };

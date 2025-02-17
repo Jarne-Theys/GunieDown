@@ -27,9 +27,9 @@ class HealthBoost : Powerup
     }
 }
 
-class DamageBoost : Powerup
+class BulletDamageBoost : Powerup
 {
-    public DamageBoost()
+    public BulletDamageBoost()
     {
         Name = "Damage";
         Description = "Increases the damage of your bullets";
