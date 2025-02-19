@@ -1,0 +1,42 @@
+{
+    "name": "root",
+    "metadata": {
+        "timer_format_version": "0.1.0",
+        "start_time_seconds": "1739969149",
+        "python_version": "3.10.11 (tags/v3.10.11:7d4cc5a, Apr  5 2023, 00:38:17) [MSC v.1929 64 bit (AMD64)]",
+        "command_line_arguments": "C:\\UnityProjects\\Powor\\.venv\\Scripts\\mlagents-learn config.yaml --run-id=AIPlayerRun --force --torch-device cuda",
+        "mlagents_version": "1.1.0",
+        "mlagents_envs_version": "1.1.0",
+        "communication_protocol_version": "1.5.0",
+        "pytorch_version": "2.6.0+cu124",
+        "numpy_version": "1.23.5",
+        "end_time_seconds": "1739969216"
+    },
+    "total": 67.5722706000015,
+    "count": 1,
+    "self": 0.007972500003234018,
+    "children": {
+        "run_training.setup": {
+            "total": 0.07120429999849875,
+            "count": 1,
+            "self": 0.07120429999849875
+        },
+        "TrainerController.start_learning": {
+            "total": 67.49309379999977,
+            "count": 1,
+            "self": 9.270000009564683e-05,
+            "children": {
+                "TrainerController._reset_env": {
+                    "total": 67.4929792999992,
+                    "count": 1,
+                    "self": 67.4929792999992
+                },
+                "TrainerController._save_models": {
+                    "total": 2.1800000467919745e-05,
+                    "count": 1,
+                    "self": 2.1800000467919745e-05
+                }
+            }
+        }
+    }
+}

@@ -81,6 +81,7 @@ public class RoundManager : MonoBehaviour
     {
         humanPlayer.GetComponent<PlayerMovement>().enabled = false;
         humanPlayer.GetComponent<PlayerShoot>().enabled = false;
+        humanPlayer.GetComponent<PlayerLook>().enabled = false;
         //TODO: Disable AI player movement
         //aiPlayer.GetComponent<PlayerMovement>().enabled = false;
 
@@ -129,5 +130,6 @@ public class RoundManager : MonoBehaviour
 
         humanPlayer.GetComponent<PlayerMovement>().enabled = true;
         humanPlayer.GetComponent<PlayerShoot>().enabled = true;
+        humanPlayer.GetComponent<PlayerLook>().enabled = true;
     }
 }
