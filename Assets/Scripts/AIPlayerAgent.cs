@@ -10,10 +10,12 @@ public class AIPlayerAgent : Agent
     public float moveSpeed = 3f;
     public float rotationSpeed = 200f;
 
+    private Vector3 lastPosition;
     public override void OnEpisodeBegin()
     {
         transform.position = SpawnPositions.aiPlayerSpawn;
         transform.rotation = Quaternion.identity;
+        lastPosition = transform.position;
     }
 
     public override void Initialize()
@@ -31,21 +33,34 @@ public class AIPlayerAgent : Agent
 
     public override void OnActionReceived(ActionBuffers actions)
     {
-        float moveX = actions.ContinuousActions[0];  // Left/right movement
-        float moveZ = actions.ContinuousActions[1];  // Forward movement
-        float rotateY = actions.ContinuousActions[2]; // Rotation
+        float moveZ = actions.ContinuousActions[0];  // Only move forward/backward
+        float rotateY = actions.ContinuousActions[1]; // Rotate left/right
 
-        // Convert input into velocity
-        Vector3 moveDirection = new Vector3(moveX, 0, moveZ).normalized;
-        Vector3 localMove = transform.TransformDirection(moveDirection) * moveSpeed;
+        // Move forward in the direction it is facing
+        Vector3 moveDirection = transform.forward * moveZ * moveSpeed;
 
-        // Apply gravity manually
-        float gravity = Physics.gravity.y;  // Unity's gravity value (-9.81 by default)
-        rb.linearVelocity = new Vector3(localMove.x, gravity, localMove.z);
+        float gravity = rb.linearVelocity.y;
+        rb.linearVelocity = new Vector3(moveDirection.x, gravity, moveDirection.z);
 
-        // Rotate based on input
+        // Apply rotation
         transform.Rotate(0, rotateY * rotationSpeed * Time.deltaTime, 0);
+
+        // Reward for getting closer to goal
+        float previousDistance = Vector3.Distance(lastPosition, goal.position);
+        float currentDistance = Vector3.Distance(transform.position, goal.position);
+
+        if (currentDistance < previousDistance) 
+        {
+            SetReward(0.01f);
+        } 
+        else 
+        {
+            SetReward(-0.01f);
+        }
+
+        lastPosition = transform.position;
     }
+
 
 
     private void OnTriggerEnter(Collider other)

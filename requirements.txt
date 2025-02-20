@@ -26,8 +26,8 @@ packaging==24.2
 PettingZoo==1.15.0
 pillow==11.0.0
 protobuf==3.20.3
-pypiwin32==223
-pywin32==308
+#pypiwin32==223
+#pywin32==308
 PyYAML==6.0.2
 requests==2.32.3
 six==1.17.0
