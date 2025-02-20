@@ -2,28 +2,28 @@
     "AIPlayer": {
         "checkpoints": [
             {
-                "steps": 8896,
-                "file_path": "results\\AIPlayerRun\\AIPlayer\\AIPlayer-8896.onnx",
+                "steps": 149481,
+                "file_path": "results\\AIPlayerRun\\AIPlayer\\AIPlayer-149481.onnx",
                 "reward": null,
-                "creation_time": 1739980757.5895402,
+                "creation_time": 1740049224.2379792,
                 "auxillary_file_paths": [
-                    "results\\AIPlayerRun\\AIPlayer\\AIPlayer-8896.pt"
+                    "results\\AIPlayerRun\\AIPlayer\\AIPlayer-149481.pt"
                 ]
             }
         ],
         "final_checkpoint": {
-            "steps": 8896,
+            "steps": 149481,
             "file_path": "results\\AIPlayerRun\\AIPlayer.onnx",
             "reward": null,
-            "creation_time": 1739980757.5895402,
+            "creation_time": 1740049224.2379792,
             "auxillary_file_paths": [
-                "results\\AIPlayerRun\\AIPlayer\\AIPlayer-8896.pt"
+                "results\\AIPlayerRun\\AIPlayer\\AIPlayer-149481.pt"
             ]
         }
     },
     "metadata": {
         "stats_format_version": "0.3.0",
         "mlagents_version": "1.1.0",
-        "torch_version": "2.6.0+cu124"
+        "torch_version": "2.2.2+cu121"
     }
 }

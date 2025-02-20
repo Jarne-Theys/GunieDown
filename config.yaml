@@ -2,4 +2,3 @@ behaviors:
   AIPlayer:
     trainer_type: ppo
     max_steps: 500000
-    summary_freq: 10000
