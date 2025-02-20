@@ -120,7 +120,7 @@ public class RoundManager : MonoBehaviour
         humanPlayerStats.ApplyPowerup(selectedPowerup);
 
         humanPlayer.transform.position = SpawnPositions.humanPlayerSpawn;
-        aiPlayer.transform.position = SpawnPositions.aiPlayerSpawn;
+        aiPlayer.transform.position = SpawnPositions.aiPlayerSpawnPosition;
 
         roundNumber++;
 

@@ -8,15 +8,18 @@ public class AIPlayerAgent : Agent
     public Transform goal;
     public Rigidbody rb;
     public float moveSpeed = 3f;
-    public float strafeSpeed = 2f; // Separate strafe speed if needed
-    public float rotationSpeed = 200f;
+
+    public float raycastDistance = 5f; // Adjust as needed
+    public int numRaycasts = 3; // Number of rays to cast (e.g., forward, left, right)
 
     private Vector3 lastPosition;
 
+    private float timer = 0f;
+
     public override void OnEpisodeBegin()
     {
-        transform.position = SpawnPositions.aiPlayerSpawn; // Make sure SpawnPositions is correctly defined or replace with Vector3.zero for testing
-        transform.rotation = Quaternion.identity;
+        transform.position = SpawnPositions.aiPlayerSpawnPosition;
+        transform.rotation = Quaternion.Euler(SpawnPositions.aiPlayerSpawnRotation);
         lastPosition = transform.position;
     }
 
@@ -27,8 +30,31 @@ public class AIPlayerAgent : Agent
 
     public override void CollectObservations(VectorSensor sensor)
     {
-        sensor.AddObservation(transform.position);  // AI position
-        sensor.AddObservation(goal.position);      // Goal position
+        sensor.AddObservation(transform.position);
+        sensor.AddObservation(goal.position);
+
+        // Raycast Observations
+        for (int i = 0; i < numRaycasts; i++)
+        {
+            float angle = (i - (numRaycasts - 1) / 2f) * 30f; // Example angles: -30, 0, 30 degrees
+            Quaternion rotation = Quaternion.Euler(0, angle, 0);
+            Vector3 rayDirection = transform.rotation * rotation * Vector3.forward;
+            RaycastHit hit;
+            bool wallDetected = false;
+            float distanceToWall = raycastDistance;
+
+            if (Physics.Raycast(transform.position + Vector3.up * 0.5f, rayDirection, out hit, raycastDistance)) // Offset raycast start slightly up to avoid ground issues
+            {
+                if (hit.collider.CompareTag("Wall")) // Make sure your walls have the "Wall" tag
+                {
+                    wallDetected = true;
+                    distanceToWall = hit.distance;
+                }
+            }
+
+            sensor.AddObservation(wallDetected ? 1f : 0f); // Binary: 1 if wall detected, 0 otherwise
+            sensor.AddObservation(distanceToWall / raycastDistance); // Normalized distance to wall (0 to 1)
+        }
     }
 
     public override void OnActionReceived(ActionBuffers actions)
@@ -36,13 +62,8 @@ public class AIPlayerAgent : Agent
         float moveForwardBackward = actions.ContinuousActions[0]; // Forward/Backward movement
         float moveLeftRight = actions.ContinuousActions[1];     // Strafing movement
 
-        // **Always Look at Goal:**
-        transform.LookAt(goal);
-        transform.eulerAngles = new Vector3(0f, transform.eulerAngles.y, 0f); // Lock rotation to Y axis only if needed
-
-        // Movement based on actions (now strafing is possible)
         Vector3 moveDirectionForward = transform.forward * moveForwardBackward * moveSpeed;
-        Vector3 moveDirectionStrafe = transform.right * moveLeftRight * strafeSpeed;
+        Vector3 moveDirectionStrafe = transform.right * moveLeftRight * moveSpeed;
 
         Vector3 finalMoveDirection = moveDirectionForward + moveDirectionStrafe;
 
@@ -50,41 +71,57 @@ public class AIPlayerAgent : Agent
         rb.linearVelocity = new Vector3(finalMoveDirection.x, gravity, finalMoveDirection.z);
 
 
-        // Reward for getting closer to goal (same as before)
         float previousDistance = Vector3.Distance(lastPosition, goal.position);
         float currentDistance = Vector3.Distance(transform.position, goal.position);
 
         if (currentDistance < previousDistance)
         {
-            SetReward(0.01f);
+            AddReward(0.1f);
         }
         else
         {
-            SetReward(-0.01f);
+            AddReward(-0.1f);
         }
 
         lastPosition = transform.position;
+    }
+
+    private void FixedUpdate()
+    {
+        timer += Time.deltaTime;
+        if (timer > 1f)
+        {
+            timer = 0f;
+            AddReward(-0.0001f);
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        AddReward(-10f);
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("TrainZone"))
+        {
+            AddReward(-10f);
+            EndEpisode();
+        }
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Finish"))
         {
-            SetReward(+1f);
+            AddReward(+10f);
             EndEpisode();
         }
 
         if (other.CompareTag("Wall"))
         {
-            SetReward(-1f);
-            EndEpisode();
+            SetReward(-10f);
+            //EndEpisode();
         }
-    }
-
-    public override void Heuristic(in ActionBuffers actionsOut)
-    {
-        var continuousActions = actionsOut.ContinuousActions;
-        continuousActions[0] = Input.GetAxis("Vertical");   // Forward/Backward using W/S or Up/Down
-        continuousActions[1] = Input.GetAxis("Horizontal"); // Strafe using A/D or Left/Right
     }
 }
