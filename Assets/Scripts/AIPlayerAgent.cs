@@ -8,12 +8,14 @@ public class AIPlayerAgent : Agent
     public Transform goal;
     public Rigidbody rb;
     public float moveSpeed = 3f;
+    public float strafeSpeed = 2f; // Separate strafe speed if needed
     public float rotationSpeed = 200f;
 
     private Vector3 lastPosition;
+
     public override void OnEpisodeBegin()
     {
-        transform.position = SpawnPositions.aiPlayerSpawn;
+        transform.position = SpawnPositions.aiPlayerSpawn; // Make sure SpawnPositions is correctly defined or replace with Vector3.zero for testing
         transform.rotation = Quaternion.identity;
         lastPosition = transform.position;
     }
@@ -27,41 +29,42 @@ public class AIPlayerAgent : Agent
     {
         sensor.AddObservation(transform.position);  // AI position
         sensor.AddObservation(goal.position);      // Goal position
-
-        //Debug.Log("Observations collected");
     }
 
     public override void OnActionReceived(ActionBuffers actions)
     {
-        float moveZ = actions.ContinuousActions[0];  // Only move forward/backward
-        float rotateY = actions.ContinuousActions[1]; // Rotate left/right
+        float moveForwardBackward = actions.ContinuousActions[0]; // Forward/Backward movement
+        float moveLeftRight = actions.ContinuousActions[1];     // Strafing movement
 
-        // Move forward in the direction it is facing
-        Vector3 moveDirection = transform.forward * moveZ * moveSpeed;
+        // **Always Look at Goal:**
+        transform.LookAt(goal);
+        transform.eulerAngles = new Vector3(0f, transform.eulerAngles.y, 0f); // Lock rotation to Y axis only if needed
 
-        float gravity = rb.linearVelocity.y;
-        rb.linearVelocity = new Vector3(moveDirection.x, gravity, moveDirection.z);
+        // Movement based on actions (now strafing is possible)
+        Vector3 moveDirectionForward = transform.forward * moveForwardBackward * moveSpeed;
+        Vector3 moveDirectionStrafe = transform.right * moveLeftRight * strafeSpeed;
 
-        // Apply rotation
-        transform.Rotate(0, rotateY * rotationSpeed * Time.deltaTime, 0);
+        Vector3 finalMoveDirection = moveDirectionForward + moveDirectionStrafe;
 
-        // Reward for getting closer to goal
+        float gravity = rb.linearVelocity.y; // Preserve gravity
+        rb.linearVelocity = new Vector3(finalMoveDirection.x, gravity, finalMoveDirection.z);
+
+
+        // Reward for getting closer to goal (same as before)
         float previousDistance = Vector3.Distance(lastPosition, goal.position);
         float currentDistance = Vector3.Distance(transform.position, goal.position);
 
-        if (currentDistance < previousDistance) 
+        if (currentDistance < previousDistance)
         {
             SetReward(0.01f);
-        } 
-        else 
+        }
+        else
         {
             SetReward(-0.01f);
         }
 
         lastPosition = transform.position;
     }
-
-
 
     private void OnTriggerEnter(Collider other)
     {
@@ -81,28 +84,7 @@ public class AIPlayerAgent : Agent
     public override void Heuristic(in ActionBuffers actionsOut)
     {
         var continuousActions = actionsOut.ContinuousActions;
-
-        if (goal == null)
-        {
-            continuousActions[0] = 0f;
-            continuousActions[1] = 0f;
-            continuousActions[2] = 0f;
-            return;
-        }
-
-        // Compute direction to goal
-        Vector3 directionToGoal = (goal.position - transform.position).normalized;
-
-        // Convert direction to local space
-        Vector3 localDirection = transform.InverseTransformDirection(directionToGoal);
-
-        // Move towards the goal (strafe left/right and move forward)
-        continuousActions[0] = localDirection.x; // Strafe
-        continuousActions[1] = localDirection.z; // Move forward
-
-        // Rotate toward the goal
-        float targetAngle = Mathf.Atan2(directionToGoal.x, directionToGoal.z) * Mathf.Rad2Deg;
-        float angleDifference = Mathf.DeltaAngle(transform.eulerAngles.y, targetAngle);
-        continuousActions[2] = angleDifference / 180f; // Normalize to [-1,1]
+        continuousActions[0] = Input.GetAxis("Vertical");   // Forward/Backward using W/S or Up/Down
+        continuousActions[1] = Input.GetAxis("Horizontal"); // Strafe using A/D or Left/Right
     }
 }
