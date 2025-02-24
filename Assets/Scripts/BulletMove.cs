@@ -42,6 +42,7 @@ public class BulletMove : MonoBehaviour
             }
         }
 
+        BulletTracker.trackedBullets.Remove(transform);
         Destroy(gameObject);
     }
 

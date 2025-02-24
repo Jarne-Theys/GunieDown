@@ -37,6 +37,11 @@ public class BulletTracker : MonoBehaviour
         trackedBullets = bullets.Take(maxTrackedBullets).ToList();
     }
 
+    public static void ClearTrackedBulletList()
+    {
+        trackedBullets.Clear();
+    }
+
     // For Debugging in Scene View
     void OnDrawGizmosSelected()
     {

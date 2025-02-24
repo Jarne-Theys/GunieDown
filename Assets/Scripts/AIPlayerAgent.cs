@@ -5,16 +5,16 @@ using Unity.MLAgents.Actuators;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using System.Threading;
+using UnityEditor;
 
 public class AIPlayerAgent : Agent
 {
-    public Transform goal;
     public Rigidbody rb;
     private Vector3 finalMoveDirection;
     public float moveSpeed = 3f;
 
-    public float raycastDistance = 5f; // Adjust as needed
-    public int numRaycasts = 3; // Number of rays to cast (e.g., forward, left, right)
+    public float raycastDistance = 5f;
+    public int numRaycasts = 3;
 
     // private Vector3 lastPosition;
 
@@ -29,6 +29,14 @@ public class AIPlayerAgent : Agent
         rb.linearVelocity = Vector3.zero;
         transform.position = SpawnPositions.aiPlayerSpawnPosition;
         transform.rotation = Quaternion.Euler(SpawnPositions.aiPlayerSpawnRotation);
+
+        BulletTracker.ClearTrackedBulletList();
+
+        GameObject[] bullets = GameObject.FindGameObjectsWithTag("Bullet");
+        foreach (GameObject bullet in bullets)
+        {
+            Destroy(bullet);
+        }
 
         totalTime = 0f;
         // timer = 0f;
@@ -48,7 +56,7 @@ public class AIPlayerAgent : Agent
     public override void CollectObservations(VectorSensor sensor)
     {
         sensor.AddObservation(transform.position);
-        sensor.AddObservation(goal.position);
+        sensor.AddObservation(transform.rotation);
 
         // Raycast Observations
         for (int i = 0; i < numRaycasts; i++)
@@ -62,7 +70,7 @@ public class AIPlayerAgent : Agent
 
             if (Physics.Raycast(transform.position + Vector3.up * 0.5f, rayDirection, out hit, raycastDistance)) // Offset raycast start slightly up to avoid ground issues
             {
-                if (hit.collider.CompareTag("Wall")) // Make sure your walls have the "Wall" tag
+                if (hit.collider.CompareTag("Wall"))
                 {
                     wallDetected = true;
                     distanceToWall = hit.distance;
@@ -103,6 +111,12 @@ public class AIPlayerAgent : Agent
 
     public override void OnActionReceived(ActionBuffers actions)
     {
+        // Rotation
+        float YRotationInput = actions.ContinuousActions[2]; // Camera rotation around y-axis
+        float YRotation = YRotationInput * 180f; // Convert from -1 to 1 to -180 to 180
+        transform.localEulerAngles = new Vector3(0f, YRotation, 0f);
+
+        // Movement
         float moveForwardBackward = actions.ContinuousActions[0]; // Forward/Backward movement
         float moveLeftRight = actions.ContinuousActions[1];     // Strafing movement
 
@@ -141,12 +155,12 @@ public class AIPlayerAgent : Agent
         }
     }
 
-    /*
+    
     private void OnCollisionEnter(Collision collision)
     {
         AddReward(-10f);
     }
-    */
+    
 
     private void OnTriggerExit(Collider other)
     {
