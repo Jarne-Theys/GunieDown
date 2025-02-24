@@ -38,6 +38,10 @@ public class PlayerShoot : MonoBehaviour
         }
     }
 
+    /**
+     * @todo Add bullets to list of bullets AI can see
+     * @body Add bullets to list of bullets AI can see
+     */
     public void Shoot()
     {
         Transform cameraTransform = Camera.main.transform;

@@ -6,7 +6,7 @@ command = [
     "--results-dir=Assets/results",
     #"--resume",
     "--no-graphics",
-    "--run-id=AIPlayerGoalRaycastsV1",
+    "--run-id=AIPlayerDodging",
     "--torch-device", "cuda"
 ]
 

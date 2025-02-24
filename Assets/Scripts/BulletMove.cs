@@ -13,7 +13,6 @@ public class BulletMove : MonoBehaviour
         bulletDamage = bulletStats.Damage;
     }
 
-
     void OnCollisionEnter(Collision collision)
     {
         /*
@@ -24,18 +23,23 @@ public class BulletMove : MonoBehaviour
         Destroy(hitParticleSystemGO, hitParticleDuration);
         */
 
-        if (collision.gameObject.TryGetComponent<PlayerStats>(out var otherPlayer))
+        if (collision.gameObject.CompareTag("Player"))
         {
-            // Handle collision with PlayerStats object
-            if (!otherPlayer || otherPlayer.tag != "Player")
+            PlayerStats playerStats = collision.gameObject.GetComponentInChildren<PlayerStats>();
+            playerStats.Damage(bulletDamage);
+        }
+
+        // Apply reward to AI Agent
+        if (collision.gameObject.TryGetComponent<AIPlayerAgent>(out var aIPlayer))
+        {
+            if (!aIPlayer || aIPlayer.tag != "AIPlayer")
             {
                 return;
-            } else
-            {
-                Debug.Log("Hit player");
-                otherPlayer.GetComponent<PlayerStats>().Damage(bulletDamage);
             }
-
+            else
+            {
+                aIPlayer.AddExternalReward(-0.1f);
+            }
         }
 
         Destroy(gameObject);
