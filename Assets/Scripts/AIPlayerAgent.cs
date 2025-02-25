@@ -16,6 +16,8 @@ public class AIPlayerAgent : Agent
     public float raycastDistance = 5f;
     public int numRaycasts = 3;
 
+    public GameObject target;
+
     // private Vector3 lastPosition;
 
     //private float timer = 0f;
@@ -23,6 +25,8 @@ public class AIPlayerAgent : Agent
     private int episodeDuration = 60;
 
     public int bulletTrackCount = 3;
+    public float fovAngle = 60f;
+    public float visionRange = 50f;
 
     public override void OnEpisodeBegin()
     {
@@ -55,6 +59,7 @@ public class AIPlayerAgent : Agent
 
     public override void CollectObservations(VectorSensor sensor)
     {
+        // Transform Observations
         sensor.AddObservation(transform.position);
         sensor.AddObservation(transform.rotation);
 
@@ -94,6 +99,9 @@ public class AIPlayerAgent : Agent
             }
         }
 
+        // Target Observations
+        Vector3 directionToPlayer = (target.transform.position - transform.position).normalized;
+        float angleToPlayer = Vector3.Angle(transform.forward, directionToPlayer);
     }
 
     void OnDrawGizmosSelected()
@@ -106,6 +114,73 @@ public class AIPlayerAgent : Agent
             Vector3 rayDirection = transform.rotation * rotation * Vector3.forward;
 
             Gizmos.DrawLine(transform.position + Vector3.up * 0.5f, transform.position + Vector3.up * 0.5f + rayDirection * raycastDistance);
+        }
+
+        // Ensure target exists
+        if (target == null) return;
+
+        Vector3 playerCenter = target.GetComponentInChildren<CapsuleCollider>().bounds.center; // Use collider center instead of transform.position
+        Vector3 directionToPlayer = (playerCenter - transform.position).normalized;
+        float angleToPlayer = Vector3.Angle(transform.forward, directionToPlayer);
+
+        // Check if player is within the FOV angle
+        bool playerInFOV = angleToPlayer < fovAngle / 2 &&
+                           Vector3.Distance(transform.position, target.transform.position) <= visionRange;
+
+        if (playerInFOV)
+        {
+            // Perform a raycast from AI to the player's collider center
+            Ray ray = new Ray(transform.position, directionToPlayer);
+            //Debug.DrawRay(transform.position, directionToPlayer * visionRange, Color.blue); // Debugging ray
+
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit, visionRange))
+            {
+                Gizmos.color = Color.magenta;
+                Gizmos.DrawLine(transform.position, hit.point);
+                if (hit.collider.CompareTag("Player")) // Ensure the first hit object is the player
+                {
+
+                    // Player is in direct sight
+                    Gizmos.color = Color.green;
+                    //Gizmos.DrawLine(transform.position, playerCenter);
+                } 
+                else
+                {
+                    Gizmos.color = Color.yellow;
+
+                }
+            }
+        } 
+        else
+        {
+            Gizmos.color = Color.red;
+        }
+
+        // Draw the vision cone
+        DrawVisionCone();
+    }
+
+
+
+    private void DrawVisionCone()
+    {
+        int segments = 10; // How smooth the cone should be
+        float stepAngle = fovAngle / segments;
+        Vector3 startDirection = Quaternion.Euler(0, -fovAngle / 2, 0) * transform.forward;
+
+        Vector3 previousPoint = transform.position + startDirection * visionRange;
+        Gizmos.DrawLine(previousPoint, transform.position);
+        for (int i = 1; i <= segments; i++)
+        {
+            float angle = -fovAngle / 2 + stepAngle * i;
+            Vector3 nextDirection = Quaternion.Euler(0, angle, 0) * transform.forward;
+            Vector3 nextPoint = transform.position + nextDirection * visionRange;
+
+            Gizmos.DrawLine(transform.position, nextPoint);
+            Gizmos.DrawLine(previousPoint, nextPoint);
+
+            previousPoint = nextPoint;
         }
     }
 
