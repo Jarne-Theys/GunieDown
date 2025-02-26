@@ -27,6 +27,7 @@ public class AIPlayerAgent : Agent
     public int bulletTrackCount = 3;
     public float fovAngle = 60f;
     public float visionRange = 50f;
+    private Vector3 lastKnownPlayerLocation = Vector3.zero;
 
     public override void OnEpisodeBegin()
     {
@@ -100,8 +101,32 @@ public class AIPlayerAgent : Agent
         }
 
         // Target Observations
-        Vector3 directionToPlayer = (target.transform.position - transform.position).normalized;
+        Vector3 playerCenter = target.GetComponentInChildren<CapsuleCollider>().bounds.center;
+        Vector3 directionToPlayer = (playerCenter - transform.position).normalized;
         float angleToPlayer = Vector3.Angle(transform.forward, directionToPlayer);
+
+        bool playerInFOV = angleToPlayer < fovAngle / 2 &&
+                           Vector3.Distance(transform.position, target.transform.position) <= visionRange;
+
+        bool playerVisible = false;
+
+        if (playerInFOV)
+        {
+            Ray ray = new Ray(transform.position, directionToPlayer);
+
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit, visionRange))
+            {
+                if (hit.collider.CompareTag("Player")) 
+                {
+                    lastKnownPlayerLocation = hit.point;
+                    playerVisible = true;
+                }
+            }
+        }
+
+        sensor.AddObservation(playerVisible);
+        sensor.AddObservation(lastKnownPlayerLocation);
     }
 
     void OnDrawGizmosSelected()
@@ -116,39 +141,33 @@ public class AIPlayerAgent : Agent
             Gizmos.DrawLine(transform.position + Vector3.up * 0.5f, transform.position + Vector3.up * 0.5f + rayDirection * raycastDistance);
         }
 
-        // Ensure target exists
         if (target == null) return;
 
-        Vector3 playerCenter = target.GetComponentInChildren<CapsuleCollider>().bounds.center; // Use collider center instead of transform.position
+        Vector3 playerCenter = target.GetComponentInChildren<CapsuleCollider>().bounds.center;
         Vector3 directionToPlayer = (playerCenter - transform.position).normalized;
         float angleToPlayer = Vector3.Angle(transform.forward, directionToPlayer);
 
-        // Check if player is within the FOV angle
         bool playerInFOV = angleToPlayer < fovAngle / 2 &&
                            Vector3.Distance(transform.position, target.transform.position) <= visionRange;
 
         if (playerInFOV)
         {
-            // Perform a raycast from AI to the player's collider center
             Ray ray = new Ray(transform.position, directionToPlayer);
-            //Debug.DrawRay(transform.position, directionToPlayer * visionRange, Color.blue); // Debugging ray
+            //Debug.DrawRay(transform.position, directionToPlayer * visionRange, Color.blue);
 
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit, visionRange))
             {
                 Gizmos.color = Color.magenta;
                 Gizmos.DrawLine(transform.position, hit.point);
-                if (hit.collider.CompareTag("Player")) // Ensure the first hit object is the player
+                if (hit.collider.CompareTag("Player"))
                 {
-
-                    // Player is in direct sight
                     Gizmos.color = Color.green;
                     //Gizmos.DrawLine(transform.position, playerCenter);
                 } 
                 else
                 {
                     Gizmos.color = Color.yellow;
-
                 }
             }
         } 
@@ -157,7 +176,6 @@ public class AIPlayerAgent : Agent
             Gizmos.color = Color.red;
         }
 
-        // Draw the vision cone
         DrawVisionCone();
     }
 
@@ -200,7 +218,14 @@ public class AIPlayerAgent : Agent
 
         finalMoveDirection = moveDirectionForward + moveDirectionStrafe;
 
+        Vector3 targetDirection = target.transform.position - transform.position;
+        float angleDifferenceToPlayer = Vector3.Angle(targetDirection, transform.forward);
 
+        if (angleDifferenceToPlayer < 2f)
+        {
+            Debug.Log("Looking towards player!");
+            AddReward(0.0001f);
+        }
         /*
         if (Vector3.Distance(transform.position, lastPosition) < 0.01f)
         {

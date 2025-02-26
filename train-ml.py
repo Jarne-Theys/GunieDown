@@ -4,10 +4,10 @@ command = [
     "mlagents-learn",
     "config.yaml",
     "--results-dir=Assets/results",
-    "--resume",
+    #"--resume",
     "--no-graphics",
-    "--run-id=AIPlayerDodgingAndShooting",
-    "--initialisze-from=AIPlayerDodging",
+    "--run-id=AIPlayerDodgingAndLookingAtPlayer",
+    "--initialize-from=AIPlayerDodging",
     "--torch-device", "cuda"
 ]
 

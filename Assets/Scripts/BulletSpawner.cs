@@ -21,6 +21,7 @@ public class BulletSpawner : MonoBehaviour
             bullet.transform.LookAt(target);
             BulletStats bulletStats = bullet.GetComponent<BulletStats>();
             bulletStats.Speed = bulletSpeed;
+            bulletStats.Damage = 0;
             timer = 0f;
         }
     }
