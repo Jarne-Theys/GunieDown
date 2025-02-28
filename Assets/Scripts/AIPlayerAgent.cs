@@ -35,6 +35,9 @@ public class AIPlayerAgent : Agent
         transform.position = SpawnPositions.aiPlayerSpawnPosition;
         transform.rotation = Quaternion.Euler(SpawnPositions.aiPlayerSpawnRotation);
 
+        target.transform.position = SpawnPositions.mockHumanPlayerSpawn;
+        target.GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
+
         BulletTracker.ClearTrackedBulletList();
 
         GameObject[] bullets = GameObject.FindGameObjectsWithTag("Bullet");
@@ -111,7 +114,6 @@ public class AIPlayerAgent : Agent
             }
         }
 
-        /*
         // Target Observations
         Vector3 playerCenter = target.GetComponentInChildren<CapsuleCollider>().bounds.center;
         Vector3 directionToPlayer = (playerCenter - transform.position).normalized;
@@ -139,7 +141,6 @@ public class AIPlayerAgent : Agent
 
         sensor.AddObservation(playerVisible);
         sensor.AddObservation(lastKnownPlayerLocation);
-        */
     }
 
     void DrawWallDetectionLines()
@@ -247,16 +248,13 @@ public class AIPlayerAgent : Agent
 
         finalMoveDirection = moveDirectionForward + moveDirectionStrafe;
 
-        /*
         Vector3 targetDirection = target.transform.position - transform.position;
         float angleDifferenceToPlayer = Vector3.Angle(targetDirection, transform.forward);
 
         if (angleDifferenceToPlayer < 2f)
         {
-            Debug.Log("Looking towards player!");
             AddReward(0.0001f);
         }
-        */
 
         /*
         if (Vector3.Distance(transform.position, lastPosition) < 0.01f)

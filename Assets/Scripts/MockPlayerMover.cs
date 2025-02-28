@@ -18,11 +18,10 @@ public class MockPlayerMover : MonoBehaviour
 
     private void RandomMove()
     {
-        float moveX = Random.Range(-moveRange, moveRange) * Time.deltaTime * moveSpeed;
-        float moveY = 0f;
-        float moveZ = Random.Range(-moveRange, moveRange) * Time.deltaTime * moveSpeed;
+        float moveX = Random.Range(-moveRange, moveRange) / moveSpeed;
+        float moveZ = Random.Range(-moveRange, moveRange) / moveSpeed;
 
-        Vector3 movement = new Vector3(moveX, moveY, moveZ);
-        rb.MovePosition(transform.position + movement);
+
+        rb.AddForce(new Vector3(moveX, 0, moveZ), ForceMode.Impulse);
     }
 }

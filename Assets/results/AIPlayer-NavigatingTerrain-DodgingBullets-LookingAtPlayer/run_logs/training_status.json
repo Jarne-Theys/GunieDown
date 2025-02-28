@@ -1,0 +1,65 @@
+{
+    "AIPlayer": {
+        "checkpoints": [
+            {
+                "steps": 505500,
+                "file_path": "Assets/results\\AIPlayer-NavigatingTerrain-DodgingBullets-LookingAtPlayer\\AIPlayer\\AIPlayer-505500.onnx",
+                "reward": -356.3944127217619,
+                "creation_time": 1740772570.6379802,
+                "auxillary_file_paths": [
+                    "Assets/results\\AIPlayer-NavigatingTerrain-DodgingBullets-LookingAtPlayer\\AIPlayer\\AIPlayer-505500.pt"
+                ]
+            },
+            {
+                "steps": 523693,
+                "file_path": "Assets/results\\AIPlayer-NavigatingTerrain-DodgingBullets-LookingAtPlayer\\AIPlayer\\AIPlayer-523693.onnx",
+                "reward": -534.4816673914592,
+                "creation_time": 1740773167.6793647,
+                "auxillary_file_paths": [
+                    "Assets/results\\AIPlayer-NavigatingTerrain-DodgingBullets-LookingAtPlayer\\AIPlayer\\AIPlayer-523693.pt"
+                ]
+            },
+            {
+                "steps": 525278,
+                "file_path": "Assets/results\\AIPlayer-NavigatingTerrain-DodgingBullets-LookingAtPlayer\\AIPlayer\\AIPlayer-525278.onnx",
+                "reward": -477.97487449645996,
+                "creation_time": 1740773200.388866,
+                "auxillary_file_paths": [
+                    "Assets/results\\AIPlayer-NavigatingTerrain-DodgingBullets-LookingAtPlayer\\AIPlayer\\AIPlayer-525278.pt"
+                ]
+            },
+            {
+                "steps": 643199,
+                "file_path": "Assets/results\\AIPlayer-NavigatingTerrain-DodgingBullets-LookingAtPlayer\\AIPlayer\\AIPlayer-643199.onnx",
+                "reward": -562.4513788350301,
+                "creation_time": 1740774250.391528,
+                "auxillary_file_paths": [
+                    "Assets/results\\AIPlayer-NavigatingTerrain-DodgingBullets-LookingAtPlayer\\AIPlayer\\AIPlayer-643199.pt"
+                ]
+            },
+            {
+                "steps": 645064,
+                "file_path": "Assets/results\\AIPlayer-NavigatingTerrain-DodgingBullets-LookingAtPlayer\\AIPlayer\\AIPlayer-645064.onnx",
+                "reward": -393.564812205014,
+                "creation_time": 1740774333.9955225,
+                "auxillary_file_paths": [
+                    "Assets/results\\AIPlayer-NavigatingTerrain-DodgingBullets-LookingAtPlayer\\AIPlayer\\AIPlayer-645064.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 645064,
+            "file_path": "Assets/results\\AIPlayer-NavigatingTerrain-DodgingBullets-LookingAtPlayer\\AIPlayer.onnx",
+            "reward": -393.564812205014,
+            "creation_time": 1740774333.9955225,
+            "auxillary_file_paths": [
+                "Assets/results\\AIPlayer-NavigatingTerrain-DodgingBullets-LookingAtPlayer\\AIPlayer\\AIPlayer-645064.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "1.1.0",
+        "torch_version": "2.2.2+cu121"
+    }
+}

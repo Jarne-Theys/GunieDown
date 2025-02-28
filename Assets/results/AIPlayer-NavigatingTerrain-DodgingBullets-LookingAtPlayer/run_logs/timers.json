@@ -1,0 +1,47 @@
+{
+    "name": "root",
+    "metadata": {
+        "timer_format_version": "0.1.0",
+        "start_time_seconds": "1740774507",
+        "python_version": "3.10.11 (tags/v3.10.11:7d4cc5a, Apr  5 2023, 00:38:17) [MSC v.1929 64 bit (AMD64)]",
+        "command_line_arguments": "C:\\UnityProjects\\Powor\\.venv\\Scripts\\mlagents-learn config.yaml --results-dir=Assets/results --resume --run-id=AIPlayer-NavigatingTerrain-DodgingBullets-LookingAtPlayer --torch-device cuda",
+        "mlagents_version": "1.1.0",
+        "mlagents_envs_version": "1.1.0",
+        "communication_protocol_version": "1.5.0",
+        "pytorch_version": "2.2.2+cu121",
+        "numpy_version": "1.23.5",
+        "end_time_seconds": "1740774511"
+    },
+    "total": 3.885024100076407,
+    "count": 1,
+    "self": 0.004697800148278475,
+    "children": {
+        "run_training.setup": {
+            "total": 0.07114769995678216,
+            "count": 1,
+            "self": 0.07114769995678216
+        },
+        "TrainerController.start_learning": {
+            "total": 3.8091785999713466,
+            "count": 1,
+            "self": 0.00036149995867162943,
+            "children": {
+                "TrainerController._reset_env": {
+                    "total": 3.8088080000597984,
+                    "count": 1,
+                    "self": 3.8088080000597984
+                },
+                "trainer_threads": {
+                    "total": 7.00005330145359e-07,
+                    "count": 1,
+                    "self": 7.00005330145359e-07
+                },
+                "TrainerController._save_models": {
+                    "total": 8.399947546422482e-06,
+                    "count": 1,
+                    "self": 8.399947546422482e-06
+                }
+            }
+        }
+    }
+}
