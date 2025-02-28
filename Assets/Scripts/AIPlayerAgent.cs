@@ -65,56 +65,37 @@ public class AIPlayerAgent : Agent
         sensor.AddObservation(transform.rotation);
 
         // Raycast Observations
-        for (int i = 0; i < numRaycasts; i++)
+        float angleSteps = 0.5f;
+        float maxAngle = 0.5f;
+
+        for (float currentAngle = -0.5f; currentAngle <= maxAngle; currentAngle += angleSteps)
         {
-            float angle = (i - (numRaycasts - 1) / 2f) * 30f; // Example angles: -30, 0, 30 degrees
-            Quaternion rotation = Quaternion.Euler(0, angle, 0);
-            Vector3 rayFrom = transform.position + Vector3.up * 0.1f;
-            Vector3 rayTo = transform.position + Vector3.up * 0.8f;
-            Vector3 rayDirection = (rayTo - rayFrom).normalized;
-
-            RaycastHit hit;
-            bool wallDetected = false;
-            float distanceToWall = raycastDistance;
-
-            // TODO: make this same as gizmos section
-            if (Physics.Raycast(rayFrom, rayDirection, out hit, raycastDistance)) // Offset raycast start slightly up to avoid ground issues
+            for (int i = 0; i < numRaycasts; i++)
             {
-                if (hit.collider.CompareTag("Wall"))
+                float angle = (i - (numRaycasts - 1) / 2f) * 30f; // Example angles: -30, 0, 30 degrees
+                Quaternion rotation = Quaternion.Euler(0, angle, 0);
+                Vector3 rayDirection = transform.rotation * rotation * Vector3.forward;
+                Vector3 rayDirectionAngled = rayDirection + (Vector3.up * (currentAngle - 0.1f));
+
+                Vector3 rayFrom = transform.position;
+                Ray ray = new Ray(rayFrom, rayDirectionAngled);
+
+                RaycastHit hit;
+                bool wallDetected = false;
+                float distanceToWall = raycastDistance;
+
+                if (Physics.Raycast(rayFrom, rayDirection, out hit, raycastDistance))
                 {
-                    wallDetected = true;
-                    distanceToWall = hit.distance;
+                    if (hit.collider.CompareTag("Wall"))
+                    {
+                        wallDetected = true;
+                        distanceToWall = hit.distance;
+                    }
                 }
+
+                sensor.AddObservation(wallDetected ? 1f : 0f); // Binary: 1 if wall detected, 0 otherwise
+                sensor.AddObservation(distanceToWall / raycastDistance); // Normalized distance to wall (0 to 1)
             }
-
-            sensor.AddObservation(wallDetected ? 1f : 0f); // Binary: 1 if wall detected, 0 otherwise
-            sensor.AddObservation(distanceToWall / raycastDistance); // Normalized distance to wall (0 to 1)
-        }
-
-        for (int i = 0; i < numRaycasts; i++)
-        {
-            float angle = (i - (numRaycasts - 1) / 2f) * 30f; // Example angles: -30, 0, 30 degrees
-            Quaternion rotation = Quaternion.Euler(0, angle, 0);
-            Vector3 rayFrom = transform.position - Vector3.up * 0.1f;
-            Vector3 rayTo = transform.position - Vector3.up * 0.8f;
-            Vector3 rayDirection = (rayTo - rayFrom).normalized;
-
-            RaycastHit hit;
-            bool wallDetected = false;
-            float distanceToWall = raycastDistance;
-
-            // TODO: make this same as gizmos section
-            if (Physics.Raycast(rayFrom, rayDirection, out hit, raycastDistance)) // Offset raycast start slightly up to avoid ground issues
-            {
-                if (hit.collider.CompareTag("Wall"))
-                {
-                    wallDetected = true;
-                    distanceToWall = hit.distance;
-                }
-            }
-
-            sensor.AddObservation(wallDetected ? 1f : 0f); // Binary: 1 if wall detected, 0 otherwise
-            sensor.AddObservation(distanceToWall / raycastDistance); // Normalized distance to wall (0 to 1)
         }
 
         // Bullet tracking
@@ -174,7 +155,6 @@ public class AIPlayerAgent : Agent
                 Quaternion rotation = Quaternion.Euler(0, angle, 0);
                 Vector3 rayDirection = transform.rotation * rotation * Vector3.forward;
                 Vector3 rayDirectionAngled = rayDirection + (Vector3.up * (currentAngle-0.1f));
-                Debug.Log($"Ray {i}, Angle: {currentAngle}, Direction: {rayDirectionAngled}");
 
                 Vector3 rayFrom = transform.position;
                 Ray ray = new Ray(rayFrom, rayDirectionAngled);
@@ -311,7 +291,7 @@ public class AIPlayerAgent : Agent
     private void OnCollisionEnter(Collision collision)
     {
         AddReward(-10f);
-        Debug.DrawLine(collision.transform.position, collision.transform.position + (Vector3.up * 5f), Color.black);
+        Debug.DrawLine(collision.transform.position, collision.transform.position + (Vector3.up * 20f), Color.black);
     }
     
 
