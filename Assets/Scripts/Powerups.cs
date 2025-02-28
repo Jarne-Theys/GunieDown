@@ -1,10 +1,13 @@
 using UnityEngine;
 
-public abstract class Powerup
+public abstract class Upgrade
 {
     public string Name { get; protected set; } = "Powerup name";
     public string Description { get; protected set; } = "Powerup description";
+}
 
+public abstract class Powerup : Upgrade
+{
     public float HealthMultiplier { get; protected set; } = 1f;
     public float ArmorAddition { get; protected set; } = 0f;
     public float BulletDamageMultiplier { get; protected set; } = 1f;
