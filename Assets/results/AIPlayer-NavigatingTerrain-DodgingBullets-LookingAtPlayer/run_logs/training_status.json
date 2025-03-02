@@ -2,15 +2,6 @@
     "AIPlayer": {
         "checkpoints": [
             {
-                "steps": 525278,
-                "file_path": "Assets/results\\AIPlayer-NavigatingTerrain-DodgingBullets-LookingAtPlayer\\AIPlayer\\AIPlayer-525278.onnx",
-                "reward": -477.97487449645996,
-                "creation_time": 1740773200.388866,
-                "auxillary_file_paths": [
-                    "Assets/results\\AIPlayer-NavigatingTerrain-DodgingBullets-LookingAtPlayer\\AIPlayer\\AIPlayer-525278.pt"
-                ]
-            },
-            {
                 "steps": 643199,
                 "file_path": "Assets/results\\AIPlayer-NavigatingTerrain-DodgingBullets-LookingAtPlayer\\AIPlayer\\AIPlayer-643199.onnx",
                 "reward": -562.4513788350301,
@@ -45,15 +36,24 @@
                 "auxillary_file_paths": [
                     "Assets/results\\AIPlayer-NavigatingTerrain-DodgingBullets-LookingAtPlayer\\AIPlayer\\AIPlayer-1008857.pt"
                 ]
+            },
+            {
+                "steps": 1497858,
+                "file_path": "Assets/results\\AIPlayer-NavigatingTerrain-DodgingBullets-LookingAtPlayer\\AIPlayer\\AIPlayer-1497858.onnx",
+                "reward": -140.01071537171077,
+                "creation_time": 1740913772.201852,
+                "auxillary_file_paths": [
+                    "Assets/results\\AIPlayer-NavigatingTerrain-DodgingBullets-LookingAtPlayer\\AIPlayer\\AIPlayer-1497858.pt"
+                ]
             }
         ],
         "final_checkpoint": {
-            "steps": 1008857,
+            "steps": 1497858,
             "file_path": "Assets/results\\AIPlayer-NavigatingTerrain-DodgingBullets-LookingAtPlayer\\AIPlayer.onnx",
-            "reward": -233.86249451526947,
-            "creation_time": 1740777447.6515112,
+            "reward": -140.01071537171077,
+            "creation_time": 1740913772.201852,
             "auxillary_file_paths": [
-                "Assets/results\\AIPlayer-NavigatingTerrain-DodgingBullets-LookingAtPlayer\\AIPlayer\\AIPlayer-1008857.pt"
+                "Assets/results\\AIPlayer-NavigatingTerrain-DodgingBullets-LookingAtPlayer\\AIPlayer\\AIPlayer-1497858.pt"
             ]
         }
     },

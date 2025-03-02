@@ -68,37 +68,30 @@ public class AIPlayerAgent : Agent
         sensor.AddObservation(transform.rotation);
 
         // Raycast Observations
-        float angleSteps = 0.5f;
-        float maxAngle = 0.5f;
 
-        for (float currentAngle = -0.5f; currentAngle <= maxAngle; currentAngle += angleSteps)
+        for (float currentAngle = 0; currentAngle <= 360; currentAngle += 90)
         {
-            for (int i = 0; i < numRaycasts; i++)
+            float angle = currentAngle;
+            Quaternion rotation = Quaternion.Euler(0, angle, 0);
+            Vector3 rayDirection = transform.rotation * rotation * Vector3.forward;
+            Vector3 rayFrom = transform.position - Vector3.up * 0.5f;
+            Ray ray = new Ray(rayFrom, rayDirection);
+            RaycastHit hit;
+
+            bool wallDetected = false;
+            float distanceToWall = raycastDistance;
+
+            if (Physics.Raycast(rayFrom, rayDirection, out hit, raycastDistance))
             {
-                float angle = (i - (numRaycasts - 1) / 2f) * 30f; // Example angles: -30, 0, 30 degrees
-                Quaternion rotation = Quaternion.Euler(0, angle, 0);
-                Vector3 rayDirection = transform.rotation * rotation * Vector3.forward;
-                Vector3 rayDirectionAngled = rayDirection + (Vector3.up * (currentAngle - 0.1f));
-
-                Vector3 rayFrom = transform.position;
-                Ray ray = new Ray(rayFrom, rayDirectionAngled);
-
-                RaycastHit hit;
-                bool wallDetected = false;
-                float distanceToWall = raycastDistance;
-
-                if (Physics.Raycast(rayFrom, rayDirection, out hit, raycastDistance))
+                if (hit.collider.CompareTag("Wall"))
                 {
-                    if (hit.collider.CompareTag("Wall"))
-                    {
-                        wallDetected = true;
-                        distanceToWall = hit.distance;
-                    }
+                    wallDetected = true;
+                    distanceToWall = hit.distance;
                 }
-
-                sensor.AddObservation(wallDetected ? 1f : 0f); // Binary: 1 if wall detected, 0 otherwise
-                sensor.AddObservation(distanceToWall / raycastDistance); // Normalized distance to wall (0 to 1)
             }
+
+            sensor.AddObservation(wallDetected ? 1f : 0f); // Binary: 1 if wall detected, 0 otherwise
+            sensor.AddObservation(distanceToWall / raycastDistance); // Normalized distance to wall (0 to 1)
         }
 
         // Bullet tracking
@@ -165,10 +158,24 @@ public class AIPlayerAgent : Agent
         }
     }
 
+    void DrawWallDetectionLinesV2()
+    {
+        for (float currentAngle = 0; currentAngle <=360; currentAngle+=90)
+        {
+            float angle = currentAngle;
+            Quaternion rotation = Quaternion.Euler(0, angle, 0);
+            Vector3 rayDirection = transform.rotation * rotation * Vector3.forward;
+            Vector3 rayFrom = transform.position - Vector3.up * 0.5f;
+            Ray ray = new Ray(rayFrom, rayDirection);
+            Gizmos.DrawRay(ray.origin, ray.direction * raycastDistance);
+        }
+    }
+
+
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.magenta;
-        DrawWallDetectionLines();
+        DrawWallDetectionLinesV2();
 
         if (target == null) return;
 
@@ -253,7 +260,7 @@ public class AIPlayerAgent : Agent
 
         if (angleDifferenceToPlayer < 2f)
         {
-            AddReward(0.0001f);
+            AddReward(0.0005f);
         }
 
         /*
