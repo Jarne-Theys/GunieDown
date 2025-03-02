@@ -11,10 +11,10 @@ public class AIPlayerAgent : Agent
 {
     public Rigidbody rb;
     private Vector3 finalMoveDirection;
-    public float moveSpeed = 3f;
+    public float moveSpeed;
 
-    public float raycastDistance = 5f;
-    public int numRaycasts = 3;
+    public float raycastDistance;
+    public int numRaycasts;
 
     public GameObject target;
 
@@ -24,9 +24,9 @@ public class AIPlayerAgent : Agent
     private float totalTime = 0f;
     private int episodeDuration = 60;
 
-    public int bulletTrackCount = 3;
-    public float fovAngle = 60f;
-    public float visionRange = 50f;
+    public int bulletTrackCount;
+    public float fovAngle;
+    public float visionRange;
     private Vector3 lastKnownPlayerLocation = Vector3.zero;
 
     public override void OnEpisodeBegin()
@@ -68,7 +68,6 @@ public class AIPlayerAgent : Agent
         sensor.AddObservation(transform.rotation);
 
         // Raycast Observations
-
         for (float currentAngle = 0; currentAngle <= 360; currentAngle += 90)
         {
             float angle = currentAngle;
@@ -90,7 +89,7 @@ public class AIPlayerAgent : Agent
                 }
             }
 
-            sensor.AddObservation(wallDetected ? 1f : 0f); // Binary: 1 if wall detected, 0 otherwise
+            sensor.AddObservation(wallDetected ? true : false);
             sensor.AddObservation(distanceToWall / raycastDistance); // Normalized distance to wall (0 to 1)
         }
 
@@ -134,6 +133,12 @@ public class AIPlayerAgent : Agent
 
         sensor.AddObservation(playerVisible);
         sensor.AddObservation(lastKnownPlayerLocation);
+        /**
+         * @todo Identify extra 2 observations being added by Unity. 
+         * @body Check why unity is saying 30 observations made, while this code only makes 28, as shown by this debug log. Currently just set to 30 in editor, might cause issues later.
+         */
+        // Debug.Log($"Total Observations: {sensor.ObservationSize()}");
+
     }
 
     void DrawWallDetectionLines()
@@ -255,22 +260,32 @@ public class AIPlayerAgent : Agent
 
         finalMoveDirection = moveDirectionForward + moveDirectionStrafe;
 
-        Vector3 targetDirection = target.transform.position - transform.position;
-        float angleDifferenceToPlayer = Vector3.Angle(targetDirection, transform.forward);
+        Vector3 playerCenter = target.GetComponentInChildren<CapsuleCollider>().bounds.center;
+        Vector3 directionToPlayer = (playerCenter - transform.position).normalized;
+        float angleToPlayer = Vector3.Angle(transform.forward, directionToPlayer);
 
-        if (angleDifferenceToPlayer < 2f)
+        bool playerInFOV = angleToPlayer < fovAngle / 2 &&
+                           Vector3.Distance(transform.position, target.transform.position) <= visionRange;
+
+        if (playerInFOV)
         {
-            AddReward(0.0005f);
-        }
+            Ray ray = new Ray(transform.position, directionToPlayer);
+            //Debug.DrawRay(transform.position, directionToPlayer * visionRange, Color.blue);
 
-        /*
-        if (Vector3.Distance(transform.position, lastPosition) < 0.01f)
-        {
-            AddReward(-0.0001f);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit, visionRange))
+            {
+                if (hit.collider.CompareTag("Player"))
+                {
+                    Debug.DrawLine(transform.position, hit.point, Color.green, 15f);
+                    AddReward(0.01f);
+                }
+                else
+                {
+                    
+                }
+            }
         }
-
-        lastPosition = transform.position;
-        */
     }
 
     private void FixedUpdate()
