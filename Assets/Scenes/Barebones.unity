@@ -549,6 +549,7 @@ MonoBehaviour:
   cameraTransform: {fileID: 1476370052}
   crouchTransitionSpeedMultiplier: 8
   jumpForce: 5
+  movementSpeedMultiplier: 1
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -1043,6 +1044,7 @@ MonoBehaviour:
   cameraTransform: {fileID: 1193977878}
   crouchTransitionSpeedMultiplier: 8
   jumpForce: 5
+  movementSpeedMultiplier: 1
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -1824,7 +1826,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &690825386
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2756,7 +2758,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!54 &1112848669
 Rigidbody:
   m_ObjectHideFlags: 0
