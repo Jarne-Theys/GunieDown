@@ -23,8 +23,8 @@ public class AbilityManager : MonoBehaviour
 
     // This is where the input is checked and the ability activated.
     /**
-     * @todo Dynamically trigger abilities instead of all at once.
-     * @body As title says, we should be able to trigger abilities individually instead of all at once.
+     * TODO Dynamically trigger abilities instead of all at once.
+     * body As title says, we should be able to trigger abilities individually instead of all at once.
      */
     private void OnAbilityInput(InputAction.CallbackContext context)
     {
