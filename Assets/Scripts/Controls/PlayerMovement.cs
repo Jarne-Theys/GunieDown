@@ -11,6 +11,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float jumpForce = 5f;
     private float currentMoveSpeed;
 
+    [HideInInspector]
+    public float movementSpeedMultiplier = 1f;
+
     [SerializeField] private LayerMask groundLayer;
 
     private InputAction moveAction;
@@ -101,7 +104,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // Combine input with camera's orientation
-        Vector3 moveDirection = (cameraRight * moveInput.x + cameraForward * moveInput.y) * currentMoveSpeed;
+        Vector3 moveDirection = (cameraRight * moveInput.x + cameraForward * moveInput.y) * currentMoveSpeed * movementSpeedMultiplier;
 
         // Preserve vertical velocity
         Vector3 moveVelocity = new Vector3(moveDirection.x, playerRigidbody.linearVelocity.y, moveDirection.z);

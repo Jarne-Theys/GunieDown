@@ -1,10 +1,13 @@
+using System;
 using UnityEngine;
 
 public abstract class Upgrade
 {
     public string Name { get; protected set; } = "Powerup name";
     public string Description { get; protected set; } = "Powerup description";
+    public abstract void Apply(GameObject player);
 }
+
 
 public abstract class Powerup : Upgrade
 {
@@ -14,9 +17,9 @@ public abstract class Powerup : Upgrade
     public float BulletSpeedMultiplier { get; protected set; } = 1f;
     public float MovementSpeedMultiplier { get; protected set; } = 1f;
 
-    public virtual void Apply(PlayerStats player)
+    public override void Apply(GameObject player)
     {
-        player.ApplyPowerup(this);
+        player.GetComponent<PlayerStats>().ApplyPowerup(this);
     }
 }
 

@@ -117,7 +117,7 @@ public class RoundManager : MonoBehaviour
 
     public void ApplyPowerupAndContinue(Powerup selectedPowerup)
     {
-        humanPlayerStats.ApplyPowerup(selectedPowerup);
+        selectedPowerup.Apply(humanPlayer);
 
         humanPlayer.transform.position = SpawnPositions.humanPlayerSpawn;
         aiPlayer.transform.position = SpawnPositions.aiPlayerSpawnPosition;

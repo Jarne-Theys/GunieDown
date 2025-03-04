@@ -66,6 +66,29 @@ public class PlayerStats : MonoBehaviour
         Armor = MaxArmor;
     }
 
+    public void ApplyStatModifier(
+        float healthMultiplierDelta,
+        float armorAdditionDelta,
+        float bulletDamageMultiplierDelta,
+        float bulletSpeedMultiplierDelta,
+        float movementSpeedMultiplierDelta)
+    {
+        // Update cumulative modifiers
+        healthMultiplier *= healthMultiplierDelta;
+        armorAddition += armorAdditionDelta;
+        bulletDamageMultiplier *= bulletDamageMultiplierDelta;
+        bulletSpeedMultiplier *= bulletSpeedMultiplierDelta;
+        movementSpeedMultiplier *= movementSpeedMultiplierDelta;
+
+        // Recalculate stats based on updated multipliers
+        MaxHealth = (int)(OriginalMaxHealth * healthMultiplier);
+        MaxArmor = (int)(OriginalMaxArmor + armorAddition);
+        MaxMovementSpeed = OriginalMaxMovementSpeed * movementSpeedMultiplier;
+        BulletDamage = (int)(OriginalBulletDamage * bulletDamageMultiplier);
+        BulletSpeed = OriginalBulletSpeed * bulletSpeedMultiplier;
+    }
+
+
     public void ApplyPowerup(Powerup powerup)
     {
         // Apply cumulative multipliers
@@ -85,7 +108,12 @@ public class PlayerStats : MonoBehaviour
 
     public override string ToString()
     {
-        return $"Current stats: Health: {Health}, Armor: {Armor}, BulletDamage: {BulletDamage}, BulletSpeed: {BulletSpeed}, MovementSpeed: {MovementSpeed}" +
+        return $"Current stats: " +
+            $"Health: {Health}, " +
+            $"Armor: {Armor}, " +
+            $"BulletDamage: {BulletDamage}, " +
+            $"BulletSpeed: {BulletSpeed}, " +
+            $"MovementSpeed: {MovementSpeed}" +
             $"\n Max stats: Health: {MaxHealth}, Armor: {MaxArmor}, MovementSpeed: {MaxMovementSpeed}";
     }
 }
