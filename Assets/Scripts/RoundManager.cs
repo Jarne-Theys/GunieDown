@@ -23,14 +23,6 @@ public class RoundManager : MonoBehaviour
 
     [SerializeField] TMP_Text roundText;
 
-    List<Powerup> allPowerups = new List<Powerup>
-    {
-        new HealthBoost(),
-        new BulletDamageBoost(),
-        new BulletSpeedBoost(),
-        //new ArmorBoost()
-    };
-
     public void humanPlayerScored()
     {
         humanPlayerScore++;

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class UpwardForceComponent : IAbilityComponent
+public class UpwardForceComponent : IUpgradeComponent
 {
     public float ForceAmount { get; private set; }
 
@@ -14,4 +14,6 @@ public class UpwardForceComponent : IAbilityComponent
         Rigidbody rb = player.GetComponent<Rigidbody>();
         rb.AddForce(Vector3.up * ForceAmount, ForceMode.Impulse);
     }
+    
+    public void ApplyPassive(GameObject player) { }
 }

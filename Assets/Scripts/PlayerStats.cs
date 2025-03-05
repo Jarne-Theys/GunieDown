@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class PlayerStats : MonoBehaviour
@@ -12,11 +13,11 @@ public class PlayerStats : MonoBehaviour
     public int MaxArmor = 0;
     public float MaxMovementSpeed = 5f;
 
-    private float healthMultiplier = 1f;
-    private float armorAddition = 0;
-    private float bulletDamageMultiplier = 1f;
-    private float bulletSpeedMultiplier = 1f;
-    private float movementSpeedMultiplier = 1f;
+    private int healthIncrease = 0;
+    private int armorIncrease = 0;
+    private int bulletDamageIncrease = 0;
+    private int bulletSpeedIncrease = 0;
+    private int movementSpeedIncrease = 0;
 
     [SerializeField] private int armor;
     [SerializeField] private int health;
@@ -66,44 +67,39 @@ public class PlayerStats : MonoBehaviour
         Armor = MaxArmor;
     }
 
-    public void ApplyStatModifier(
-        float healthMultiplierDelta,
-        float armorAdditionDelta,
-        float bulletDamageMultiplierDelta,
-        float bulletSpeedMultiplierDelta,
-        float movementSpeedMultiplierDelta)
+    public void ApplyStatModifier(StatType statType, int amount)
     {
-        // Update cumulative modifiers
-        healthMultiplier *= healthMultiplierDelta;
-        armorAddition += armorAdditionDelta;
-        bulletDamageMultiplier *= bulletDamageMultiplierDelta;
-        bulletSpeedMultiplier *= bulletSpeedMultiplierDelta;
-        movementSpeedMultiplier *= movementSpeedMultiplierDelta;
+        switch (statType)
+        {
+            case StatType.Health:
+                healthIncrease += amount;
+                break;
+            
+            case StatType.Armor:
+                armorIncrease += amount;
+                break;
+            
+            case StatType.MovementSpeed:
+                movementSpeedIncrease += amount;
+                break;
+            
+            case StatType.BulletSpeed:
+                bulletSpeedIncrease += amount;
+                break;
+            
+            case StatType.BulletDamage:
+                bulletDamageIncrease += amount;
+                break;
+            
+            default:
+                throw new Exception("Invalid stat type");
+        }
 
-        // Recalculate stats based on updated multipliers
-        MaxHealth = (int)(OriginalMaxHealth * healthMultiplier);
-        MaxArmor = (int)(OriginalMaxArmor + armorAddition);
-        MaxMovementSpeed = OriginalMaxMovementSpeed * movementSpeedMultiplier;
-        BulletDamage = (int)(OriginalBulletDamage * bulletDamageMultiplier);
-        BulletSpeed = OriginalBulletSpeed * bulletSpeedMultiplier;
-    }
-
-
-    public void ApplyPowerup(Powerup powerup)
-    {
-        // Apply cumulative multipliers
-        healthMultiplier *= powerup.HealthMultiplier;
-        armorAddition += powerup.ArmorAddition;
-        bulletDamageMultiplier *= powerup.BulletDamageMultiplier;
-        bulletSpeedMultiplier *= powerup.BulletSpeedMultiplier;
-        movementSpeedMultiplier *= powerup.MovementSpeedMultiplier;
-
-        // Recalculate stats based on cumulative effects
-        MaxHealth = (int)(OriginalMaxHealth * healthMultiplier);
-        MaxArmor = (int)(OriginalMaxArmor + armorAddition);
-        MaxMovementSpeed = OriginalMaxMovementSpeed * movementSpeedMultiplier;
-        BulletDamage = (int)(OriginalBulletDamage * bulletDamageMultiplier);
-        BulletSpeed = OriginalBulletSpeed * bulletSpeedMultiplier;
+        MaxHealth += healthIncrease;
+        MaxArmor += armorIncrease;
+        MaxMovementSpeed += movementSpeedIncrease;
+        BulletSpeed += bulletSpeedIncrease;
+        BulletDamage += bulletDamageIncrease;
     }
 
     public override string ToString()
@@ -117,3 +113,4 @@ public class PlayerStats : MonoBehaviour
             $"\n Max stats: Health: {MaxHealth}, Armor: {MaxArmor}, MovementSpeed: {MaxMovementSpeed}";
     }
 }
+
