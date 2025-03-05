@@ -1,22 +1,31 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
+using System;
+using Unity.VisualScripting;
 
-public class DashBackwardComponent : IUpgradeComponent
+[Serializable]
+public class DashBackwardComponent : UpgradeComponentBase
 {
-    public float DashForce { get; private set; }
+    [SerializeField]
+    private float dashForce;
     
+    private bool inputInitialized = false;
+
     public DashBackwardComponent(float dashForce)
     {
-        DashForce = dashForce;
+        this.dashForce = dashForce;
     }
-    
-    public void ApplyPassive(GameObject player) { }
-    
-    public void Activate(GameObject player)
+
+    public override void ApplyPassive(GameObject player)
+    {
+    }
+
+    public override void Activate(GameObject player)
     {
         Rigidbody rb = player.GetComponent<Rigidbody>();
         if (rb != null)
         {
-            rb.AddForce(-player.transform.forward * DashForce, ForceMode.Impulse);
+            rb.AddForce(-player.transform.forward * dashForce, ForceMode.Impulse);
         }
     }
 }

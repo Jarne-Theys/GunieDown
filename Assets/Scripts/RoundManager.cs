@@ -22,6 +22,9 @@ public class RoundManager : MonoBehaviour
     public Transform PowerupButtonContainer;
 
     [SerializeField] TMP_Text roundText;
+    
+    [SerializeField]
+    private UpgradesList upgradesList;
 
     public void humanPlayerScored()
     {
@@ -86,30 +89,30 @@ public class RoundManager : MonoBehaviour
         }
 
         // Select 2-3 random power-ups
-        List<Powerup> chosenPowerups = new List<Powerup>();
-        while (chosenPowerups.Count < 3)
+        List<UpgradeDefinition> randomUpgrades = new List<UpgradeDefinition>();
+        while (randomUpgrades.Count < 3)
         {
-            Powerup randomPowerup = allPowerups[Random.Range(0, allPowerups.Count)];
-            if (!chosenPowerups.Contains(randomPowerup))
-                chosenPowerups.Add(randomPowerup);
+            UpgradeDefinition upgrade = upgradesList.GetRandomUpgrade();
+            if (!randomUpgrades.Contains(upgrade))
+                randomUpgrades.Add(upgrade);
         }
 
         // Create buttons dynamically
-        foreach (Powerup powerup in chosenPowerups)
+        foreach (UpgradeDefinition upgrade in randomUpgrades)
         {
             GameObject buttonObj = Instantiate(PowerupButtonPrefab, PowerupButtonContainer);
             Button button = buttonObj.GetComponent<Button>();
             TextMeshProUGUI buttonText = buttonObj.GetComponentInChildren<TextMeshProUGUI>();
 
-            buttonText.text = powerup.Name + "\n" + powerup.Description;
+            buttonText.text = upgrade.upgradeName + "\n" + upgrade.description;
 
-            button.onClick.AddListener(() => ApplyPowerupAndContinue(powerup));
+            button.onClick.AddListener(() => ApplyPowerupAndContinue(upgrade));
         }
     }
 
-    public void ApplyPowerupAndContinue(Powerup selectedPowerup)
+    public void ApplyPowerupAndContinue(UpgradeDefinition selectedUpgrade)
     {
-        selectedPowerup.Apply(humanPlayer);
+        selectedUpgrade.ApplyUpgrade(humanPlayer);
 
         humanPlayer.transform.position = SpawnPositions.humanPlayerSpawn;
         aiPlayer.transform.position = SpawnPositions.aiPlayerSpawnPosition;

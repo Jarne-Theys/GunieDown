@@ -2,34 +2,27 @@ using UnityEngine.InputSystem;
 using System;
 using UnityEngine;
 
-public class InputActivationComponent : IUpgradeComponent
+[Serializable]
+public class InputActivationComponent : UpgradeComponentBase
 {
-    // Currently unused, as the component manages triggering the action itself, rather than the ability manager (removed)
-    //private TriggerAction triggerAction;
-    private InputAction inputAction;
+    [SerializeField]
+    private InputActionReference inputAction;
     private Action<GameObject> onActivate;
     private GameObject targetPlayer;
 
-    public InputActivationComponent(InputAction inputAction, Action<GameObject> onActivate)
+    public InputActivationComponent(Action<GameObject> onActivate)
     {
-        this.inputAction = inputAction ?? throw new ArgumentNullException(nameof(inputAction));
-        this.onActivate = onActivate ?? throw new ArgumentNullException(nameof(onActivate));
-
-        // Enable and subscribe to the input action
-        inputAction.Enable();
-        inputAction.performed += OnInputPerformed;
-        
-        targetPlayer = GameObject.FindGameObjectWithTag("Player");
+        this.onActivate = onActivate;
     }
     
     public void DisableInput()
     {
-        inputAction.Disable();
+        inputAction.action.Disable();
     }
 
     public void EnableInput()
     {
-        inputAction.Enable();
+        inputAction.action.Enable();
     }
 
     private void OnInputPerformed(InputAction.CallbackContext ctx)
@@ -37,18 +30,22 @@ public class InputActivationComponent : IUpgradeComponent
         onActivate?.Invoke(targetPlayer);
     }
 
-    public void Activate(GameObject player)
+    public override void Activate(GameObject player)
     {
         // Manually trigger the activation event
         onActivate?.Invoke(player);
         Debug.Log("Manually triggered input component");
     }
 
-    public void ApplyPassive(GameObject player) { }
+    public override void ApplyPassive(GameObject player)
+    {
+        targetPlayer = player;
+        inputAction.action.performed += OnInputPerformed;
+    }
 
     // Ensure unsubscription when disposing of this component
     ~InputActivationComponent()
     {
-        inputAction.performed -= OnInputPerformed;
+        inputAction.action.performed -= OnInputPerformed;
     }
 }

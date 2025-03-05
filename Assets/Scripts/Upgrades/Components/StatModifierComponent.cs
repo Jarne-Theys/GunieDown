@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class StatModifierComponent : IUpgradeComponent
+public class StatModifierComponent : UpgradeComponentBase
 {
     public StatType statType;
     public int increaseAmount;
@@ -11,9 +11,9 @@ public class StatModifierComponent : IUpgradeComponent
         this.increaseAmount = amount;
     }
 
-    public void Activate(GameObject player) { }
+    public override void Activate(GameObject player) { }
     
-    public void ApplyPassive(GameObject player)
+    public override void ApplyPassive(GameObject player)
     {
         var stats = player.GetComponent<PlayerStats>();
         stats.ApplyStatModifier(statType, increaseAmount);

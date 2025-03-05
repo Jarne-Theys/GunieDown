@@ -1,19 +1,27 @@
 using UnityEngine;
 
-public class UpwardForceComponent : IUpgradeComponent
+public class UpwardForceComponent : UpgradeComponentBase
 {
-    public float ForceAmount { get; private set; }
+    [SerializeField]
+    private float moveForce;
+    
+    private bool inputInitialized = false;
 
-    public UpwardForceComponent(float forceAmount)
+    public UpwardForceComponent(float moveForce)
     {
-        ForceAmount = forceAmount;
-    }
-
-    public void Activate(GameObject player)
-    {
-        Rigidbody rb = player.GetComponent<Rigidbody>();
-        rb.AddForce(Vector3.up * ForceAmount, ForceMode.Impulse);
+        this.moveForce = moveForce;
     }
     
-    public void ApplyPassive(GameObject player) { }
+    public override void ApplyPassive(GameObject player)
+    {
+    }
+
+    public override void Activate(GameObject player)
+    {
+        Rigidbody rb = player.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.AddForce(Vector3.up * moveForce, ForceMode.Impulse);
+        }
+    }
 }
