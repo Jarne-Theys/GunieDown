@@ -2,6 +2,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class RoundManager : MonoBehaviour
@@ -26,6 +27,12 @@ public class RoundManager : MonoBehaviour
     [SerializeField]
     private UpgradesList upgradesList;
 
+    [SerializeField]
+    private InputActionReference cheatButton;
+
+    [SerializeField]
+    private UpgradeManager upgradeManager;
+
     public void humanPlayerScored()
     {
         humanPlayerScore++;
@@ -49,11 +56,37 @@ public class RoundManager : MonoBehaviour
         humanPlayerStats = humanPlayer.GetComponent<PlayerStats>();
         aiPlayerStats = aiPlayer.GetComponent<PlayerStats>();
         PowerupScreen.SetActive(false);
+    }
 
+    private void OnEnable()
+    {
+
+        cheatButton.action.performed += ApplyAllUpgrades;
+    }
+
+    void OnDisable()
+    {
+        if (cheatButton != null && cheatButton.action != null)
+        {
+            cheatButton.action.performed -= ApplyAllUpgrades;
+        }
+    }
+
+    private void ApplyAllUpgrades(InputAction.CallbackContext ctx)
+    {
+        ResetStats();
+        Debug.Log("Pressed cheat button");
+        UpgradeDefinition[] allUpgrades = upgradesList.upgrades;
+        foreach (UpgradeDefinition upgrade in allUpgrades)
+        {
+            upgradeManager.AcquireUpgrade(upgrade);
+            Debug.Log("Applied upgrade: " + upgrade.upgradeName);
+        }
     }
 
     void Update()
     {
+
         roundText.text = "Round: " + roundNumber + " Score: " + humanPlayerScore + " - " + aiPlayerScore;
 
         if (aiPlayerStats.Health <= 0)

@@ -12,21 +12,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e8595b5057d4e34a3f447fcc848dfd1, type: 3}
   m_Name: DashBackwardUpgrade
   m_EditorClassIdentifier: 
-  upgradeName: Dash plop
-  description: Read name
+  upgradeName: DASHY BACKY
+  description: plopkoek
   components:
-  - rid: 7842811074989785160
-  - rid: 7842811074989785161
+  - rid: 9180213058047836226
+  - rid: 9180213058047836227
   references:
     version: 2
     RefIds:
-    - rid: 7842811074989785160
+    - rid: 9180213058047836226
       type: {class: DashBackwardComponent, ns: , asm: Assembly-CSharp}
       data:
         componentName: DashBackwardComponent
-        dashForce: 8
-    - rid: 7842811074989785161
+        dashForce: 50
+    - rid: 9180213058047836227
       type: {class: InputActivationComponent, ns: , asm: Assembly-CSharp}
       data:
         componentName: InputActivationComponent
-        inputAction: {fileID: -7471211009204490832, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+        inputAction: {fileID: 7040659881675835329, guid: 052faaac586de48259a63d0c4782560b, type: 3}

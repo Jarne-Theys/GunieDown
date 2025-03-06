@@ -6,46 +6,53 @@ using UnityEngine;
 public class InputActivationComponent : UpgradeComponentBase
 {
     [SerializeField]
-    private InputActionReference inputAction;
-    private Action<GameObject> onActivate;
+    public InputActionReference inputAction;
+    private Action<GameObject> _onActivate;
     private GameObject targetPlayer;
 
-    public InputActivationComponent(Action<GameObject> onActivate)
+    public Action<GameObject> onActivate
     {
-        this.onActivate = onActivate;
+        get => _onActivate;
+        set => _onActivate = value;
     }
-    
+
+    // Parameterless constructor required for Activator.CreateInstance
+    public InputActivationComponent() {}
+
     public void DisableInput()
     {
-        inputAction.action.Disable();
+        if (inputAction != null && inputAction.action != null)
+            inputAction.action.Disable();
     }
 
     public void EnableInput()
     {
-        inputAction.action.Enable();
+        if (inputAction != null && inputAction.action != null)
+            inputAction.action.Enable();
     }
 
     private void OnInputPerformed(InputAction.CallbackContext ctx)
     {
-        onActivate?.Invoke(targetPlayer);
+        _onActivate?.Invoke(targetPlayer); // Use the backing field
     }
 
     public override void Activate(GameObject player)
     {
         // Manually trigger the activation event
-        onActivate?.Invoke(player);
+        _onActivate?.Invoke(player); // Use the backing field
         Debug.Log("Manually triggered input component");
     }
 
     public override void ApplyPassive(GameObject player)
     {
         targetPlayer = player;
-        inputAction.action.performed += OnInputPerformed;
+        if (inputAction != null && inputAction.action != null)
+            inputAction.action.performed += OnInputPerformed;
     }
 
-    // Ensure unsubscription when disposing of this component
     ~InputActivationComponent()
     {
-        inputAction.action.performed -= OnInputPerformed;
+        if (inputAction != null && inputAction.action != null)
+            inputAction.action.performed -= OnInputPerformed;
     }
 }

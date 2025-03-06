@@ -12,16 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4428d01874c47bb9f1b77a26ede1fb7, type: 3}
   m_Name: HealthBoostUpgrade
   m_EditorClassIdentifier: 
-  upgradeName: HP BRRR
-  description: plop
+  upgradeName: Healthhhhh
+  description: Ur big now
   components:
-  - rid: 7842811074989785163
+  - rid: 9180213058047836228
   references:
     version: 2
     RefIds:
-    - rid: 7842811074989785163
-      type: {class: HealthBoostComponent, ns: , asm: Assembly-CSharp}
+    - rid: 9180213058047836228
+      type: {class: StatModifierComponent, ns: , asm: Assembly-CSharp}
       data:
-        componentName: HealthBoostComponent
+        componentName: StatModifierComponent
         statType: 0
-        increaseAmount: 10
+        increaseAmount: 12

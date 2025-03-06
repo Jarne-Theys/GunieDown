@@ -8,15 +8,10 @@ public class DashBackwardComponent : UpgradeComponentBase
 {
     [SerializeField]
     private float dashForce;
-    
-    public DashBackwardComponent(float dashForce)
-    {
-        this.dashForce = dashForce;
-    }
 
-    public override void ApplyPassive(GameObject player)
-    {
-    }
+    public DashBackwardComponent() {}
+
+    public override void ApplyPassive(GameObject player) {}
 
     public override void Activate(GameObject player)
     {
@@ -24,6 +19,14 @@ public class DashBackwardComponent : UpgradeComponentBase
         if (rb != null)
         {
             rb.AddForce(-player.transform.forward * dashForce, ForceMode.Impulse);
+            return;
+        }
+
+        rb = player.GetComponentInParent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.AddForce(-player.transform.forward * dashForce, ForceMode.Impulse);
+            return;
         }
     }
 }

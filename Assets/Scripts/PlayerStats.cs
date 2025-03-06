@@ -65,6 +65,8 @@ public class PlayerStats : MonoBehaviour
     {
         Health = MaxHealth;
         Armor = MaxArmor;
+        MaxArmor = OriginalMaxArmor;
+        MaxHealth = OriginalMaxHealth;
     }
 
     public void ApplyStatModifier(StatType statType, int amount)

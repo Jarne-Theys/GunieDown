@@ -2,16 +2,15 @@ using UnityEngine;
 
 public class StatModifierComponent : UpgradeComponentBase
 {
-    public StatType statType;
-    public int increaseAmount;
+    [SerializeField]
+    private StatType statType;
 
-    public StatModifierComponent(StatType statType, int amount)
-    {
-        this.statType = statType;
-        this.increaseAmount = amount;
-    }
+    [SerializeField]
+    private int increaseAmount;
 
-    public override void Activate(GameObject player) { }
+    public StatModifierComponent() {}
+
+    public override void Activate(GameObject player) {}
     
     public override void ApplyPassive(GameObject player)
     {
