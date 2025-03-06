@@ -9,8 +9,6 @@ public class StatModifierComponent : UpgradeComponentBase
     private int increaseAmount;
 
     public StatModifierComponent() {}
-
-    public override void Activate(GameObject player) {}
     
     public override void ApplyPassive(GameObject player)
     {

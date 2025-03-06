@@ -8,9 +8,8 @@ public class UpgradeManager : MonoBehaviour
 
     public void AcquireUpgrade(UpgradeDefinition upgradeDefinition)
     {
-        // Create brand-new components each time, so delegates or references
-        // aren’t lost by Unity’s serialization.
-        var newComponents = upgradeDefinition.CreateRuntimeComponents();
+        // Use the new method that creates and configures components
+        var newComponents = upgradeDefinition.CreateRuntimeComponentsAndConfigure();
 
         activeUpgradeInstances.AddRange(newComponents);
 

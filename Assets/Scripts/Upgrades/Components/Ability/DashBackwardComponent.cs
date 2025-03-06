@@ -11,8 +11,6 @@ public class DashBackwardComponent : UpgradeComponentBase
 
     public DashBackwardComponent() {}
 
-    public override void ApplyPassive(GameObject player) {}
-
     public override void Activate(GameObject player)
     {
         Rigidbody rb = player.GetComponent<Rigidbody>();

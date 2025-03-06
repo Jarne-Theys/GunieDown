@@ -9,24 +9,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8e8595b5057d4e34a3f447fcc848dfd1, type: 3}
-  m_Name: DashBackwardUpgrade
+  m_Script: {fileID: 11500000, guid: f658c5ecd8b4f283ebb9ab16eca454e4, type: 3}
+  m_Name: DashBack
   m_EditorClassIdentifier: 
-  upgradeName: DASHY BACKY
-  description: plopkoek
+  upgradeName: dashb
+  description: firrieofreijoef
   components:
-  - rid: 9180213058047836226
-  - rid: 9180213058047836227
+  - rid: 9180213063360970818
+  - rid: 9180213063360970819
   references:
     version: 2
     RefIds:
-    - rid: 9180213058047836226
+    - rid: 9180213063360970818
       type: {class: DashBackwardComponent, ns: , asm: Assembly-CSharp}
       data:
         componentName: DashBackwardComponent
-        dashForce: 50
-    - rid: 9180213058047836227
+        dashForce: 100
+    - rid: 9180213063360970819
       type: {class: InputActivationComponent, ns: , asm: Assembly-CSharp}
       data:
         componentName: InputActivationComponent
-        inputAction: {fileID: 7040659881675835329, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+        inputAction: {fileID: -7471211009204490832, guid: 052faaac586de48259a63d0c4782560b, type: 3}

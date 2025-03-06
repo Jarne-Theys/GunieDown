@@ -9,19 +9,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d4428d01874c47bb9f1b77a26ede1fb7, type: 3}
-  m_Name: HealthBoostUpgrade
+  m_Script: {fileID: 11500000, guid: f658c5ecd8b4f283ebb9ab16eca454e4, type: 3}
+  m_Name: HealthBoost
   m_EditorClassIdentifier: 
-  upgradeName: Healthhhhh
-  description: Ur big now
+  upgradeName: hp
+  description: fzfzfiojfzz
   components:
-  - rid: 9180213058047836228
+  - rid: 9180213063360970820
   references:
     version: 2
     RefIds:
-    - rid: 9180213058047836228
+    - rid: 9180213063360970820
       type: {class: StatModifierComponent, ns: , asm: Assembly-CSharp}
       data:
         componentName: StatModifierComponent
         statType: 0
-        increaseAmount: 12
+        increaseAmount: 69
