@@ -5,8 +5,6 @@ public class UpwardForceComponent : UpgradeComponentBase
     [SerializeField]
     private float moveForce;
     
-    private bool inputInitialized = false;
-
     public UpwardForceComponent(float moveForce)
     {
         this.moveForce = moveForce;

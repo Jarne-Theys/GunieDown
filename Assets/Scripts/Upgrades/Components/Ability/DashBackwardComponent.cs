@@ -9,8 +9,6 @@ public class DashBackwardComponent : UpgradeComponentBase
     [SerializeField]
     private float dashForce;
     
-    private bool inputInitialized = false;
-
     public DashBackwardComponent(float dashForce)
     {
         this.dashForce = dashForce;
