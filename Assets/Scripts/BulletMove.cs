@@ -8,9 +8,9 @@ public class BulletMove : MonoBehaviour
     int bulletDamage;
     void Start()
     {
-        BulletStats bulletStats = GetComponent<BulletStats>();
-        bulletSpeed = bulletStats.Speed;
-        bulletDamage = bulletStats.Damage;
+        ProjectileStats projectileStats = GetComponent<ProjectileStats>();
+        bulletSpeed = projectileStats.Speed;
+        bulletDamage = projectileStats.Damage;
     }
 
     void OnCollisionEnter(Collision collision)

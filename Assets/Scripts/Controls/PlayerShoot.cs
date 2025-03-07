@@ -53,7 +53,7 @@ public class PlayerShoot : MonoBehaviour
         // Instantiate the bullet with the calculated rotation
         GameObject bullet = Instantiate(bulletPrefab, transform.position + shootDirection * 1f, shootRotation);
 
-        var bulletStats = bullet.GetComponent<BulletStats>();
+        var bulletStats = bullet.GetComponent<ProjectileStats>();
 
         // Set the bullet stats
         var playerStats = GetComponent<PlayerStats>();

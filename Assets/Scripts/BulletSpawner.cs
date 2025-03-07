@@ -19,9 +19,9 @@ public class BulletSpawner : MonoBehaviour
         {
             GameObject bullet = Instantiate(bulletPrefab, transform.position, transform.rotation);
             bullet.transform.LookAt(target);
-            BulletStats bulletStats = bullet.GetComponent<BulletStats>();
-            bulletStats.Speed = bulletSpeed;
-            bulletStats.Damage = 0;
+            ProjectileStats projectileStats = bullet.GetComponent<ProjectileStats>();
+            projectileStats.Speed = bulletSpeed;
+            projectileStats.Damage = 0;
             timer = 0f;
         }
     }
