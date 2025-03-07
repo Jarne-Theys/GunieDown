@@ -23,25 +23,22 @@ public class BulletMove : MonoBehaviour
         Destroy(hitParticleSystemGO, hitParticleDuration);
         */
 
+        /*
+        TODO: Reimplement player hit detection
         if (collision.gameObject.CompareTag("Player"))
         {
             PlayerStats playerStats = collision.gameObject.GetComponentInChildren<PlayerStats>();
             playerStats.Damage(bulletDamage);
         }
-
+        */
         // Apply reward to AI Agent
-        if (collision.gameObject.TryGetComponent<AIPlayerAgent>(out var aIPlayer))
-        {
-            if (!aIPlayer || aIPlayer.tag != "AIPlayer")
-            {
-                return;
-            }
-            else
-            {
-                aIPlayer.AddExternalReward(-0.1f);
-            }
-        }
 
+        StartCoroutine(DestroyBullet());
+    }
+
+    IEnumerator DestroyBullet()
+    {
+        yield return new WaitForSeconds(0.1f);
         BulletTracker.trackedBullets.Remove(transform);
         Destroy(gameObject);
     }

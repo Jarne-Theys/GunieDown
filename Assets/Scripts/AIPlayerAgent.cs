@@ -141,28 +141,6 @@ public class AIPlayerAgent : Agent
 
     }
 
-    void DrawWallDetectionLines()
-    {
-        float angleSteps = 0.5f;
-        float maxAngle = 0.5f;
-
-        for (float currentAngle = -0.5f; currentAngle <= maxAngle; currentAngle+=angleSteps)
-        {
-            for (int i = 0; i < numRaycasts; i++)
-            {
-                float angle = (i - (numRaycasts - 1) / 2f) * 30f; // Example angles: -30, 0, 30 degrees
-                Quaternion rotation = Quaternion.Euler(0, angle, 0);
-                Vector3 rayDirection = transform.rotation * rotation * Vector3.forward;
-                Vector3 rayDirectionAngled = rayDirection + (Vector3.up * (currentAngle-0.1f));
-
-                Vector3 rayFrom = transform.position;
-                Ray ray = new Ray(rayFrom, rayDirectionAngled);
-
-                Gizmos.DrawRay(ray.origin, ray.direction * raycastDistance);
-            }
-        }
-    }
-
     void DrawWallDetectionLinesV2()
     {
         for (float currentAngle = 0; currentAngle <=360; currentAngle+=90)
@@ -291,14 +269,6 @@ public class AIPlayerAgent : Agent
     private void FixedUpdate()
     {
         rb.linearVelocity = new Vector3(finalMoveDirection.x, rb.linearVelocity.y, finalMoveDirection.z);
-        /*
-        timer += Time.deltaTime;
-        if (timer > 1f)
-        {
-            timer = 0f;
-            AddReward(0.0001f);
-        }
-        */
 
         totalTime += Time.deltaTime;
         if (totalTime > episodeDuration)
@@ -310,34 +280,18 @@ public class AIPlayerAgent : Agent
     
     private void OnCollisionEnter(Collision collision)
     {
-        AddReward(-10f);
-        Debug.DrawLine(collision.transform.position, collision.transform.position + (Vector3.up * 20f), Color.black);
-    }
-    
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("TrainZone"))
+        if (collision.gameObject.CompareTag("Wall"))
         {
             AddReward(-10f);
-            EndEpisode();
-        }
-    }
-
-    /*
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Finish"))
-        {
-            AddReward(+10f);
-            EndEpisode();
+            Debug.DrawLine(collision.transform.position, collision.transform.position + (Vector3.up * 20f), Color.black);
+            return;
         }
 
-        if (other.CompareTag("Wall"))
+        if (collision.gameObject.CompareTag("Bullet"))
         {
-            SetReward(-10f);
-            //EndEpisode();
+            AddReward(-10);
+            Debug.DrawLine(collision.transform.position, collision.transform.position + (Vector3.up * 20f), Color.blue);
+            return;
         }
     }
-    */
 }

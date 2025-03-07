@@ -923,6 +923,9 @@ MonoBehaviour:
   PowerupButtonPrefab: {fileID: 6152821490288021376, guid: 6098d2a89f7968f45b0dd5cf28f25a35, type: 3}
   PowerupButtonContainer: {fileID: 687778614}
   roundText: {fileID: 1408289433}
+  upgradesList: {fileID: 0}
+  cheatButton: {fileID: 0}
+  upgradeManager: {fileID: 0}
 --- !u!4 &277127551
 Transform:
   m_ObjectHideFlags: 0
@@ -1826,7 +1829,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &690825386
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2758,7 +2761,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!54 &1112848669
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -3046,7 +3049,7 @@ Transform:
   m_GameObject: {fileID: 1136226997}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -9.86, y: 0, z: -17.35}
+  m_LocalPosition: {x: -9.86, y: 9.76, z: -17.35}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3597,7 +3600,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1239273133
 Transform:
   m_ObjectHideFlags: 0
@@ -3986,7 +3989,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1379304535
 Transform:
   m_ObjectHideFlags: 0
@@ -4269,7 +4272,7 @@ Transform:
   m_GameObject: {fileID: 1467831042}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 36.2, y: 0, z: -7.62}
+  m_LocalPosition: {x: 36.2, y: 10.22, z: -7.62}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
