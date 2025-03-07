@@ -12,9 +12,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f658c5ecd8b4f283ebb9ab16eca454e4, type: 3}
   m_Name: test
   m_EditorClassIdentifier: 
-  upgradeName: 
-  description: 
-  components: []
+  upgradeName: DASHBACKMULTI
+  description: foifeirojiojfrerfoiej
+  components:
+  - rid: 9180213076260552768
+  - rid: 9180213076260552769
+  - rid: 9180213076260552770
+  - rid: 9180213076260552771
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 9180213076260552768
+      type: {class: DashBackwardComponent, ns: , asm: Assembly-CSharp}
+      data:
+        dashForce: 10
+    - rid: 9180213076260552769
+      type: {class: DashBackwardComponent, ns: , asm: Assembly-CSharp}
+      data:
+        dashForce: 10
+    - rid: 9180213076260552770
+      type: {class: DashBackwardComponent, ns: , asm: Assembly-CSharp}
+      data:
+        dashForce: 10
+    - rid: 9180213076260552771
+      type: {class: InputActivationComponent, ns: , asm: Assembly-CSharp}
+      data:
+        inputAction: {fileID: -7471211009204490832, guid: 052faaac586de48259a63d0c4782560b, type: 3}

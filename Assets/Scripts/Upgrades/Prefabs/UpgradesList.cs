@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "UpgradesList", menuName = "Scripts/Upgrades List")]
+[CreateAssetMenu(fileName = "UpgradesList", menuName = "Upgrades/Upgrades list")]
 public class UpgradesList : ScriptableObject
 {
     [SerializeReference]

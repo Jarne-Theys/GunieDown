@@ -17,6 +17,7 @@ public class DashBackwardComponent : UpgradeComponentBase
         if (rb != null)
         {
             rb.AddForce(-player.transform.forward * dashForce, ForceMode.Impulse);
+            Debug.Log("Dashed backwards");
             return;
         }
 
@@ -24,6 +25,7 @@ public class DashBackwardComponent : UpgradeComponentBase
         if (rb != null)
         {
             rb.AddForce(-player.transform.forward * dashForce, ForceMode.Impulse);
+            Debug.Log("Dashed backwards");
             return;
         }
     }

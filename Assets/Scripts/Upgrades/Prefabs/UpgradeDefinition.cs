@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "GenericUpgrade", menuName = "Scripts/Upgrades/Generic Upgrade")]
+[CreateAssetMenu(fileName = "GenericUpgrade", menuName = "Upgrades/Upgrade base")]
 public class UpgradeDefinition : ScriptableObject
 {
     public string upgradeName;
@@ -47,13 +47,13 @@ public class UpgradeDefinition : ScriptableObject
 
     protected virtual void ConfigureRuntimeComponentDependencies(List<IUpgradeComponent> runtimeComponents)
     {
-        // Generic ability interaction logic can go here, or be overridden in subclasses if needed.
-        // For example, look for InputActivationComponent and ability components and wire them up.
-
         InputActivationComponent inputActivation = runtimeComponents.OfType<InputActivationComponent>().FirstOrDefault();
         if (inputActivation != null)
         {
-            // Try to find a component that has an "Activate" method that can be used as the delegate
+            // Create a list to hold all Activate actions
+            List<Action<GameObject>> activateActions = new List<Action<GameObject>>();
+
+            // Find all components with an "Activate" method (excluding InputActivationComponent itself)
             foreach (var component in runtimeComponents)
             {
                 if (component != inputActivation) // Don't wire input to itself!
@@ -63,18 +63,33 @@ public class UpgradeDefinition : ScriptableObject
                     if (activateMethod != null)
                     {
                         // Create a delegate to the Activate method
-                        var activateDelegate = Delegate.CreateDelegate(typeof(Action<GameObject>), component, activateMethod);
+                        var activateDelegate = Delegate.CreateDelegate(typeof(Action<GameObject>), component, activateMethod) as Action<GameObject>;
 
-                        if (activateDelegate is Action<GameObject> actionDelegate)
+                        if (activateDelegate != null) // Check if delegate creation was successful
                         {
-                            inputActivation.onActivate = actionDelegate;
-                            Debug.Log($"Wired InputActivationComponent to {component.GetType().Name}.Activate");
-                            return; // Stop after wiring up to the first ability component found
+                            activateActions.Add(activateDelegate); // Add the delegate to the list
+                            Debug.Log($"Found Activate method on {component.GetType().Name}, adding to activation list.");
                         }
                     }
                 }
             }
-            Debug.LogWarning("InputActivationComponent found, but no compatible ability component with Activate(GameObject) method to wire to.");
+
+            if (activateActions.Count > 0)
+            {
+                // Combine all Activate actions into a single delegate using Delegate.Combine
+                inputActivation.onActivate = (GameObject player) =>
+                {
+                    foreach (var action in activateActions)
+                    {
+                        action?.Invoke(player); // Invoke each Activate action in the list
+                    }
+                };
+                Debug.Log($"Combined and wired {activateActions.Count} Activate methods to InputActivationComponent.");
+            }
+            else
+            {
+                Debug.LogWarning("InputActivationComponent found, but no compatible ability components with Activate(GameObject) method to wire to.");
+            }
         }
     }
 
