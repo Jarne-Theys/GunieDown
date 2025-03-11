@@ -18,7 +18,7 @@ def launch_training_instance(run_id, port):
     return process
 
 if __name__ == "__main__":
-    num_instances = 4  # Set the number of parallel instances you want to run
+    num_instances = 5  # Set the number of parallel instances you want to run
     base_port = 5005     # Starting port number
     processes = []
 

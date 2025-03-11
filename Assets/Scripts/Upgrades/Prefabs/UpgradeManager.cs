@@ -18,6 +18,5 @@ public class UpgradeManager : MonoBehaviour
             component.ApplyPassive(gameObject);
         }
 
-        Debug.Log($"Acquired and applied upgrade: {upgradeDefinition.upgradeName}");
     }
 }

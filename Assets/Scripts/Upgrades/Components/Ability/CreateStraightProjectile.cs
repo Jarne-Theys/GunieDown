@@ -1,25 +1,25 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public class CreateStraightProjectile : UpgradeComponentBase
+public class CreateStraightProjectile : ProjectileComponentBase
 {
-    [SerializeField]
-    private GameObject projectilePrefab;
-    
-    [SerializeField]
-    private float projectileSpeed = 0f;
-    
-    [SerializeField]
-    private float projectileDamage = 0;
-    
-    [SerializeField]
-    private float projectileLifeTime = 1f;
-    
     public CreateStraightProjectile() {}
-    
-    public override void Activate(GameObject player)
-    {
 
+    public override void Activate(GameObject player, List<IUpgradeComponent> runtimeComponents)
+    {
+        Vector3 shootDirection = player.transform.forward;
+        Quaternion shootRotation = Quaternion.LookRotation(shootDirection, Vector3.up);
+
+        GameObject projectile = GameObject.Instantiate(projectilePrefab, player.transform.position + shootDirection * 1f, shootRotation);
+
+        var projectileStats = projectile.GetComponent<ProjectileStats>();
+        projectileStats.Damage = projectileDamage;
+        projectileStats.Speed = projectileSpeed;
+
+        LastProjectilePositions = new Vector3[] { projectile.transform.position};
+
+        GameObject.Destroy(projectile, projectileLifeTime);
     }
 }

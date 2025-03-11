@@ -2,22 +2,22 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System;
 using Unity.VisualScripting;
+using System.Collections.Generic;
 
 [Serializable]
 public class DashBackwardComponent : UpgradeComponentBase
 {
     [SerializeField]
-    private float dashForce;
+    protected float dashForce;
 
     public DashBackwardComponent() {}
 
-    public override void Activate(GameObject player)
+    public override void Activate(GameObject player, List<IUpgradeComponent> runtimeComponents)
     {
         Rigidbody rb = player.GetComponent<Rigidbody>();
         if (rb != null)
         {
             rb.AddForce(-player.transform.forward * dashForce, ForceMode.Impulse);
-            Debug.Log("Dashed backwards");
             return;
         }
 
@@ -25,7 +25,6 @@ public class DashBackwardComponent : UpgradeComponentBase
         if (rb != null)
         {
             rb.AddForce(-player.transform.forward * dashForce, ForceMode.Impulse);
-            Debug.Log("Dashed backwards");
             return;
         }
     }

@@ -50,20 +50,23 @@ public class UpgradeDefinition : ScriptableObject
         InputActivationComponent inputActivation = runtimeComponents.OfType<InputActivationComponent>().FirstOrDefault();
         if (inputActivation != null)
         {
-            // Create a list to hold all Activate actions
-            List<Action<GameObject>> activateActions = new List<Action<GameObject>>();
+            // Set the runtime components list on the InputActivationComponent
+            inputActivation.SetRuntimeComponents(runtimeComponents);
+
+            // Create a list to hold all Activate actions with the new signature
+            List<Action<GameObject, List<IUpgradeComponent>>> activateActions = new List<Action<GameObject, List<IUpgradeComponent>>>(); // Modified delegate type
 
             // Find all components with an "Activate" method (excluding InputActivationComponent itself)
             foreach (var component in runtimeComponents)
             {
                 if (component != inputActivation) // Don't wire input to itself!
                 {
-                    MethodInfo activateMethod = component.GetType().GetMethod("Activate", new[] { typeof(GameObject) }); // Find Activate(GameObject) method
+                    MethodInfo activateMethod = component.GetType().GetMethod("Activate", new[] { typeof(GameObject), typeof(List<IUpgradeComponent>) }); // Find Activate(GameObject, List<IUpgradeComponent>) method
 
                     if (activateMethod != null)
                     {
-                        // Create a delegate to the Activate method
-                        var activateDelegate = Delegate.CreateDelegate(typeof(Action<GameObject>), component, activateMethod) as Action<GameObject>;
+                        // Create a delegate to the Activate method with the new signature
+                        var activateDelegate = Delegate.CreateDelegate(typeof(Action<GameObject, List<IUpgradeComponent>>), component, activateMethod) as Action<GameObject, List<IUpgradeComponent>>; // Modified delegate type
 
                         if (activateDelegate != null) // Check if delegate creation was successful
                         {
@@ -76,24 +79,24 @@ public class UpgradeDefinition : ScriptableObject
 
             if (activateActions.Count > 0)
             {
-                // Combine all Activate actions into a single delegate using Delegate.Combine
-                inputActivation.onActivate = (GameObject player) =>
+                // Combine all Activate actions into a single delegate using lambda with the new signature
+                inputActivation.onActivate = (GameObject player, List<IUpgradeComponent> components) => // Modified lambda signature
                 {
                     foreach (var action in activateActions)
                     {
-                        action?.Invoke(player); // Invoke each Activate action in the list
+                        action?.Invoke(player, components); // Invoke each Activate action, passing components list
                     }
                 };
                 Debug.Log($"Combined and wired {activateActions.Count} Activate methods to InputActivationComponent.");
             }
             else
             {
-                Debug.LogWarning("InputActivationComponent found, but no compatible ability components with Activate(GameObject) method to wire to.");
+                Debug.LogWarning("InputActivationComponent found, but no compatible ability components with Activate(GameObject, List<IUpgradeComponent>) method to wire to.");
             }
         }
     }
 
-    public virtual List<IUpgradeComponent> CreateRuntimeComponentsAndConfigure()
+    public List<IUpgradeComponent> CreateRuntimeComponentsAndConfigure()
     {
         var runtimeComponents = CreateRuntimeComponents();
         ConfigureRuntimeComponentDependencies(runtimeComponents); // Call the dependency configuration

@@ -1,16 +1,19 @@
 using UnityEngine.InputSystem;
 using System;
 using UnityEngine;
+using System.Collections.Generic;
 
 [Serializable]
 public class InputActivationComponent : UpgradeComponentBase
 {
     [SerializeField]
     public InputActionReference inputAction;
-    private Action<GameObject> _onActivate;
     private GameObject targetPlayer;
+    private List<IUpgradeComponent> activeRuntimeComponents;
 
-    public Action<GameObject> onActivate
+    private Action<GameObject, List<IUpgradeComponent>> _onActivate; // Modified delegate type
+
+    public Action<GameObject, List<IUpgradeComponent>> onActivate // Modified delegate type
     {
         get => _onActivate;
         set => _onActivate = value;
@@ -18,6 +21,16 @@ public class InputActivationComponent : UpgradeComponentBase
 
     // Parameterless constructor required for Activator.CreateInstance
     public InputActivationComponent() {}
+
+    public InputActivationComponent(Action<GameObject, List<IUpgradeComponent>> onActivate)
+    {
+        this.onActivate = onActivate;
+    }
+
+    public void SetRuntimeComponents(List<IUpgradeComponent> components)
+    {
+        activeRuntimeComponents = components;
+    }
 
     public void DisableInput()
     {
@@ -33,13 +46,13 @@ public class InputActivationComponent : UpgradeComponentBase
 
     private void OnInputPerformed(InputAction.CallbackContext ctx)
     {
-        _onActivate?.Invoke(targetPlayer); // Use the backing field
+        _onActivate?.Invoke(targetPlayer, activeRuntimeComponents); // Pass runtimeComponents
     }
 
-    public override void Activate(GameObject player)
+    public override void Activate(GameObject player, List<IUpgradeComponent> runtimeComponents)
     {
         // Manually trigger the activation event
-        _onActivate?.Invoke(player); // Use the backing field
+        _onActivate?.Invoke(player, runtimeComponents); // Pass runtimeComponents
         Debug.Log("Manually triggered input component");
     }
 

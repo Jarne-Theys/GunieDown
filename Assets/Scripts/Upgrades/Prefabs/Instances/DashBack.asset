@@ -17,16 +17,22 @@ MonoBehaviour:
   components:
   - rid: 9180213063360970818
   - rid: 9180213063360970819
+  - rid: 9180213153940897856
   references:
     version: 2
     RefIds:
     - rid: 9180213063360970818
       type: {class: DashBackwardComponent, ns: , asm: Assembly-CSharp}
       data:
-        componentName: DashBackwardComponent
         dashForce: 100
     - rid: 9180213063360970819
       type: {class: InputActivationComponent, ns: , asm: Assembly-CSharp}
       data:
-        componentName: InputActivationComponent
         inputAction: {fileID: -7471211009204490832, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    - rid: 9180213153940897856
+      type: {class: CreateStraightProjectile, ns: , asm: Assembly-CSharp}
+      data:
+        projectilePrefab: {fileID: 6004424930538156989, guid: 1ae39d0f8bf2796428ff9ae1e3fdabb4, type: 3}
+        projectileSpeed: 1
+        projectileDamage: 0
+        projectileLifeTime: 10

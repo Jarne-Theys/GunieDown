@@ -80,7 +80,7 @@ public class RoundManager : MonoBehaviour
         foreach (UpgradeDefinition upgrade in allUpgrades)
         {
             upgradeManager.AcquireUpgrade(upgrade);
-            Debug.Log("Applied upgrade: " + upgrade.upgradeName);
+            //Debug.Log("Applied upgrade: " + upgrade.upgradeName);
         }
     }
 
