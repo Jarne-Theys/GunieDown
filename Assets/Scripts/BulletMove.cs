@@ -8,6 +8,7 @@ public class BulletMove : MonoBehaviour
     int bulletDamage;
     void Start()
     {
+        // TODO: replace this so it handles both projectile stats and gravity projectile stats
         ProjectileStats projectileStats = GetComponent<ProjectileStats>();
         bulletSpeed = projectileStats.Speed;
         bulletDamage = projectileStats.Damage;

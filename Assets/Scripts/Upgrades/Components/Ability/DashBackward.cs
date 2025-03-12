@@ -5,12 +5,12 @@ using Unity.VisualScripting;
 using System.Collections.Generic;
 
 [Serializable]
-public class DashBackwardComponent : UpgradeComponentBase
+public class DashBackward : UpgradeComponentBase
 {
     [SerializeField]
     protected float dashForce;
 
-    public DashBackwardComponent() {}
+    public DashBackward() {}
 
     public override void Activate(GameObject player, List<IUpgradeComponent> runtimeComponents)
     {

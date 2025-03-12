@@ -28,7 +28,7 @@ public class CreateDamageZone : UpgradeComponentBase
 
     public override void Activate(GameObject player, List<IUpgradeComponent> runtimeComponents)
     {
-        Vector3[] spawnPositions = new Vector3[] { player.transform.position };
+        Vector3[] spawnPositions;
 
         if (useProjectilePosition)
         {
@@ -43,8 +43,13 @@ public class CreateDamageZone : UpgradeComponentBase
             }
             else
             {
-                Debug.Log("CreateStraightProjectile component not found. DamageZone spawning at player position.");
+                throw new MissingFieldException("No projectile position found, but use projectile position set to true. Set use projectile position to false or add a projectile component.");
             }
+        }
+        else
+        {
+            spawnPositions = new Vector3[] { player.transform.position };
+            Debug.Log("Use projectile position set to false. DamageZone spawning at player position.");
         }
 
         foreach (var position in spawnPositions)

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public class CreateSpreadProjectile : ProjectileComponentBase
+public class SpreadProjectile : ProjectileComponentBase
 {
     [SerializeField]
     private int projectileCount = 10;
@@ -11,7 +11,7 @@ public class CreateSpreadProjectile : ProjectileComponentBase
     [SerializeField]
     private float spreadAngle = 10f;
 
-    public CreateSpreadProjectile() {}
+    public SpreadProjectile() {}
 
     public override void Activate(GameObject player, List<IUpgradeComponent> runtimeComponents)
     {

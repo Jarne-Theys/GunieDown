@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public class CreateStraightProjectile : ProjectileComponentBase
+public class StraightProjectile : ProjectileComponentBase
 {
-    public CreateStraightProjectile() {}
+    public StraightProjectile() {}
 
     public override void Activate(GameObject player, List<IUpgradeComponent> runtimeComponents)
     {
