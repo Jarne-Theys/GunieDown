@@ -7,7 +7,7 @@ def launch_training_instance(run_id, port):
         "config.yaml",  # Use trainer_config.yaml now
         "--env=C:\\UnityProjects\\Powor\\Build\\Powor.exe",  # **REPLACE WITH YOUR UNITY BUILD PATH**
         "--results-dir=Assets/results",
-        #"--resume", # Or "--force" if you want to start fresh each time
+        "--resume", # Or "--force" if you want to start fresh each time
         "--no-graphics",
         f"--run-id={run_id}", # Unique run-id
         f"--base-port={port}",     # Unique port
@@ -23,7 +23,8 @@ if __name__ == "__main__":
     processes = []
 
     for i in range(num_instances):
-        run_id = f"AIPlayer-LookingAtPlayer-DodgingBullets-AvoidWalls-Run{i+1}" # Unique run-id for each instance
+      # LookingAtPlayer-DodgingBullets-AvoidWalls-Running
+        run_id = f"AIPlayer-{i+1}" # Unique run-id for each instance
         port = base_port + i                             # Unique port for each instance
         process = launch_training_instance(run_id, port)
         processes.append(process)

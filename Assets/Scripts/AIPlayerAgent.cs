@@ -247,8 +247,9 @@ public class AIPlayerAgent : Agent
 
         if (playerInFOV)
         {
+            AddReward(0.01f);
+            /*
             Ray ray = new Ray(transform.position, directionToPlayer);
-            //Debug.DrawRay(transform.position, directionToPlayer * visionRange, Color.blue);
 
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit, visionRange))
@@ -263,6 +264,7 @@ public class AIPlayerAgent : Agent
                     
                 }
             }
+            */
         }
     }
 
