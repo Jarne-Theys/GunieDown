@@ -11,8 +11,8 @@ NullGfxDevice:
     Renderer: Null Device
     Vendor:   Unity Technologies
 Begin MonoManager ReloadAssembly
-- Loaded All Assemblies, in  5.241 seconds
-- Finished resetting the current domain, in  0.005 seconds
+- Loaded All Assemblies, in  5.999 seconds
+- Finished resetting the current domain, in  0.004 seconds
 [Physics::Module] Selected backend.
 [Physics::Module] Name: PhysX
 [Physics::Module] Id: 0xf2b8ea05
@@ -98,7 +98,7 @@ ERROR: Shader Universal Render Pipeline/Lit shader is not supported on this GPU 
 WARNING: Shader Unsupported: 'Universal Render Pipeline/Lit' - All subshaders removed
 WARNING: Shader Did you use #pragma only_renderers and omit this platform?
 WARNING: Shader If subshaders removal was intentional, you may have forgotten turning Fallback off?
-UnloadTime: 1.392500 ms
+UnloadTime: 0.326000 ms
 Registered Communicator in Agent.
 ERROR: Shader TextMeshPro/Sprite shader is not supported on this GPU (none of subshaders/fallbacks are suitable)
 Unable to save timers to file C:/UnityProjects/Powor/Build/Powor_Data\ML-Agents\Timers\Barebones_timers.json

@@ -29,6 +29,9 @@ public class AIPlayerAgent : Agent
     public float visionRange;
     private Vector3 lastKnownPlayerLocation = Vector3.zero;
 
+    public float fireRate = 1f;
+    private float fireCooldown = 0f;
+
     public override void OnEpisodeBegin()
     {
         rb.linearVelocity = Vector3.zero;
@@ -47,6 +50,7 @@ public class AIPlayerAgent : Agent
         }
 
         totalTime = 0f;
+        fireCooldown = 0f;
         // timer = 0f;
         // lastPosition = transform.position;
     }
@@ -110,29 +114,35 @@ public class AIPlayerAgent : Agent
         Vector3 playerCenter = target.GetComponentInChildren<CapsuleCollider>().bounds.center;
         Vector3 directionToPlayer = (playerCenter - transform.position).normalized;
         float angleToPlayer = Vector3.Angle(transform.forward, directionToPlayer);
+        /*
+                bool playerInFOV = angleToPlayer < fovAngle / 2 &&
+                                   Vector3.Distance(transform.position, target.transform.position) <= visionRange;
 
-        bool playerInFOV = angleToPlayer < fovAngle / 2 &&
-                           Vector3.Distance(transform.position, target.transform.position) <= visionRange;
+                bool playerVisible = false;
 
-        bool playerVisible = false;
-
-        if (playerInFOV)
-        {
-            Ray ray = new Ray(transform.position, directionToPlayer);
-
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, visionRange))
-            {
-                if (hit.collider.CompareTag("Player")) 
+                if (playerInFOV)
                 {
-                    lastKnownPlayerLocation = hit.point;
-                    playerVisible = true;
-                }
-            }
-        }
+                    Ray ray = new Ray(transform.position, directionToPlayer);
 
-        sensor.AddObservation(playerVisible);
+                    RaycastHit hit;
+                    if (Physics.Raycast(ray, out hit, visionRange))
+                    {
+                        if (hit.collider.CompareTag("Player")) 
+                        {
+                            lastKnownPlayerLocation = hit.point;
+                            playerVisible = true;
+                        }
+                    }
+                }
+                sensor.AddObservation(playerVisible);
+        */
+        lastKnownPlayerLocation = target.transform.position;
+        var directionToPlayerNormalized = (lastKnownPlayerLocation - transform.position).normalized;
         sensor.AddObservation(lastKnownPlayerLocation);
+        sensor.AddObservation(directionToPlayerNormalized);
+
+        sensor.AddObservation(fireCooldown < 0f ? true : false);
+
         /**
          * @todo Identify extra 2 observations being added by Unity. 
          * @body Check why unity is saying 30 observations made, while this code only makes 28, as shown by this debug log. Currently just set to 30 in editor, might cause issues later.
@@ -248,6 +258,10 @@ public class AIPlayerAgent : Agent
         if (playerInFOV)
         {
             AddReward(0.01f);
+
+            var angleReward = 1 - (angleToPlayer / (fovAngle / 2));
+            AddReward(angleReward/10);
+
             /*
             Ray ray = new Ray(transform.position, directionToPlayer);
 
@@ -265,7 +279,35 @@ public class AIPlayerAgent : Agent
                 }
             }
             */
+        } else
+        {
+            AddReward(-0.01f);
         }
+
+        bool fire = actions.DiscreteActions[0] == 1;
+
+        if (fire && fireCooldown <= 0f)
+        {
+            if (playerInFOV)
+            {
+                Ray ray = new Ray(transform.position, directionToPlayer);
+                RaycastHit hit;
+                if (Physics.Raycast(ray, out hit, visionRange))
+                {
+                    if (hit.collider.CompareTag("Player"))
+                    {
+                        AddReward(1f);
+                        fireCooldown = 1f;
+                        //GameObject bullet = Instantiate(BulletPrefab.bulletPrefab, transform.position + transform.forward, transform.rotation);
+                        //bullet.GetComponent<Rigidbody>().AddForce(transform.forward * 10f, ForceMode.Impulse);
+                    }
+                }
+            }
+        }
+        else
+        {
+        }
+
     }
 
     private void FixedUpdate()
@@ -277,9 +319,11 @@ public class AIPlayerAgent : Agent
         {
             EndEpisode();
         }
+
+        fireCooldown -= Time.deltaTime;
     }
 
-    
+
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Wall"))
