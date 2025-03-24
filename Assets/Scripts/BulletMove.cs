@@ -4,48 +4,60 @@ using UnityEngine;
 public class BulletMove : MonoBehaviour
 {
     [SerializeField] private GameObject hitParticleSystemPrefab;
+
+
     float bulletSpeed;
     int bulletDamage;
+
+    float fallRate;
+    float currentFallRate;
+
+    private void Awake()
+    {
+    }
+
     void Start()
     {
-        // TODO: replace this so it handles both projectile stats and gravity projectile stats
         ProjectileStats projectileStats = GetComponent<ProjectileStats>();
         bulletSpeed = projectileStats.Speed;
         bulletDamage = projectileStats.Damage;
-    }
-
-    void OnCollisionEnter(Collision collision)
-    {
-        /*
-        GameObject hitParticleSystemGO = Instantiate(hitParticleSystemPrefab, transform.position, transform.rotation);
-        ParticleSystem hitParticleSystem = hitParticleSystemGO.GetComponent<ParticleSystem>();
-        float hitParticleDuration = hitParticleSystem.main.startLifetimeMultiplier;
-        hitParticleSystem.Play();
-        Destroy(hitParticleSystemGO, hitParticleDuration);
-        */
-
-        /*
-        TODO: Reimplement player hit detection
-        if (collision.gameObject.CompareTag("Player"))
+        if (projectileStats.GetType() == typeof(GravityProjectileStats))
         {
-            PlayerStats playerStats = collision.gameObject.GetComponentInChildren<PlayerStats>();
-            playerStats.Damage(bulletDamage);
+            // Don't use "as" here, it will return null if the cast fails
+            // Manually casting so an error gets thrown if projectileStats is not a GravityProjectileStats. This should never happen.
+            GravityProjectileStats gravityProjectileStats = (GravityProjectileStats)projectileStats;
+            fallRate = gravityProjectileStats.FallRate * 0.01f;
         }
-        */
-        // Apply reward to AI Agent
-
-        StartCoroutine(DestroyBullet());
     }
 
-    IEnumerator DestroyBullet()
+    public void OnTriggerEnter(Collider other)
     {
-        yield return new WaitForSeconds(0.1f);
+        Debug.Log("Hit something!");
+
+        if (other.CompareTag("Player") || other.CompareTag("AIPlayer"))
+        {
+            PlayerStats playerStats = other.GetComponent<PlayerStats>();
+            if (playerStats != null)
+            {
+                playerStats.Damage(bulletDamage);
+            }
+
+            AIPlayerAgent aIPlayer = other.GetComponent<AIPlayerAgent>();
+            if (aIPlayer != null)
+            {
+                aIPlayer.AddExternalReward(-10);
+            }
+        }
+
         BulletTracker.trackedBullets.Remove(transform);
         Destroy(gameObject);
     }
 
     private void FixedUpdate()
     {
-        transform.position += transform.forward * bulletSpeed * Time.deltaTime;
+        transform.position += transform.forward * bulletSpeed * Time.fixedDeltaTime;
+
+        currentFallRate += fallRate * Time.fixedDeltaTime;
+        transform.position += Vector3.down * currentFallRate;
     }
 }

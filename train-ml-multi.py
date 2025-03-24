@@ -4,10 +4,10 @@ import time  # Import the time module
 def launch_training_instance(run_id, port):
     command = [
         "mlagents-learn",
-        "config.yaml",  # Use trainer_config.yaml now
-        "--env=C:\\UnityProjects\\Powor\\Build\\Powor.exe",  # **REPLACE WITH YOUR UNITY BUILD PATH**
+        "config.yaml",
+        "--env=C:\\UnityProjects\\Powor\\Build\\Powor.exe",
         "--results-dir=Assets/results",
-        "--resume", # Or "--force" if you want to start fresh each time
+        #"--resume", # Or "--force" if you want to start fresh each time
         "--no-graphics",
         f"--run-id={run_id}", # Unique run-id
         f"--base-port={port}",     # Unique port
@@ -18,7 +18,7 @@ def launch_training_instance(run_id, port):
     return process
 
 if __name__ == "__main__":
-    num_instances = 5  # Set the number of parallel instances you want to run
+    num_instances = 3  # Set the number of parallel instances you want to run
     base_port = 5005     # Starting port number
     processes = []
 

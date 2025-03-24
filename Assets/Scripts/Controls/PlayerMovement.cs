@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private Rigidbody playerRigidbody;
-    [SerializeField] private Transform cameraTransform;
+    [SerializeField] private Transform cameraHolder;
 
     [SerializeField] private float crouchTransitionSpeedMultiplier = 8f;
 
@@ -60,8 +60,8 @@ public class PlayerMovement : MonoBehaviour
         Vector2 moveInput = moveAction.ReadValue<Vector2>();
 
         // Calculate movement direction based on camera's orientation
-        Vector3 cameraForward = cameraTransform.forward;
-        Vector3 cameraRight = cameraTransform.right;
+        Vector3 cameraForward = cameraHolder.forward;
+        Vector3 cameraRight = cameraHolder.right;
 
         // Ensure that movement is only on the horizontal plane (y = 0)
         cameraForward.y = 0f;

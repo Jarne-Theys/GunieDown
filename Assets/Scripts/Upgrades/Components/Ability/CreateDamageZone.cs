@@ -10,7 +10,7 @@ public class CreateDamageZone : UpgradeComponentBase
     private GameObject damageZonePrefab;
 
     [SerializeField]
-    private float damageZoneDuration = 1f;
+    private float damageZoneDuration = 0.1f;
 
     [SerializeField]
     private int damage = 1;

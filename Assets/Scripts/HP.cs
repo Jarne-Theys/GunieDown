@@ -4,10 +4,9 @@ using UnityEngine;
 public class HP : MonoBehaviour
 {
     [SerializeField] TMP_Text text;
-    [SerializeField] PlayerStats PlayerStats;
 
-    void Update()
+    public void UpdateHP(float newAmount)
     {
-        text.text = "HP: " + PlayerStats.Health;
+        text.text = "HP: " + newAmount;
     }
 }

@@ -25,6 +25,9 @@ public class PlayerStats : MonoBehaviour
     [SerializeField] private float bulletSpeed = 10f;
     [SerializeField] private float movementSpeed = 5f;
 
+    [SerializeField]
+    HP hp_text;
+
     public int Armor
     {
         get => armor;
@@ -34,7 +37,14 @@ public class PlayerStats : MonoBehaviour
     public int Health
     {
         get => health;
-        private set => health = value;
+        private set 
+        {
+            health = value;
+            if (hp_text != null)
+            {
+                hp_text.UpdateHP(value);
+            }
+        }
     }
 
 

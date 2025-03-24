@@ -332,12 +332,5 @@ public class AIPlayerAgent : Agent
             Debug.DrawLine(collision.transform.position, collision.transform.position + (Vector3.up * 20f), Color.black);
             return;
         }
-
-        if (collision.gameObject.CompareTag("Bullet"))
-        {
-            AddReward(-10);
-            Debug.DrawLine(collision.transform.position, collision.transform.position + (Vector3.up * 20f), Color.blue);
-            return;
-        }
     }
 }

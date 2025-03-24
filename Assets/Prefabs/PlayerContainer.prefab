@@ -214,6 +214,7 @@ GameObject:
   - component: {fileID: 109911883084797702}
   - component: {fileID: 309094484568285021}
   - component: {fileID: 8678346325942199084}
+  - component: {fileID: 2112796802575940404}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -398,3 +399,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   upgradesList: {fileID: 11400000, guid: 5c73bb83d7fb61ad886a206d7b8447ee, type: 2}
+--- !u!114 &2112796802575940404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7043731237699991989}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ff8feb082a2514eba07b9c4da4edf6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
