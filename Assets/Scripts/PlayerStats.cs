@@ -37,14 +37,7 @@ public class PlayerStats : MonoBehaviour
     public int Health
     {
         get => health;
-        private set 
-        {
-            health = value;
-            if (hp_text != null)
-            {
-                hp_text.UpdateHP(value);
-            }
-        }
+        private set => health = value;    
     }
 
 
@@ -79,27 +72,27 @@ public class PlayerStats : MonoBehaviour
         MaxHealth = OriginalMaxHealth;
     }
 
-    public void ApplyStatModifier(StatType statType, int amount)
+    public void ApplyStatModifier(PlayerStatType statType, int amount)
     {
         switch (statType)
         {
-            case StatType.Health:
+            case PlayerStatType.Health:
                 healthIncrease += amount;
                 break;
             
-            case StatType.Armor:
+            case PlayerStatType.Armor:
                 armorIncrease += amount;
                 break;
             
-            case StatType.MovementSpeed:
+            case PlayerStatType.MovementSpeed:
                 movementSpeedIncrease += amount;
                 break;
             
-            case StatType.BulletSpeed:
+            case PlayerStatType.BulletSpeed:
                 bulletSpeedIncrease += amount;
                 break;
             
-            case StatType.BulletDamage:
+            case PlayerStatType.BulletDamage:
                 bulletDamageIncrease += amount;
                 break;
             

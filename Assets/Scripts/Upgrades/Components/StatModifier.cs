@@ -3,7 +3,7 @@ using UnityEngine;
 public class StatModifierComponent : UpgradeComponentBase
 {
     [SerializeField]
-    private StatType statType;
+    private PlayerStatType statType;
 
     [SerializeField]
     private int increaseAmount;

@@ -1,4 +1,4 @@
-public enum StatType
+public enum PlayerStatType
 {
     Health,
     BulletDamage,

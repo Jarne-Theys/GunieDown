@@ -1,12 +1,13 @@
 using TMPro;
 using UnityEngine;
 
-public class HP : MonoBehaviour
+public class Ammo : MonoBehaviour
 {
     TMP_Text text;
 
     [SerializeField]
-    PlayerStats humanPlayerStats;
+    WeaponStats humanPlayerWeaponStats;
+
     void Start()
     {
         text = GetComponent<TMP_Text>();
@@ -14,6 +15,6 @@ public class HP : MonoBehaviour
 
     void Update()
     {
-        text.text = "HP: " + humanPlayerStats.Health;
+        text.text = humanPlayerWeaponStats.CurrentAmmo + " / " + humanPlayerWeaponStats.MaxAmmo;
     }
 }

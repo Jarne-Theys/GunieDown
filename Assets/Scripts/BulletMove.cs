@@ -32,8 +32,6 @@ public class BulletMove : MonoBehaviour
 
     public void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Hit something!");
-
         if (other.CompareTag("Player") || other.CompareTag("AIPlayer"))
         {
             PlayerStats playerStats = other.GetComponent<PlayerStats>();
