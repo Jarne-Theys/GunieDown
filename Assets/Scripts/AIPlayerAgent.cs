@@ -14,20 +14,17 @@ public class AIPlayerAgent : Agent
     public float moveSpeed;
 
     public float raycastDistance;
-    public int numRaycasts;
+    public int numWallRaycasts;
 
     public GameObject target;
 
-    // private Vector3 lastPosition;
-
-    //private float timer = 0f;
     private float totalTime = 0f;
     private int episodeDuration = 60;
 
     public int bulletTrackCount;
     public float fovAngle;
     public float visionRange;
-    private Vector3 lastKnownPlayerLocation = Vector3.zero;
+    private Vector3 lastKnownPlayerLocation = SpawnPositions.mockHumanPlayerSpawn;
 
     public float fireRate = 1f;
     private float fireCooldown = 0f;
@@ -51,8 +48,6 @@ public class AIPlayerAgent : Agent
 
         totalTime = 0f;
         fireCooldown = 0f;
-        // timer = 0f;
-        // lastPosition = transform.position;
     }
 
     public override void Initialize()
@@ -60,6 +55,8 @@ public class AIPlayerAgent : Agent
         rb = GetComponent<Rigidbody>();
     }
 
+    // Add a reward from external scripts
+    // currently only used by bullets (when they hit the agent)
     public void AddExternalReward(float reward)
     {
         AddReward(reward);
@@ -69,32 +66,37 @@ public class AIPlayerAgent : Agent
     {
         // Transform Observations
         sensor.AddObservation(transform.position);
-        sensor.AddObservation(transform.rotation);
+        sensor.AddObservation(transform.forward); // 3 floats
+        sensor.AddObservation(transform.up);    // 3 floats (optional if always upright)
 
         // Raycast Observations
-        for (float currentAngle = 0; currentAngle <= 360; currentAngle += 90)
+        float angleStep = 360f / numWallRaycasts;
+        for (int i = 0; i < numWallRaycasts; i++)
         {
-            float angle = currentAngle;
-            Quaternion rotation = Quaternion.Euler(0, angle, 0);
+            float currentAngle = i * angleStep;
+            Quaternion rotation = Quaternion.Euler(0, currentAngle, 0);
             Vector3 rayDirection = transform.rotation * rotation * Vector3.forward;
-            Vector3 rayFrom = transform.position - Vector3.up * 0.5f;
-            Ray ray = new Ray(rayFrom, rayDirection);
-            RaycastHit hit;
+            // Simplified direction calculation:
+            // Vector3 rayDirection = Quaternion.Euler(0, currentAngle, 0) * transform.forward;
 
+            Vector3 rayFrom = transform.position; // Or your offset: transform.position - Vector3.up * 0.5f; Clarify why the offset?
+            RaycastHit hit;
             bool wallDetected = false;
-            float distanceToWall = raycastDistance;
+            float distanceToHit = raycastDistance; // Default to max distance
 
             if (Physics.Raycast(rayFrom, rayDirection, out hit, raycastDistance))
             {
+                // Consider layers or specific tags if more than just "Wall" exists
                 if (hit.collider.CompareTag("Wall"))
                 {
                     wallDetected = true;
-                    distanceToWall = hit.distance;
+                    distanceToHit = hit.distance;
                 }
+                // Optional: Observe other object types? (e.g., obstacles, cover)
+                // sensor.AddObservation(hit.collider.CompareTag("Obstacle")); // Example
             }
-
-            sensor.AddObservation(wallDetected ? true : false);
-            sensor.AddObservation(distanceToWall / raycastDistance); // Normalized distance to wall (0 to 1)
+            sensor.AddObservation(wallDetected); // Bool observation
+            sensor.AddObservation(distanceToHit / raycastDistance); // Normalized distance
         }
 
         // Bullet tracking
@@ -113,41 +115,34 @@ public class AIPlayerAgent : Agent
         // Target Observations
         Vector3 playerCenter = target.GetComponentInChildren<CapsuleCollider>().bounds.center;
         Vector3 directionToPlayer = (playerCenter - transform.position).normalized;
+
         float angleToPlayer = Vector3.Angle(transform.forward, directionToPlayer);
-        /*
-                bool playerInFOV = angleToPlayer < fovAngle / 2 &&
-                                   Vector3.Distance(transform.position, target.transform.position) <= visionRange;
+        bool playerInFOV = angleToPlayer < fovAngle / 2 &&
+                            Vector3.Distance(transform.position, target.transform.position) <= visionRange;
 
-                bool playerVisible = false;
+        bool playerVisible = false;
 
-                if (playerInFOV)
+        if (playerInFOV)
+        {
+            Ray ray = new Ray(transform.position, directionToPlayer);
+
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit, visionRange))
+            {
+                if (hit.collider.CompareTag("Player")) 
                 {
-                    Ray ray = new Ray(transform.position, directionToPlayer);
-
-                    RaycastHit hit;
-                    if (Physics.Raycast(ray, out hit, visionRange))
-                    {
-                        if (hit.collider.CompareTag("Player")) 
-                        {
-                            lastKnownPlayerLocation = hit.point;
-                            playerVisible = true;
-                        }
-                    }
+                    lastKnownPlayerLocation = hit.point;
+                    playerVisible = true;
                 }
-                sensor.AddObservation(playerVisible);
-        */
-        lastKnownPlayerLocation = target.transform.position;
+            }
+        }
+        sensor.AddObservation(playerVisible);
+
         var directionToPlayerNormalized = (lastKnownPlayerLocation - transform.position).normalized;
         sensor.AddObservation(lastKnownPlayerLocation);
         sensor.AddObservation(directionToPlayerNormalized);
 
         sensor.AddObservation(fireCooldown < 0f ? true : false);
-
-        /**
-         * @todo Identify extra 2 observations being added by Unity. 
-         * @body Check why unity is saying 30 observations made, while this code only makes 28, as shown by this debug log. Currently just set to 30 in editor, might cause issues later.
-         */
-        // Debug.Log($"Total Observations: {sensor.ObservationSize()}");
 
     }
 
@@ -262,7 +257,6 @@ public class AIPlayerAgent : Agent
             var angleReward = 1 - (angleToPlayer / (fovAngle / 2));
             AddReward(angleReward/10);
 
-            /*
             Ray ray = new Ray(transform.position, directionToPlayer);
 
             RaycastHit hit;
@@ -278,7 +272,6 @@ public class AIPlayerAgent : Agent
                     
                 }
             }
-            */
         } else
         {
             AddReward(-0.01f);
@@ -298,8 +291,6 @@ public class AIPlayerAgent : Agent
                     {
                         AddReward(1f);
                         fireCooldown = 1f;
-                        //GameObject bullet = Instantiate(BulletPrefab.bulletPrefab, transform.position + transform.forward, transform.rotation);
-                        //bullet.GetComponent<Rigidbody>().AddForce(transform.forward * 10f, ForceMode.Impulse);
                     }
                 }
             }
@@ -314,13 +305,13 @@ public class AIPlayerAgent : Agent
     {
         rb.linearVelocity = new Vector3(finalMoveDirection.x, rb.linearVelocity.y, finalMoveDirection.z);
 
-        totalTime += Time.deltaTime;
+        totalTime += Time.fixedDeltaTime;
         if (totalTime > episodeDuration)
         {
             EndEpisode();
         }
 
-        fireCooldown -= Time.deltaTime;
+        fireCooldown -= Time.fixedDeltaTime;
     }
 
 

@@ -1,5 +1,5 @@
 import subprocess
-import time  # Import the time module
+import time
 
 def launch_training_instance(run_id, port):
     command = [
@@ -33,9 +33,6 @@ if __name__ == "__main__":
     print(f"Launched {num_instances} training instances. Run IDs: {[p.args[-3].split('=')[1] for p in processes]}") # Print run IDs
     print("To monitor progress, run TensorBoard: tensorboard --logdir=Assets/results")
     print("Keep this script running to keep the training instances alive.")
-
-    # You can add code here to monitor the processes if needed,
-    # but for basic parallel training, just keeping the script running is sufficient.
 
     # To keep the script running indefinitely (until you manually stop it):
     try:
