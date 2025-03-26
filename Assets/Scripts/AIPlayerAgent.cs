@@ -145,25 +145,27 @@ public class AIPlayerAgent : Agent
         sensor.AddObservation(fireCooldown < 0f ? true : false);
 
     }
-
-    void DrawWallDetectionLinesV2()
+    
+    void DrawWallDetectionLinesV3()
     {
-        for (float currentAngle = 0; currentAngle <=360; currentAngle+=90)
+        float angleStep = 360f / numWallRaycasts;
+        for (int i = 0; i < numWallRaycasts; i++)
         {
-            float angle = currentAngle;
-            Quaternion rotation = Quaternion.Euler(0, angle, 0);
+            float currentAngle = i * angleStep;
+            Quaternion rotation = Quaternion.Euler(0, currentAngle, 0);
             Vector3 rayDirection = transform.rotation * rotation * Vector3.forward;
-            Vector3 rayFrom = transform.position - Vector3.up * 0.5f;
-            Ray ray = new Ray(rayFrom, rayDirection);
-            Gizmos.DrawRay(ray.origin, ray.direction * raycastDistance);
+
+            Vector3 rayFrom = transform.position;
+            //Vector3 rayFrom = transform.position - Vector3.up * 0.5f;
+            
+            Gizmos.DrawRay(rayFrom, rayDirection * raycastDistance);
         }
     }
-
 
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.magenta;
-        DrawWallDetectionLinesV2();
+        DrawWallDetectionLinesV3();
 
         if (target == null) return;
 

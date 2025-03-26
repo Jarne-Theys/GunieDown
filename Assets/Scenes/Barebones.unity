@@ -1710,7 +1710,7 @@ MonoBehaviour:
   rb: {fileID: 690825390}
   moveSpeed: 5
   raycastDistance: 5
-  numWallRaycasts: 0
+  numWallRaycasts: 4
   target: {fileID: 553180555}
   bulletTrackCount: 3
   fovAngle: 60
