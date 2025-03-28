@@ -2,10 +2,7 @@ using UnityEngine;
 using Unity.MLAgents;
 using Unity.MLAgents.Sensors;
 using Unity.MLAgents.Actuators;
-using System.Collections.Generic;
-using UnityEngine.InputSystem;
 using System.Threading;
-using UnityEditor;
 
 public class AIPlayerAgent : Agent
 {
@@ -17,6 +14,7 @@ public class AIPlayerAgent : Agent
     public int numWallRaycasts;
 
     public GameObject target;
+    public GameObject bulletPrefab;
 
     private float totalTime = 0f;
     private int episodeDuration = 60;
@@ -24,10 +22,14 @@ public class AIPlayerAgent : Agent
     public int bulletTrackCount;
     public float fovAngle;
     public float visionRange;
-    private Vector3 lastKnownPlayerLocation = SpawnPositions.mockHumanPlayerSpawn;
+    private Vector3 lastKnownPlayerLocation;
 
     public float fireRate = 1f;
     private float fireCooldown = 0f;
+
+    public float turnSpeed = 180f; // Max degrees turned per fixed update
+    bool playerVisible = false;
+
 
     public override void OnEpisodeBegin()
     {
@@ -37,6 +39,8 @@ public class AIPlayerAgent : Agent
 
         target.transform.position = SpawnPositions.mockHumanPlayerSpawn;
         target.GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
+
+        lastKnownPlayerLocation = Vector3.zero;
 
         BulletTracker.ClearTrackedBulletList();
 
@@ -66,10 +70,10 @@ public class AIPlayerAgent : Agent
     {
         // Transform Observations
         sensor.AddObservation(transform.position);
-        sensor.AddObservation(transform.forward); // 3 floats
-        sensor.AddObservation(transform.up);    // 3 floats (optional if always upright)
+        sensor.AddObservation(transform.forward);
 
         // Raycast Observations
+        // do 4 raycasts
         float angleStep = 360f / numWallRaycasts;
         for (int i = 0; i < numWallRaycasts; i++)
         {
@@ -79,7 +83,8 @@ public class AIPlayerAgent : Agent
             // Simplified direction calculation:
             // Vector3 rayDirection = Quaternion.Euler(0, currentAngle, 0) * transform.forward;
 
-            Vector3 rayFrom = transform.position; // Or your offset: transform.position - Vector3.up * 0.5f; Clarify why the offset?
+            //Vector3 rayFrom = transform.position;
+            Vector3 rayFrom = transform.position - Vector3.up * 0.5f;
             RaycastHit hit;
             bool wallDetected = false;
             float distanceToHit = raycastDistance; // Default to max distance
@@ -100,6 +105,7 @@ public class AIPlayerAgent : Agent
         }
 
         // Bullet tracking
+        // track 3 bullets
         for (int i = 0; i < bulletTrackCount; i++)
         {
             if (i < BulletTracker.trackedBullets.Count)
@@ -120,7 +126,6 @@ public class AIPlayerAgent : Agent
         bool playerInFOV = angleToPlayer < fovAngle / 2 &&
                             Vector3.Distance(transform.position, target.transform.position) <= visionRange;
 
-        bool playerVisible = false;
 
         if (playerInFOV)
         {
@@ -138,12 +143,14 @@ public class AIPlayerAgent : Agent
         }
         sensor.AddObservation(playerVisible);
 
-        var directionToPlayerNormalized = (lastKnownPlayerLocation - transform.position).normalized;
-        sensor.AddObservation(lastKnownPlayerLocation);
-        sensor.AddObservation(directionToPlayerNormalized);
+        Vector3 relativeLastKnown = lastKnownPlayerLocation - transform.position;
+        // Optionally normalize or clamp magnitude
+        sensor.AddObservation(relativeLastKnown.normalized); // Direction only
+        sensor.AddObservation(relativeLastKnown.magnitude / visionRange); // Normalized distance (approx)
+                                                                          // OR just observe the possibly clamped/normalized relative vector:
+                                                                          // sensor.AddObservation(Vector3.ClampMagnitude(relativeLastKnown, visionRange) / visionRange);
 
         sensor.AddObservation(fireCooldown < 0f ? true : false);
-
     }
     
     void DrawWallDetectionLinesV3()
@@ -155,8 +162,8 @@ public class AIPlayerAgent : Agent
             Quaternion rotation = Quaternion.Euler(0, currentAngle, 0);
             Vector3 rayDirection = transform.rotation * rotation * Vector3.forward;
 
-            Vector3 rayFrom = transform.position;
-            //Vector3 rayFrom = transform.position - Vector3.up * 0.5f;
+            //Vector3 rayFrom = transform.position;
+            Vector3 rayFrom = transform.position - Vector3.up * 0.5f;
             
             Gizmos.DrawRay(rayFrom, rayDirection * raycastDistance);
         }
@@ -232,9 +239,9 @@ public class AIPlayerAgent : Agent
     public override void OnActionReceived(ActionBuffers actions)
     {
         // Rotation
-        float YRotationInput = actions.ContinuousActions[2]; // Camera rotation around y-axis
-        float YRotation = YRotationInput * 180f; // Convert from -1 to 1 to -180 to 180
-        transform.localEulerAngles = new Vector3(0f, YRotation, 0f);
+        float turnInput = actions.ContinuousActions[2]; // Value from -1 to 1
+        float rotateDegrees = turnInput * turnSpeed * Time.fixedDeltaTime;
+        transform.Rotate(0f, rotateDegrees, 0f);
 
         // Movement
         float moveForwardBackward = actions.ContinuousActions[0]; // Forward/Backward movement
@@ -257,8 +264,12 @@ public class AIPlayerAgent : Agent
             AddReward(0.01f);
 
             var angleReward = 1 - (angleToPlayer / (fovAngle / 2));
-            AddReward(angleReward/10);
+            // TODO: check if this is properly big
+            //AddReward(angleReward/10);
 
+
+            // Removed, as reward should be given when looking at the player and hitting them, not just looking at the player and clicking on them.
+            /*
             Ray ray = new Ray(transform.position, directionToPlayer);
 
             RaycastHit hit;
@@ -274,6 +285,7 @@ public class AIPlayerAgent : Agent
                     
                 }
             }
+            */
         } else
         {
             AddReward(-0.01f);
@@ -283,6 +295,8 @@ public class AIPlayerAgent : Agent
 
         if (fire && fireCooldown <= 0f)
         {
+            // Removed, as reward should be given when looking at the player and hitting them, not just looking at the player and clicking on them.
+            /*
             if (playerInFOV)
             {
                 Ray ray = new Ray(transform.position, directionToPlayer);
@@ -291,10 +305,20 @@ public class AIPlayerAgent : Agent
                 {
                     if (hit.collider.CompareTag("Player"))
                     {
-                        AddReward(1f);
+                        // TODO: add reward for hitting the player
+                        AddReward(0.1f);
                         fireCooldown = 1f;
                     }
                 }
+            }
+            */
+
+            // TODO: spawn projectile so it can collide with player instead of doing hitscan like above.
+
+
+            if (!playerVisible)
+            {
+                AddReward(-0.05f);
             }
         }
         else
@@ -303,9 +327,29 @@ public class AIPlayerAgent : Agent
 
     }
 
+    public void Shoot()
+    {
+        Vector3 shootDirection = transform.forward;
+
+        // Calculate the rotation based on the shoot direction
+        Quaternion shootRotation = Quaternion.LookRotation(shootDirection, Vector3.up);
+
+        // Instantiate the bullet with the calculated rotation
+        GameObject bullet = Instantiate(bulletPrefab, transform.position + shootDirection * 1f, shootRotation);
+
+        var bulletStats = bullet.GetComponent<ProjectileStats>();
+
+        // Set the bullet stats
+        var playerStats = GetComponent<PlayerStats>();
+
+        bulletStats.Damage = playerStats.BulletDamage;
+        bulletStats.Speed = playerStats.BulletSpeed;
+    }
+
     private void FixedUpdate()
     {
-        rb.linearVelocity = new Vector3(finalMoveDirection.x, rb.linearVelocity.y, finalMoveDirection.z);
+        //rb.linearVelocity = new Vector3(finalMoveDirection.x, rb.linearVelocity.y, finalMoveDirection.z);
+        rb.AddForce(finalMoveDirection - rb.linearVelocity, ForceMode.VelocityChange);
 
         totalTime += Time.fixedDeltaTime;
         if (totalTime > episodeDuration)
@@ -321,7 +365,7 @@ public class AIPlayerAgent : Agent
     {
         if (collision.gameObject.CompareTag("Wall"))
         {
-            AddReward(-10f);
+            AddReward(-1f);
             Debug.DrawLine(collision.transform.position, collision.transform.position + (Vector3.up * 20f), Color.black);
             return;
         }

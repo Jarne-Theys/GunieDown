@@ -5,8 +5,9 @@ command = [
     "config.yaml",
     "--results-dir=Assets/results",
     #"--resume",
+    "--force",
     "--no-graphics",
-    "--run-id=AIPlayer-NavigatingTerrain-DodgingBullets-LookingAtPlayer",
+    "--run-id=AIPlayer-Editor",
     #"--initialize-from=AIPlayerDodging",
     "--torch-device", "cuda"
 ]

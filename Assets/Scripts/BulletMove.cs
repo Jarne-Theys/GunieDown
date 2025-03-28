@@ -43,7 +43,14 @@ public class BulletMove : MonoBehaviour
             AIPlayerAgent aIPlayer = other.GetComponent<AIPlayerAgent>();
             if (aIPlayer != null)
             {
-                aIPlayer.AddExternalReward(-10);
+                aIPlayer.AddExternalReward(-1f);
+            }
+
+            // Training
+            MockPlayerMover mockPlayerMover = other.GetComponent<MockPlayerMover>();
+            if (mockPlayerMover != null)
+            {
+                aIPlayer.AddExternalReward(1f);
             }
         }
 
