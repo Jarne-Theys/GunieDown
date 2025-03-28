@@ -9,7 +9,7 @@ public class BulletSpawner : MonoBehaviour
     [Range(1f, 20f)]
     public float bulletSpeed;
 
-    [Range(1, 50)]
+    [Range(0, 50)]
     public int bulletDamage;
 
     private float timer = 0f;

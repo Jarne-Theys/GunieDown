@@ -102,7 +102,8 @@ public class RoundManager : MonoBehaviour
         }
 
         ResetStats();
-        ShowPowerupSelection();
+        // TODO: uncomment when not training AI
+        // ShowPowerupSelection();
     }
 
     public void ShowPowerupSelection()

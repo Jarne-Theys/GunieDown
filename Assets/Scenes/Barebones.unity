@@ -1386,7 +1386,7 @@ MonoBehaviour:
   bulletPrefab: {fileID: 6004424930538156989, guid: 1ae39d0f8bf2796428ff9ae1e3fdabb4, type: 3}
   target: {fileID: 690825394}
   bulletSpeed: 3
-  bulletDamage: 1
+  bulletDamage: 0
   waitTime: 3
 --- !u!23 &598245398
 MeshRenderer:
@@ -1735,7 +1735,7 @@ MonoBehaviour:
   MaxMovementSpeed: 5
   armor: 0
   health: 10
-  bulletDamage: 10
+  bulletDamage: 0
   bulletSpeed: 10
   movementSpeed: 5
   hp_text: {fileID: 0}
@@ -1851,7 +1851,7 @@ Transform:
   m_GameObject: {fileID: 690825385}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 60.68, y: 1.3, z: 9.7}
+  m_LocalPosition: {x: 56.66, y: 1.3, z: 10.33}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2829,7 +2829,7 @@ MonoBehaviour:
   bulletPrefab: {fileID: 6004424930538156989, guid: 1ae39d0f8bf2796428ff9ae1e3fdabb4, type: 3}
   target: {fileID: 690825394}
   bulletSpeed: 5
-  bulletDamage: 1
+  bulletDamage: 0
   waitTime: 2
 --- !u!23 &1136227000
 MeshRenderer:
@@ -3466,7 +3466,7 @@ MonoBehaviour:
   bulletPrefab: {fileID: 6004424930538156989, guid: 1ae39d0f8bf2796428ff9ae1e3fdabb4, type: 3}
   target: {fileID: 690825394}
   bulletSpeed: 3
-  bulletDamage: 1
+  bulletDamage: 0
   waitTime: 2.5
 --- !u!23 &1263782752
 MeshRenderer:
@@ -3678,7 +3678,7 @@ MonoBehaviour:
   bulletPrefab: {fileID: 6004424930538156989, guid: 1ae39d0f8bf2796428ff9ae1e3fdabb4, type: 3}
   target: {fileID: 690825394}
   bulletSpeed: 3
-  bulletDamage: 1
+  bulletDamage: 0
   waitTime: 2
 --- !u!23 &1321644593
 MeshRenderer:
@@ -4055,7 +4055,7 @@ MonoBehaviour:
   bulletPrefab: {fileID: 6004424930538156989, guid: 1ae39d0f8bf2796428ff9ae1e3fdabb4, type: 3}
   target: {fileID: 690825394}
   bulletSpeed: 3
-  bulletDamage: 1
+  bulletDamage: 0
   waitTime: 2
 --- !u!23 &1467831045
 MeshRenderer:
@@ -4990,7 +4990,7 @@ MonoBehaviour:
   bulletPrefab: {fileID: 6004424930538156989, guid: 1ae39d0f8bf2796428ff9ae1e3fdabb4, type: 3}
   target: {fileID: 690825394}
   bulletSpeed: 3
-  bulletDamage: 1
+  bulletDamage: 0
   waitTime: 2
 --- !u!23 &1871900197
 MeshRenderer:
