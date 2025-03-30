@@ -3,13 +3,12 @@ using UnityEngine;
 
 public class BulletMove : MonoBehaviour
 {
-    [SerializeField] private GameObject hitParticleSystemPrefab;
 
 
     float bulletSpeed;
     int bulletDamage;
 
-    float fallRate;
+    float fallRate = 0f;
     float currentFallRate;
 
     private void Awake()
@@ -62,7 +61,10 @@ public class BulletMove : MonoBehaviour
     {
         transform.position += transform.forward * bulletSpeed * Time.fixedDeltaTime;
 
-        currentFallRate += fallRate * Time.fixedDeltaTime;
-        transform.position += Vector3.down * currentFallRate;
+        if (fallRate > 0f) {
+            currentFallRate += fallRate * Time.fixedDeltaTime;
+            transform.position += Vector3.down * currentFallRate;
+        }
+
     }
 }

@@ -1,0 +1,65 @@
+{
+    "AIPlayer": {
+        "checkpoints": [
+            {
+                "steps": 1469976,
+                "file_path": "Assets/resultsv3\\AIPlayer-3\\AIPlayer\\AIPlayer-1469976.onnx",
+                "reward": -24.05333149433136,
+                "creation_time": 1743193889.26018,
+                "auxillary_file_paths": [
+                    "Assets/resultsv3\\AIPlayer-3\\AIPlayer\\AIPlayer-1469976.pt"
+                ]
+            },
+            {
+                "steps": 1479984,
+                "file_path": "Assets/resultsv3\\AIPlayer-3\\AIPlayer\\AIPlayer-1479984.onnx",
+                "reward": -22.53333165248235,
+                "creation_time": 1743193982.3772693,
+                "auxillary_file_paths": [
+                    "Assets/resultsv3\\AIPlayer-3\\AIPlayer\\AIPlayer-1479984.pt"
+                ]
+            },
+            {
+                "steps": 1489992,
+                "file_path": "Assets/resultsv3\\AIPlayer-3\\AIPlayer\\AIPlayer-1489992.onnx",
+                "reward": -24.899997919797897,
+                "creation_time": 1743194073.5997667,
+                "auxillary_file_paths": [
+                    "Assets/resultsv3\\AIPlayer-3\\AIPlayer\\AIPlayer-1489992.pt"
+                ]
+            },
+            {
+                "steps": 1499976,
+                "file_path": "Assets/resultsv3\\AIPlayer-3\\AIPlayer\\AIPlayer-1499976.onnx",
+                "reward": -22.059998489916325,
+                "creation_time": 1743194165.2839406,
+                "auxillary_file_paths": [
+                    "Assets/resultsv3\\AIPlayer-3\\AIPlayer\\AIPlayer-1499976.pt"
+                ]
+            },
+            {
+                "steps": 1500064,
+                "file_path": "Assets/resultsv3\\AIPlayer-3\\AIPlayer\\AIPlayer-1500064.onnx",
+                "reward": -19.1799984164536,
+                "creation_time": 1743194165.906586,
+                "auxillary_file_paths": [
+                    "Assets/resultsv3\\AIPlayer-3\\AIPlayer\\AIPlayer-1500064.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 1500064,
+            "file_path": "Assets/resultsv3\\AIPlayer-3\\AIPlayer.onnx",
+            "reward": -19.1799984164536,
+            "creation_time": 1743194165.906586,
+            "auxillary_file_paths": [
+                "Assets/resultsv3\\AIPlayer-3\\AIPlayer\\AIPlayer-1500064.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "1.1.0",
+        "torch_version": "2.2.2+cu121"
+    }
+}

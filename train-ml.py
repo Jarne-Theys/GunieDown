@@ -1,14 +1,26 @@
 import subprocess
 
+# command = [
+#     "mlagents-learn",
+#     "config.yaml",
+#     "--results-dir=Assets/results",
+#     #"--resume",
+#     "--force",
+#     "--no-graphics",
+#     "--run-id=AIPlayer-Editor",
+#     #"--initialize-from=AIPlayerDodging",
+#     "--torch-device", "cuda"
+# ]
+
 command = [
     "mlagents-learn",
     "config.yaml",
-    "--results-dir=Assets/results",
-    #"--resume",
-    "--force",
+    "--env=C:\\UnityProjects\\Powor\\Build\\Powor.exe",
+    "--results-dir=Assets/resultsv3",
+    #"--resume", # Or "--force" if you want to start fresh each time
+    #"--force",
     "--no-graphics",
-    "--run-id=AIPlayer-Editor",
-    #"--initialize-from=AIPlayerDodging",
+    "--run-id=AIPlayer-shoot",
     "--torch-device", "cuda"
 ]
 

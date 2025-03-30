@@ -314,7 +314,7 @@ public class AIPlayerAgent : Agent
             */
 
             // TODO: spawn projectile so it can collide with player instead of doing hitscan like above.
-
+            Shoot();
 
             if (!playerVisible)
             {
@@ -329,6 +329,7 @@ public class AIPlayerAgent : Agent
 
     public void Shoot()
     {
+        fireCooldown = fireRate;
         Vector3 shootDirection = transform.forward;
 
         // Calculate the rotation based on the shoot direction

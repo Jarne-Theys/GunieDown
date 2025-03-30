@@ -15,15 +15,30 @@ MonoBehaviour:
   upgradeName: Grenade
   description: boom
   components:
-  - rid: 9180213423699394624
+  - rid: 9180213556979433536
+  - rid: 9180213556979433537
+  - rid: 9180213556979433538
   references:
     version: 2
     RefIds:
-    - rid: 9180213423699394624
+    - rid: 9180213556979433536
+      type: {class: InputActivationComponent, ns: , asm: Assembly-CSharp}
+      data:
+        inputAction: {fileID: 1781555164194001046, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    - rid: 9180213556979433537
+      type: {class: GravityProjectile, ns: , asm: Assembly-CSharp}
+      data:
+        projectilePrefab: {fileID: 443297166693637261, guid: 9b5f40f65b349604f99a32ff7897606a, type: 3}
+        projectileSpeed: 3
+        projectileDamage: 0
+        projectileLifeTime: 4
+        fallRate: 1
+    - rid: 9180213556979433538
       type: {class: CreateDamageZone, ns: , asm: Assembly-CSharp}
       data:
-        damageZonePrefab: {fileID: 0}
-        damageZoneDuration: 1
+        damageZonePrefab: {fileID: 1577897037669584342, guid: 9ca38706e9ce3bf479096d6d55a12263, type: 3}
+        damageZoneDuration: 2
         damage: 1
         spawnPositionOffset: {x: 0, y: 0, z: 0}
-        useProjectilePosition: 0
+        useProjectilePosition: 1
+        activationDelay: 4

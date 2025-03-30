@@ -74,7 +74,7 @@ public class RoundManager : MonoBehaviour
 
     private void ApplyAllUpgrades(InputAction.CallbackContext ctx)
     {
-        ResetStats();
+        //ResetStats();
         Debug.Log("Pressed cheat button");
         UpgradeDefinition[] allUpgrades = upgradesList.upgrades;
         foreach (UpgradeDefinition upgrade in allUpgrades)

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,9 +8,9 @@ public class GravityProjectile : ProjectileComponentBase
 {
     [SerializeField]
     private float fallRate = 0.1f;
-    
-    public GravityProjectile() {}
-    
+
+    public GravityProjectile() { }
+
     public override void Activate(GameObject player, List<IUpgradeComponent> runtimeComponents)
     {
         Vector3 shootDirection = player.transform.forward;
@@ -22,8 +23,13 @@ public class GravityProjectile : ProjectileComponentBase
         projectileStats.Speed = projectileSpeed;
         projectileStats.FallRate = fallRate;
 
-        LastProjectilePositions = new Vector3[] { projectile.transform.position};
+        CoroutineRunner.Instance.StartCoroutine(DestroyDelayed(projectile));
+    }
 
-        GameObject.Destroy(projectile, projectileLifeTime);
+    private IEnumerator DestroyDelayed(GameObject projectile)
+    {
+        yield return new WaitForSeconds(projectileLifeTime);
+        GameObject.Destroy(projectile);
+        LastProjectilePositions = new Vector3[] { projectile.transform.position };
     }
 }
