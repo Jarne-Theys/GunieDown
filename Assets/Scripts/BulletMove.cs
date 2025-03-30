@@ -11,9 +11,10 @@ public class BulletMove : MonoBehaviour
     float fallRate = 0f;
     float currentFallRate;
 
-    private void Awake()
-    {
-    }
+    [SerializeField]
+    private bool destroyOnPlayerContact;
+
+    private Rigidbody rb;
 
     void Start()
     {
@@ -27,6 +28,8 @@ public class BulletMove : MonoBehaviour
             GravityProjectileStats gravityProjectileStats = (GravityProjectileStats)projectileStats;
             fallRate = gravityProjectileStats.FallRate * 0.01f;
         }
+
+        rb = GetComponent<Rigidbody>();
     }
 
     public void OnTriggerEnter(Collider other)
@@ -51,20 +54,41 @@ public class BulletMove : MonoBehaviour
             {
                 aIPlayer.AddExternalReward(1f);
             }
+
+
+            if (destroyOnPlayerContact)
+            {
+                BulletTracker.trackedBullets.Remove(transform);
+                Destroy(gameObject);
+            }
+
+            else
+            {
+                // To avoid damaging the target multiple times.
+                bulletDamage = 0;
+            }
         }
 
-        BulletTracker.trackedBullets.Remove(transform);
-        Destroy(gameObject);
+        if (other.gameObject.layer == LayerMask.NameToLayer("Ground"))
+        {
+            Debug.Log("Hit ground!");
+            BulletTracker.trackedBullets.Remove(transform);
+            Destroy(gameObject);
+        }
     }
 
     private void FixedUpdate()
     {
-        transform.position += transform.forward * bulletSpeed * Time.fixedDeltaTime;
+        Vector3 movement = transform.forward * bulletSpeed;
 
-        if (fallRate > 0f) {
+        if (fallRate > 0f)
+        {
             currentFallRate += fallRate * Time.fixedDeltaTime;
-            transform.position += Vector3.down * currentFallRate;
+            movement += Vector3.down * currentFallRate;
         }
+
+
+        rb.linearVelocity = movement;
 
     }
 }
