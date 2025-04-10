@@ -14,6 +14,9 @@ public class BulletMove : MonoBehaviour
     [SerializeField]
     private bool destroyOnPlayerContact;
 
+    [SerializeField]
+    private bool destroyOnTerrainContact;
+
     private Rigidbody rb;
 
     void Start()
@@ -26,69 +29,83 @@ public class BulletMove : MonoBehaviour
             // Don't use "as" here, it will return null if the cast fails
             // Manually casting so an error gets thrown if projectileStats is not a GravityProjectileStats. This should never happen.
             GravityProjectileStats gravityProjectileStats = (GravityProjectileStats)projectileStats;
-            fallRate = gravityProjectileStats.FallRate * 0.01f;
+            //fallRate = gravityProjectileStats.FallRate * 0.01f;
         }
 
         rb = GetComponent<Rigidbody>();
+        //rb.linearVelocity = transform.forward * bulletSpeed;
+        rb.AddForce(transform.forward * bulletSpeed, ForceMode.Impulse);
     }
 
-    public void OnTriggerEnter(Collider other)
+    void OnCollisionEnter(Collision collision)
     {
-        if (other.CompareTag("Player") || other.CompareTag("AIPlayer"))
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
         {
-            PlayerStats playerStats = other.GetComponent<PlayerStats>();
-            if (playerStats != null)
+            if (destroyOnTerrainContact)
             {
-                playerStats.Damage(bulletDamage);
+                Destroy(gameObject);
+            }
+            // Otherwise, let the Physics Material on the collider handle the bounce.
+        }
+    }
+
+    /*    public void OnTriggerEnter(Collider other)
+        {
+            if (other.CompareTag("Player") || other.CompareTag("AIPlayer"))
+            {
+                PlayerStats playerStats = other.GetComponent<PlayerStats>();
+                if (playerStats != null)
+                {
+                    playerStats.Damage(bulletDamage);
+                }
+
+                AIPlayerAgent aIPlayer = other.GetComponent<AIPlayerAgent>();
+                if (aIPlayer != null)
+                {
+                    aIPlayer.AddExternalReward(-1f);
+                }
+
+                // Training
+                MockPlayerMover mockPlayerMover = other.GetComponent<MockPlayerMover>();
+                if (mockPlayerMover != null)
+                {
+                    aIPlayer.AddExternalReward(1f);
+                }
+
+
+                if (destroyOnPlayerContact)
+                {
+                    BulletTracker.trackedBullets.Remove(transform);
+                    Destroy(gameObject);
+                }
+
+                else
+                {
+                    // To avoid damaging the target multiple times.
+                    bulletDamage = 0;
+                }
             }
 
-            AIPlayerAgent aIPlayer = other.GetComponent<AIPlayerAgent>();
-            if (aIPlayer != null)
+            if (other.gameObject.layer == LayerMask.NameToLayer("Ground") && destroyOnTerrainContact)
             {
-                aIPlayer.AddExternalReward(-1f);
-            }
-
-            // Training
-            MockPlayerMover mockPlayerMover = other.GetComponent<MockPlayerMover>();
-            if (mockPlayerMover != null)
-            {
-                aIPlayer.AddExternalReward(1f);
-            }
-
-
-            if (destroyOnPlayerContact)
-            {
+                Debug.Log("Hit ground!");
                 BulletTracker.trackedBullets.Remove(transform);
                 Destroy(gameObject);
             }
+        }*/
 
-            else
+    /*    private void FixedUpdate()
+        {
+            Vector3 movement = transform.forward * bulletSpeed;
+
+            if (fallRate > 0f)
             {
-                // To avoid damaging the target multiple times.
-                bulletDamage = 0;
+                currentFallRate += fallRate * Time.fixedDeltaTime;
+                movement += Vector3.down * currentFallRate;
             }
-        }
-
-        if (other.gameObject.layer == LayerMask.NameToLayer("Ground"))
-        {
-            Debug.Log("Hit ground!");
-            BulletTracker.trackedBullets.Remove(transform);
-            Destroy(gameObject);
-        }
-    }
-
-    private void FixedUpdate()
-    {
-        Vector3 movement = transform.forward * bulletSpeed;
-
-        if (fallRate > 0f)
-        {
-            currentFallRate += fallRate * Time.fixedDeltaTime;
-            movement += Vector3.down * currentFallRate;
-        }
 
 
-        rb.linearVelocity = movement;
+            rb.linearVelocity = movement;
 
-    }
+        }*/
 }

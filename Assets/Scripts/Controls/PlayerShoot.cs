@@ -4,13 +4,15 @@ using UnityEngine.InputSystem;
 
 public class PlayerShoot : MonoBehaviour
 {
-    [SerializeField] private GameObject bulletPrefab;
+    public GameObject bulletPrefab;
 
     private WeaponStats weaponStats;
     private float shootCooldownTimer = 0f;
     private float reloadTimer = 0f;
 
     private InputAction shootAction;
+
+    private Transform weaponTransform;
 
     [SerializeField]
     TMP_Text debugText;
@@ -19,7 +21,6 @@ public class PlayerShoot : MonoBehaviour
     {
         shootAction = InputSystem.actions.FindAction("Attack");
         weaponStats = GetComponent<WeaponStats>();
-        Debug.Log(weaponStats.ToString());
     }
 
     void Update()
