@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 
 /*
 public class PlayerLook : MonoBehaviour
@@ -48,7 +49,7 @@ public class PlayerLook : MonoBehaviour
     private bool isOnMainPlayer;
     
     [SerializeField] 
-    private Transform cameraHolder;
+    private Transform weaponTransform;
 
     public float maxDownAngle = 70f;
     public float maxUpAngle = -90f;
@@ -74,7 +75,7 @@ public class PlayerLook : MonoBehaviour
         cameraXRotation -= mouseInput.y * mouseSensitivity / 100;
         cameraXRotation = Mathf.Clamp(cameraXRotation, maxUpAngle, maxDownAngle);
 
-        cameraHolder.localEulerAngles = new Vector3(cameraXRotation, 0f, 0f);
+        weaponTransform.localEulerAngles = new Vector3(cameraXRotation, 0f, 0f);
         if (isOnMainPlayer)
         {
             Camera.main.transform.localEulerAngles = new Vector3(cameraXRotation, 0f, 0f);

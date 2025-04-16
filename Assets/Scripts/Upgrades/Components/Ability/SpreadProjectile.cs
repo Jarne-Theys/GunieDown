@@ -15,7 +15,13 @@ public class SpreadProjectile : ProjectileComponentBase
 
     protected override void ExecuteActivation(GameObject player, List<IUpgradeComponent> runtimeComponents)
     {
-        Vector3 shootDirection = player.transform.forward;
+        Transform weapon = player.transform.Find("Weapon");
+        if (weapon == null)
+        {
+            Debug.LogError($"The weapon child gameobject was not found on the player {player.name}");
+        }
+        
+        Vector3 shootDirection = weapon.forward;
         Quaternion shootRotation = Quaternion.LookRotation(shootDirection, Vector3.up);
         for (int i = 0; i <= projectileCount; i++)
         {
