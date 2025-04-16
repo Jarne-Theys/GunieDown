@@ -113,11 +113,6 @@ public class PlayerMovement : MonoBehaviour
         playerRigidbody.linearVelocity = moveVelocity;
     }
 
-    private void FixedUpdate()
-    {
-
-    }
-
     private void CheckGrounded()
     {
         // Position the sphere at the player's feet

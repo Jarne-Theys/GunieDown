@@ -8,8 +8,6 @@ public class BulletMove : MonoBehaviour
     float bulletSpeed;
     int bulletDamage;
 
-    float fallRate = 0f;
-    float currentFallRate;
 
     [SerializeField]
     private bool destroyOnPlayerContact;

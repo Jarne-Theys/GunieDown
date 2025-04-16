@@ -12,7 +12,7 @@ public class DashBackward : UpgradeComponentBase
 
     public DashBackward() {}
 
-    public override void Activate(GameObject player, List<IUpgradeComponent> runtimeComponents)
+    protected override void ExecuteActivation(GameObject player, List<IUpgradeComponent> runtimeComponents)
     {
         Rigidbody rb = player.GetComponent<Rigidbody>();
         if (rb != null)

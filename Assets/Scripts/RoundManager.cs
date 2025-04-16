@@ -33,6 +33,9 @@ public class RoundManager : MonoBehaviour
     [SerializeField]
     private UpgradeManager upgradeManager;
 
+    [SerializeField]
+    private UpgradeDefinition baseWeapon;
+
     public void humanPlayerScored()
     {
         humanPlayerScore++;
@@ -60,8 +63,9 @@ public class RoundManager : MonoBehaviour
 
     private void OnEnable()
     {
-
         cheatButton.action.performed += ApplyAllUpgrades;
+        upgradeManager.AcquireUpgrade(baseWeapon);
+        upgradeManager.ToString();
     }
 
     void OnDisable()
@@ -109,7 +113,7 @@ public class RoundManager : MonoBehaviour
     public void ShowPowerupSelection()
     {
         humanPlayer.GetComponent<PlayerMovement>().enabled = false;
-        humanPlayer.GetComponent<PlayerShoot>().enabled = false;
+        humanPlayer.GetComponent<ShootHandler>().enabled = false;
         humanPlayer.GetComponent<PlayerLook>().enabled = false;
         //TODO: Disable AI player movement
         //aiPlayer.GetComponent<PlayerMovement>().enabled = false;
@@ -158,7 +162,7 @@ public class RoundManager : MonoBehaviour
         PowerupScreen.SetActive(false);
 
         humanPlayer.GetComponent<PlayerMovement>().enabled = true;
-        humanPlayer.GetComponent<PlayerShoot>().enabled = true;
+        humanPlayer.GetComponent<ShootHandler>().enabled = true;
         humanPlayer.GetComponent<PlayerLook>().enabled = true;
     }
 }

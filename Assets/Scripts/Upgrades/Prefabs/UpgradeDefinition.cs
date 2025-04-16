@@ -71,7 +71,7 @@ public class UpgradeDefinition : ScriptableObject
                         if (activateDelegate != null) // Check if delegate creation was successful
                         {
                             activateActions.Add(activateDelegate); // Add the delegate to the list
-                            Debug.Log($"Found Activate method on {component.GetType().Name}, adding to activation list.");
+                            // Debug.Log($"Found Activate method on {component.GetType().Name}, adding to activation list.");
                         }
                     }
                 }
@@ -87,7 +87,7 @@ public class UpgradeDefinition : ScriptableObject
                         action?.Invoke(player, components); // Invoke each Activate action, passing components list
                     }
                 };
-                Debug.Log($"Combined and wired {activateActions.Count} Activate methods to InputActivationComponent.");
+                // Debug.Log($"Combined and wired {activateActions.Count} Activate methods to InputActivationComponent.");
             }
             else
             {

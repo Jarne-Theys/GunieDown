@@ -19,4 +19,9 @@ public class UpgradeManager : MonoBehaviour
         }
 
     }
+
+    public override string ToString()
+    {
+        return activeUpgradeInstances.ToString();
+    }
 }

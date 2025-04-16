@@ -15,5 +15,17 @@ public abstract class ProjectileComponentBase : UpgradeComponentBase, IProjectil
     [SerializeField]
     protected float projectileLifeTime = 1f;
 
+    [SerializeField]
+    protected float weaponMaxAmmo = 30f;
+
+    [SerializeField] 
+    protected float fireRate = 240f;
+
+    [SerializeField]
+    protected float reloadTime = 1f;
+
+    [SerializeField] 
+    protected float currentAmmo = 30f;
+    
     public Vector3[] LastProjectilePositions { get; set; }
 }

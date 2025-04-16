@@ -1,16 +1,15 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class ShootInputHandler : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    private InputAction shootAction;
+    private ShootHandler shootHandler;
+
     void Start()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        shootAction = InputSystem.actions.FindAction("Attack");
+        shootHandler = GetComponent<ShootHandler>();
+        shootAction.performed += shootHandler.Shoot;
     }
 }

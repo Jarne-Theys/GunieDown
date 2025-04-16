@@ -43,7 +43,12 @@ public class PlayerLook : MonoBehaviour
 
 public class PlayerLook : MonoBehaviour
 {
-    [SerializeField] private Transform cameraHolder;
+    [Tooltip("Choose whether or not the script should also move the 'main camera'")]
+    [SerializeField]
+    private bool isOnMainPlayer;
+    
+    [SerializeField] 
+    private Transform cameraHolder;
 
     public float maxDownAngle = 70f;
     public float maxUpAngle = -90f;
@@ -62,13 +67,17 @@ public class PlayerLook : MonoBehaviour
     {
         Vector2 mouseInput = mouseMovement.ReadValue<Vector2>();
 
-        // Y-axis (horizontal) rotation — rotate the player itself
+        // Y-axis (horizontal) rotation - rotate the player itself
         transform.Rotate(Vector3.up * mouseInput.x * mouseSensitivity / 100);
 
-        // X-axis (vertical) rotation — rotate the camera holder
+        // X-axis (vertical) rotation - rotate the camera holder
         cameraXRotation -= mouseInput.y * mouseSensitivity / 100;
         cameraXRotation = Mathf.Clamp(cameraXRotation, maxUpAngle, maxDownAngle);
 
         cameraHolder.localEulerAngles = new Vector3(cameraXRotation, 0f, 0f);
+        if (isOnMainPlayer)
+        {
+            Camera.main.transform.localEulerAngles = new Vector3(cameraXRotation, 0f, 0f);
+        }
     }
 }

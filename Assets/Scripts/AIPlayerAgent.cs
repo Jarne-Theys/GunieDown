@@ -7,6 +7,8 @@ using System.Threading;
 public class AIPlayerAgent : Agent
 {
     public Rigidbody rb;
+    private ShootHandler shootHandler;
+    
     private Vector3 finalMoveDirection;
     public float moveSpeed;
 
@@ -25,7 +27,6 @@ public class AIPlayerAgent : Agent
     private Vector3 lastKnownPlayerLocation;
 
     public float fireRate = 1f;
-    private float fireCooldown = 0f;
 
     public float turnSpeed = 180f; // Max degrees turned per fixed update
     bool playerVisible = false;
@@ -51,12 +52,12 @@ public class AIPlayerAgent : Agent
         }
 
         totalTime = 0f;
-        fireCooldown = 0f;
     }
 
     public override void Initialize()
     {
         rb = GetComponent<Rigidbody>();
+        shootHandler = GetComponent<ShootHandler>();
     }
 
     // Add a reward from external scripts
@@ -150,7 +151,7 @@ public class AIPlayerAgent : Agent
                                                                           // OR just observe the possibly clamped/normalized relative vector:
                                                                           // sensor.AddObservation(Vector3.ClampMagnitude(relativeLastKnown, visionRange) / visionRange);
 
-        sensor.AddObservation(fireCooldown < 0f ? true : false);
+        sensor.AddObservation(shootHandler.CanShoot);
     }
     
     void DrawWallDetectionLinesV3()
@@ -293,58 +294,11 @@ public class AIPlayerAgent : Agent
 
         bool fire = actions.DiscreteActions[0] == 1;
 
-        if (fire && fireCooldown <= 0f)
+        if (fire)
         {
-            // Removed, as reward should be given when looking at the player and hitting them, not just looking at the player and clicking on them.
-            /*
-            if (playerInFOV)
-            {
-                Ray ray = new Ray(transform.position, directionToPlayer);
-                RaycastHit hit;
-                if (Physics.Raycast(ray, out hit, visionRange))
-                {
-                    if (hit.collider.CompareTag("Player"))
-                    {
-                        // TODO: add reward for hitting the player
-                        AddReward(0.1f);
-                        fireCooldown = 1f;
-                    }
-                }
-            }
-            */
-
-            // TODO: spawn projectile so it can collide with player instead of doing hitscan like above.
-            Shoot();
-
-            if (!playerVisible)
-            {
-                AddReward(-0.05f);
-            }
-        }
-        else
-        {
+            shootHandler.Shoot();
         }
 
-    }
-
-    public void Shoot()
-    {
-        fireCooldown = fireRate;
-        Vector3 shootDirection = transform.forward;
-
-        // Calculate the rotation based on the shoot direction
-        Quaternion shootRotation = Quaternion.LookRotation(shootDirection, Vector3.up);
-
-        // Instantiate the bullet with the calculated rotation
-        GameObject bullet = Instantiate(bulletPrefab, transform.position + shootDirection * 1f, shootRotation);
-
-        var bulletStats = bullet.GetComponent<ProjectileStats>();
-
-        // Set the bullet stats
-        var playerStats = GetComponent<PlayerStats>();
-
-        bulletStats.Damage = playerStats.BulletDamage;
-        bulletStats.Speed = playerStats.BulletSpeed;
     }
 
     private void FixedUpdate()
@@ -358,7 +312,6 @@ public class AIPlayerAgent : Agent
             EndEpisode();
         }
 
-        fireCooldown -= Time.fixedDeltaTime;
     }
 
 

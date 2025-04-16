@@ -8,6 +8,7 @@ TagManager:
   - TrainZone
   - Bullet
   - AIPlayer
+  - Weapon
   layers:
   - Default
   - TransparentFX

@@ -4,6 +4,10 @@ public class HitDetection : MonoBehaviour
 {
     private PlayerStats playerStats;
 
+    [SerializeField] private bool addRewardToAgent;
+
+    [SerializeField] private AIPlayerAgent agent;
+
     private void Start()
     {
         playerStats = gameObject.GetComponentInParent<PlayerStats>();
@@ -14,7 +18,6 @@ public class HitDetection : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Bullet"))
         {
-            Debug.Log("Player hit by bullet");
             ProjectileStats projectileStats = collision.gameObject.GetComponent<ProjectileStats>();
             if (projectileStats == null)
             {
@@ -23,6 +26,11 @@ public class HitDetection : MonoBehaviour
             else
             {
                 playerStats.Damage(projectileStats.Damage);
+            }
+
+            if (addRewardToAgent)
+            {
+                agent.AddExternalReward(1f);
             }
         }
     }

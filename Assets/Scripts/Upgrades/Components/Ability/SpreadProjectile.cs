@@ -13,7 +13,7 @@ public class SpreadProjectile : ProjectileComponentBase
 
     public SpreadProjectile() {}
 
-    public override void Activate(GameObject player, List<IUpgradeComponent> runtimeComponents)
+    protected override void ExecuteActivation(GameObject player, List<IUpgradeComponent> runtimeComponents)
     {
         Vector3 shootDirection = player.transform.forward;
         Quaternion shootRotation = Quaternion.LookRotation(shootDirection, Vector3.up);

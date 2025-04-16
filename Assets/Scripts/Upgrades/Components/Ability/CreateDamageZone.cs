@@ -22,23 +22,10 @@ public class CreateDamageZone : UpgradeComponentBase
     [SerializeField]
     [Tooltip("If true, the damage zone will be spawned at the position(s) of any projectile(s) fired when they despawn. If false, use player position.")]
     private bool useProjectilePosition = false;
-
-    [SerializeField]
-    [Tooltip("Optionally wait x seconds before triggering this component.")]
-    private float activationDelay = 0f;
-
     public CreateDamageZone() { }
 
-
-
-    public override void Activate(GameObject player, List<IUpgradeComponent> runtimeComponents)
+    protected override void ExecuteActivation(GameObject player, List<IUpgradeComponent> runtimeComponents)
     {
-        CoroutineRunner.Instance.StartCoroutine(ActivateDelayed(player, runtimeComponents));
-    }
-
-    private IEnumerator ActivateDelayed(GameObject player, List<IUpgradeComponent> runtimeComponents)
-    {
-        yield return new WaitForSeconds(activationDelay);
         Vector3[] spawnPositions;
 
         if (useProjectilePosition)
@@ -66,6 +53,9 @@ public class CreateDamageZone : UpgradeComponentBase
         foreach (var position in spawnPositions)
         {
             GameObject damageZone = GameObject.Instantiate(damageZonePrefab, position + spawnPositionOffset, Quaternion.identity);
+            var projectileStats = damageZone.GetComponent<ProjectileStats>();
+            projectileStats.Damage = damage;
+            projectileStats.Speed = 0f;
             GameObject.Destroy(damageZone, damageZoneDuration);
         }
     }
