@@ -11,12 +11,11 @@ public abstract class UpgradeComponentBase : IUpgradeComponent
     protected UpgradeComponentBase()
     {
     }
-
-    /// <summary>
-    /// Public entry point for activating the component.
-    /// Handles the activation delay before calling the specific execution logic.
-    /// Derived classes should NOT typically override this. Override ExecuteActivation instead.
-    /// </summary>
+    
+    /**
+     * Virtual is used here to allow for overriding in specific circumstances, such as the projectile components.
+     * In general, this method should NOT be overridden, but instead ExecuteActivation should be overridden to change the activate behaviour
+     */
     public virtual void Activate(GameObject player, List<IUpgradeComponent> runtimeComponents)
     {
         if (activationDelay <= 0f)
@@ -44,15 +43,14 @@ public abstract class UpgradeComponentBase : IUpgradeComponent
         ExecuteActivation(player, runtimeComponents);
     }
     
-    /// <summary>
-    /// Contains the specific activation logic for the derived component.
-    /// This method is called by Activate after the activationDelay has passed.
-    /// Derived classes should override this method to implement their activation behavior.
-    /// </summary>
     protected virtual void ExecuteActivation(GameObject player, List<IUpgradeComponent> runtimeComponents)
     {
     }
     
+    /**
+     * This gets ran the instant a powerup is applied, so it should be used both for stat increases (or "passives")
+     * as well as any setup needed for the component to work, similar to MonoBehaviour's "Start" method.
+     */
     public virtual void ApplyPassive(GameObject player) {}
     
 }

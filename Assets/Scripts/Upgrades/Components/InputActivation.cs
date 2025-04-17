@@ -49,7 +49,7 @@ public class InputActivationComponent : UpgradeComponentBase
         _onActivate?.Invoke(targetPlayer, activeRuntimeComponents); // Pass runtimeComponents
     }
 
-    public override void Activate(GameObject player, List<IUpgradeComponent> runtimeComponents)
+    protected override void ExecuteActivation(GameObject player, List<IUpgradeComponent> runtimeComponents)
     {
         // Manually trigger the activation event
         _onActivate?.Invoke(player, runtimeComponents); // Pass runtimeComponents

@@ -13,13 +13,9 @@ public class GravityProjectile : ProjectileComponentBase
 
     protected override void ExecuteActivation(GameObject player, List<IUpgradeComponent> runtimeComponents)
     {
-        Transform weapon = player.transform.Find("Weapon");
-        if (weapon == null)
-        {
-            Debug.LogError($"The weapon child gameobject was not found on the player {player.name}");
-        }
+        var weaponTransform = GetWeaponTransform(player);
         
-        Vector3 shootDirection = weapon.forward;
+        Vector3 shootDirection = weaponTransform.forward;
         Quaternion shootRotation = Quaternion.LookRotation(shootDirection, Vector3.up);
 
         GameObject projectile = GameObject.Instantiate(projectilePrefab, player.transform.position + shootDirection * 1f, shootRotation);

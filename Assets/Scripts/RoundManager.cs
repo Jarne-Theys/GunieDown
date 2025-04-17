@@ -59,14 +59,14 @@ public class RoundManager : MonoBehaviour
         humanPlayerStats = humanPlayer.GetComponent<PlayerStats>();
         aiPlayerStats = aiPlayer.GetComponent<PlayerStats>();
         PowerupScreen.SetActive(false);
-    }
-
-    private void OnEnable()
-    {
+        
+        // Previously in OnEnable
         cheatButton.action.performed += ApplyAllUpgrades;
         upgradeManager.AcquireUpgrade(baseWeapon);
         upgradeManager.ToString();
     }
+
+
 
     void OnDisable()
     {
