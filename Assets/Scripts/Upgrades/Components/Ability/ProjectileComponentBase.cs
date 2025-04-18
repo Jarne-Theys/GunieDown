@@ -18,12 +18,11 @@ public abstract class ProjectileComponentBase : UpgradeComponentBase, IProjectil
     public float ReloadTime => reloadTime;
     public float FireRate  => fireRate;
     
-    [SerializeField] int weaponMaxAmmo = 30;
-    [SerializeField] float reloadTime = 1f;
-    [SerializeField] float fireRate = 240f;
+    [SerializeField] private int weaponMaxAmmo = 30;
+    [SerializeField] private float reloadTime = 1f;
+    [SerializeField] private float fireRate = 240f;
     
-    [SerializeField] 
-    int currentAmmo = 30;
+    [SerializeField] private int currentAmmo = 30;
     public int CurrentAmmo
     {
         get => currentAmmo;

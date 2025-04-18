@@ -11,7 +11,6 @@ public class CoroutineRunner : MonoBehaviour
         {
             if (_instance == null)
             {
-                Debug.Log("No CoroutineRunner instance exists. Creating a new one");
                 var obj = new GameObject("CoroutineRunner");
                 GameObject.DontDestroyOnLoad(obj);
                 _instance = obj.AddComponent<CoroutineRunner>();

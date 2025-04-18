@@ -15,4 +15,3 @@ MonoBehaviour:
   upgrades:
   - {fileID: 11400000, guid: fea432f2e2fa93f47a3a1740ec2a3cc6, type: 2}
   - {fileID: 11400000, guid: 986e97f22a493cb438d4ce95d07c185e, type: 2}
-  - {fileID: 11400000, guid: a1169503c7e7be34d90f51e7132c0223, type: 2}

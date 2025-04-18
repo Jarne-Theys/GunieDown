@@ -104,31 +104,60 @@ public class UpgradeDefinition : ScriptableObject
     }
 
     // Helper function to copy serialized fields using reflection
+    
     private void CopySerializedFields(object source, object destination)
     {
         if (source == null || destination == null) return;
-
-        Type sourceType = source.GetType();
-        Type destinationType = destination.GetType();
-
-        if (sourceType != destinationType)
+        if (source.GetType() != destination.GetType())
         {
-            Debug.LogError($"Source and destination types do not match: {sourceType.Name} vs {destinationType.Name}");
+            Debug.LogError($"Source and destination types do not match: {source.GetType().Name} vs {destination.GetType().Name}");
             return;
         }
 
-        FieldInfo[] fields = sourceType.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+        // Turn your editor‐configured instance into JSON...
+        string json = JsonUtility.ToJson(source, false);
 
-        foreach (var field in fields)
-        {
-            if (field.IsDefined(typeof(SerializeField), false)) // Check for [SerializeField] attribute
-            {
-                field.SetValue(destination, field.GetValue(source));
-            }
-            // You might also want to copy public fields if you intend to configure them in the editor
-            // else if (field.IsPublic && !field.IsStatic) { // Optional: copy public fields
-            //     field.SetValue(destination, field.GetValue(source));
-            // }
-        }
+        // ...and overwrite all serializable fields on the new runtime instance
+        JsonUtility.FromJsonOverwrite(json, destination);
+
+        // Optional: log out one field to confirm
+        Debug.Log($"Component: {source.GetType()} \n JSON data: {json}");
     }
+    
+    
+    // private void CopySerializedFields(object source, object destination)
+    // {
+    //     if (source == null || destination == null) return;
+    //
+    //     Type sourceType = source.GetType();
+    //     Type destinationType = destination.GetType();
+    //
+    //     if (sourceType != destinationType)
+    //     {
+    //         Debug.LogError($"Source and destination types do not match: {sourceType.Name} vs {destinationType.Name}");
+    //         return;
+    //     }
+    //
+    //     FieldInfo[] fields = sourceType.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+    //
+    //     foreach (var field in fields)
+    //     {
+    //         if (field.IsDefined(typeof(SerializeField), false)) // Check for [SerializeField] attribute
+    //         {
+    //             field.SetValue(destination, field.GetValue(source));
+    //             Debug.Log($"{field.Name} (type {field.FieldType.Name}) copied → value={field.GetValue(destination)}");
+    //         }
+    //         else
+    //         {
+    //             Debug.Log($"Not copying {field.Name} (type {field.FieldType.Name}) → original value={field.GetValue(source)}");
+    //         }
+    //         
+    //
+    //
+    //         // You might also want to copy public fields if you intend to configure them in the editor
+    //         // else if (field.IsPublic && !field.IsStatic) { // Optional: copy public fields
+    //         //     field.SetValue(destination, field.GetValue(source));
+    //         // }
+    //     }
+    // }
 }

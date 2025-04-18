@@ -5959,7 +5959,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fd64922d95497340b25f3a333f0efd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  humanPlayerWeaponStats: {fileID: 8678346324299672059}
+  targetDefinition: {fileID: 11400000, guid: fea432f2e2fa93f47a3a1740ec2a3cc6, type: 2}
+  upgradeManager: {fileID: 8678346324299672056}
 --- !u!114 &1922807768
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6526,10 +6527,6 @@ PrefabInstance:
     - target: {fileID: 1577897037669584342, guid: 9ca38706e9ce3bf479096d6d55a12263, type: 3}
       propertyPath: m_Name
       value: GrenadeExplosion
-      objectReference: {fileID: 0}
-    - target: {fileID: 1577897037669584342, guid: 9ca38706e9ce3bf479096d6d55a12263, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1752644786743799506, guid: 9ca38706e9ce3bf479096d6d55a12263, type: 3}
       propertyPath: m_LocalPosition.x

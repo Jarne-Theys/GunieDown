@@ -18,6 +18,8 @@ public abstract class UpgradeComponentBase : IUpgradeComponent
      */
     public virtual void Activate(GameObject player, List<IUpgradeComponent> runtimeComponents)
     {
+        Debug.Log($"{GetType().Name}.activationDelay = {activationDelay}");
+
         if (activationDelay <= 0f)
         {
             ExecuteActivation(player, runtimeComponents);
