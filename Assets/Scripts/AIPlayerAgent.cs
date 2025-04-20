@@ -7,7 +7,6 @@ using System.Threading;
 public class AIPlayerAgent : Agent
 {
     public Rigidbody rb;
-    private ShootHandler shootHandler;
     
     private Vector3 finalMoveDirection;
     public float moveSpeed;
@@ -16,7 +15,6 @@ public class AIPlayerAgent : Agent
     public int numWallRaycasts;
 
     public GameObject target;
-    public GameObject bulletPrefab;
 
     private float totalTime = 0f;
     private int episodeDuration = 60;
@@ -30,7 +28,12 @@ public class AIPlayerAgent : Agent
 
     public float turnSpeed = 180f; // Max degrees turned per fixed update
     bool playerVisible = false;
-
+    private UpgradeManager upgradeManager;
+    [Tooltip("Which UpgradeDefinition counts as the base weapon?")]
+    [SerializeField] private UpgradeDefinition targetDefinition;
+    private bool canFire = true;
+    private ProjectileComponentBase weapon;
+    private InputActivationComponent input;
 
     public override void OnEpisodeBegin()
     {
@@ -53,11 +56,28 @@ public class AIPlayerAgent : Agent
 
         totalTime = 0f;
     }
+    
+    void OnEnable()
+    {
+        upgradeManager.OnUpgradeAcquired += HandleUpgradeAcquired;
+    }
+    
+    private void HandleUpgradeAcquired(UpgradeDefinition upgradeDefinition, IUpgradeComponent upgradeComponentInterface)
+    {
+        if (upgradeDefinition != targetDefinition) 
+            return;
+
+        if (upgradeComponentInterface is ProjectileComponentBase projectileComponentBase)
+        {
+            weapon = projectileComponentBase;
+        }
+    }
+    
 
     public override void Initialize()
     {
         rb = GetComponent<Rigidbody>();
-        shootHandler = GetComponent<ShootHandler>();
+        upgradeManager = GetComponent<UpgradeManager>();
     }
 
     // Add a reward from external scripts
@@ -151,7 +171,7 @@ public class AIPlayerAgent : Agent
                                                                           // OR just observe the possibly clamped/normalized relative vector:
                                                                           // sensor.AddObservation(Vector3.ClampMagnitude(relativeLastKnown, visionRange) / visionRange);
 
-        sensor.AddObservation(shootHandler.CanShoot);
+        sensor.AddObservation(weapon.ReadyToFire);
     }
     
     void DrawWallDetectionLinesV3()
@@ -296,7 +316,9 @@ public class AIPlayerAgent : Agent
 
         if (fire)
         {
-            shootHandler.Shoot();
+            // TODO: replace with upgrade weapon version
+            input.TriggerAction();
+            //shootHandler.Shoot();
         }
 
     }

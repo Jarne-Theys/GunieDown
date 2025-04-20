@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class RoundManager : MonoBehaviour
@@ -31,10 +32,15 @@ public class RoundManager : MonoBehaviour
     private InputActionReference cheatButton;
 
     [SerializeField]
-    private UpgradeManager upgradeManager;
+    private UpgradeManager upgradeManagerHuman;
+
+    [SerializeField] private UpgradeManager upgradeManagerAi;
 
     [SerializeField]
-    private UpgradeDefinition baseWeapon;
+    private UpgradeDefinition baseWeaponHuman;
+    
+    [SerializeField]
+    private UpgradeDefinition baseWeaponAi;
 
     public void humanPlayerScored()
     {
@@ -62,8 +68,8 @@ public class RoundManager : MonoBehaviour
         
         // Previously in OnEnable
         cheatButton.action.performed += ApplyAllUpgrades;
-        upgradeManager.AcquireUpgrade(baseWeapon);
-        upgradeManager.ToString();
+        upgradeManagerHuman.AcquireUpgrade(baseWeaponHuman);
+        upgradeManagerAi.AcquireUpgrade(baseWeaponAi);
     }
 
 
@@ -83,7 +89,8 @@ public class RoundManager : MonoBehaviour
         UpgradeDefinition[] allUpgrades = upgradesList.upgrades;
         foreach (UpgradeDefinition upgrade in allUpgrades)
         {
-            upgradeManager.AcquireUpgrade(upgrade);
+            upgradeManagerHuman.AcquireUpgrade(upgrade);
+            upgradeManagerAi.AcquireUpgrade(upgrade);
         }
     }
 
@@ -112,7 +119,6 @@ public class RoundManager : MonoBehaviour
     public void ShowPowerupSelection()
     {
         humanPlayer.GetComponent<PlayerMovement>().enabled = false;
-        humanPlayer.GetComponent<ShootHandler>().enabled = false;
         humanPlayer.GetComponent<PlayerLook>().enabled = false;
         //TODO: Disable AI player movement
         //aiPlayer.GetComponent<PlayerMovement>().enabled = false;
@@ -161,7 +167,6 @@ public class RoundManager : MonoBehaviour
         PowerupScreen.SetActive(false);
 
         humanPlayer.GetComponent<PlayerMovement>().enabled = true;
-        humanPlayer.GetComponent<ShootHandler>().enabled = true;
         humanPlayer.GetComponent<PlayerLook>().enabled = true;
     }
 }

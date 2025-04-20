@@ -30,8 +30,25 @@ public class UpgradeListUpdater : AssetPostprocessor
                     for (int i = 0; i < upgradeDefinitionGUIDs.Length; i++)
                     {
                         string upgradeDefinitionPath = AssetDatabase.GUIDToAssetPath(upgradeDefinitionGUIDs[i]);
-                        foundUpgrades[i] = AssetDatabase.LoadAssetAtPath<UpgradeDefinition>(upgradeDefinitionPath);
+                        // Do not include the starting weapons
+                        if (upgradeDefinitionPath.StartsWith("Assets/Scripts/Upgrades/Prefabs/Instances/Base"))
+                        {
+                            Debug.Log($"Not adding base weapon to list: {upgradeDefinitionPath}");
+                            continue;
+                        }
+                        
+                        var upgradeDefinition = AssetDatabase.LoadAssetAtPath<UpgradeDefinition>(upgradeDefinitionPath);
+                        foundUpgrades[i] = upgradeDefinition;
                     }
+                    
+                    // TODO: detect null items and filter them out
+                    // after your for‑loop that populates foundUpgrades[i] (with some nulls) …
+                    foundUpgrades = foundUpgrades
+                        .Where(u => u != null)
+                        .ToArray();
+
+                    // now foundUpgrades has only the non‑null entries, so Length is correct
+
 
                     // **Change Detection Logic:**
                     bool listChanged = false;

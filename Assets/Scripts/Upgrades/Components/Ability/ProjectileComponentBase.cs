@@ -49,6 +49,20 @@ public abstract class ProjectileComponentBase : UpgradeComponentBase, IProjectil
     
     public Vector3[] LastProjectilePositions { get; set; }
     
+    public bool ReadyToFire
+    {
+        get
+        {
+            if (isReloading) return false;
+        
+            if (Time.time < nextFireTime) return false;
+        
+            if (CurrentAmmo <= 0) return false;
+            
+            return true;
+        }
+    }
+    
     public override void Activate(GameObject player, List<IUpgradeComponent> runtimeComponents)
     {
         if (isReloading) return;

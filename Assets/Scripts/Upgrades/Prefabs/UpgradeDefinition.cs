@@ -80,7 +80,7 @@ public class UpgradeDefinition : ScriptableObject
             if (activateActions.Count > 0)
             {
                 // Combine all Activate actions into a single delegate using lambda with the new signature
-                inputActivation.onActivate = (GameObject player, List<IUpgradeComponent> components) => // Modified lambda signature
+                inputActivation.OnActivate = (GameObject player, List<IUpgradeComponent> components) => // Modified lambda signature
                 {
                     foreach (var action in activateActions)
                     {
