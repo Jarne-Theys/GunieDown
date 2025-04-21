@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f658c5ecd8b4f283ebb9ab16eca454e4, type: 3}
+  m_Name: BaseWeaponHuman
+  m_EditorClassIdentifier: 
+  upgradeName: Base weapon
+  description: Do not remove this, as this describes the weapon you start with!
+  components:
+  - rid: 3584564414065410048
+  - rid: 3584564414065410049
+  references:
+    version: 2
+    RefIds:
+    - rid: 3584564414065410048
+      type: {class: InputActivationComponent, ns: , asm: Assembly-CSharp}
+      data:
+        activationDelay: 0
+        inputAction: {fileID: 1120369429361536294, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    - rid: 3584564414065410049
+      type: {class: StraightProjectile, ns: , asm: Assembly-CSharp}
+      data:
+        activationDelay: 0
+        projectilePrefab: {fileID: 6004424930538156989, guid: 1ae39d0f8bf2796428ff9ae1e3fdabb4, type: 3}
+        projectileSpeed: 3
+        projectileDamage: 0
+        projectileLifeTime: 1
+        weaponMaxAmmo: 30
+        reloadTime: 1
+        fireRate: 240
+        currentAmmo: 30
+        reloadAction: {fileID: 0}

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using Unity.MLAgents;
 using Unity.MLAgents.Sensors;
@@ -31,7 +32,6 @@ public class AIPlayerAgent : Agent
     private UpgradeManager upgradeManager;
     [Tooltip("Which UpgradeDefinition counts as the base weapon?")]
     [SerializeField] private UpgradeDefinition targetDefinition;
-    private bool canFire = true;
     private ProjectileComponentBase weapon;
     private InputActivationComponent input;
 
@@ -57,8 +57,9 @@ public class AIPlayerAgent : Agent
         totalTime = 0f;
     }
     
-    void OnEnable()
+    protected override void OnEnable()
     {
+        base.OnEnable();
         upgradeManager.OnUpgradeAcquired += HandleUpgradeAcquired;
     }
     
@@ -90,6 +91,11 @@ public class AIPlayerAgent : Agent
     public override void CollectObservations(VectorSensor sensor)
     {
         // Transform Observations
+        if (sensor == null)
+        {
+            throw new ArgumentException("VectorSensor is null");
+        }
+        
         sensor.AddObservation(transform.position);
         sensor.AddObservation(transform.forward);
 
@@ -113,7 +119,7 @@ public class AIPlayerAgent : Agent
             if (Physics.Raycast(rayFrom, rayDirection, out hit, raycastDistance))
             {
                 // Consider layers or specific tags if more than just "Wall" exists
-                if (hit.collider.CompareTag("Wall"))
+                if (hit.collider != null && hit.collider.CompareTag("Wall"))
                 {
                     wallDetected = true;
                     distanceToHit = hit.distance;
