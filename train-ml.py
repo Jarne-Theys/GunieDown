@@ -17,8 +17,8 @@ command = [
     "config.yaml",
     #"--env=C:\\UnityProjects\\Powor\\Build\\Powor.exe",
     "--results-dir=Assets/resultsv4",
-    #"--resume", # Or "--force" if you want to start fresh each time
-    "--force",
+    "--resume", # Or "--force" if you want to start fresh each time
+    #"--force",
     "--no-graphics",
     "--run-id=AIPlayer-shoot",
     "--torch-device", "cuda"
