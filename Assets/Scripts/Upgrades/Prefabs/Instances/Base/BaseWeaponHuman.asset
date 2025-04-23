@@ -32,7 +32,7 @@ MonoBehaviour:
         projectilePrefab: {fileID: 6004424930538156989, guid: 1ae39d0f8bf2796428ff9ae1e3fdabb4, type: 3}
         projectileSpeed: 3
         projectileDamage: 0
-        projectileLifeTime: 1
+        projectileLifeTime: 1000
         weaponMaxAmmo: 30
         reloadTime: 1
         fireRate: 240

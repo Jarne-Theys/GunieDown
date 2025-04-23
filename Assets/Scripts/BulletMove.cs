@@ -37,7 +37,7 @@ public class BulletMove : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Ground"))
+        if (collision.gameObject.CompareTag("Wall"))
         {
             if (destroyOnTerrainContact)
             {
@@ -92,9 +92,9 @@ public class BulletMove : MonoBehaviour
                 }
             }
 
-            if (other.gameObject.layer == LayerMask.NameToLayer("Ground") && destroyOnTerrainContact)
+            if (other.gameObject.layer == LayerMask.NameToLayer("Wall") && destroyOnTerrainContact)
             {
-                Debug.Log("Hit ground!");
+                Debug.Log("Hit terrain!");
                 BulletTracker.trackedBullets.Remove(transform);
                 Destroy(gameObject);
             }
