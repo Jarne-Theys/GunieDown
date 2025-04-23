@@ -1002,8 +1002,10 @@ MonoBehaviour:
   roundText: {fileID: 1408289433}
   upgradesList: {fileID: 11400000, guid: 5c73bb83d7fb61ad886a206d7b8447ee, type: 2}
   cheatButton: {fileID: -7471211009204490832, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  upgradeManager: {fileID: 8678346324299672056}
-  baseWeapon: {fileID: 11400000, guid: fea432f2e2fa93f47a3a1740ec2a3cc6, type: 2}
+  upgradeManagerHuman: {fileID: 8678346324299672056}
+  upgradeManagerAi: {fileID: 690825396}
+  baseWeaponHuman: {fileID: 11400000, guid: fea432f2e2fa93f47a3a1740ec2a3cc6, type: 2}
+  baseWeaponAi: {fileID: 11400000, guid: 55fef2a8f32c04f48b3e914df0edd9cb, type: 2}
 --- !u!4 &277127551
 Transform:
   m_ObjectHideFlags: 0
@@ -1532,7 +1534,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!54 &553180556
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1588,7 +1590,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa8da1b49fcbdb447a1c3e51115f7a14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 1
+  moveSpeed: 0.5
   moveRange: 3
 --- !u!114 &553180559
 MonoBehaviour:
@@ -1936,13 +1938,14 @@ GameObject:
   - component: {fileID: 690825395}
   - component: {fileID: 690825387}
   - component: {fileID: 690825386}
+  - component: {fileID: 690825396}
   m_Layer: 0
   m_Name: AIPlayer
   m_TagString: AIPlayer
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &690825386
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1980,7 +1983,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 1
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 5022602860645237092, guid: 52e37f8a1e35ebc4eb938d2f899e0e4e, type: 3}
+  m_Model: {fileID: 5022602860645237092, guid: cac0b7bef9faf3cc6a47e0563b5c5451, type: 3}
   m_InferenceDevice: 0
   m_BehaviorType: 0
   m_BehaviorName: AIPlayer
@@ -2010,12 +2013,12 @@ MonoBehaviour:
   raycastDistance: 5
   numWallRaycasts: 4
   target: {fileID: 553180555}
-  bulletPrefab: {fileID: 6004424930538156989, guid: 1ae39d0f8bf2796428ff9ae1e3fdabb4, type: 3}
   bulletTrackCount: 3
   fovAngle: 60
   visionRange: 120
   fireRate: 1
   turnSpeed: 180
+  targetDefinition: {fileID: 11400000, guid: 55fef2a8f32c04f48b3e914df0edd9cb, type: 2}
 --- !u!114 &690825389
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2175,6 +2178,19 @@ MonoBehaviour:
   bulletLayer:
     serializedVersion: 2
     m_Bits: 64
+--- !u!114 &690825396
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 690825385}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb9b7b4431f12b74f946189cad27b315, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  upgradesList: {fileID: 11400000, guid: 5c73bb83d7fb61ad886a206d7b8447ee, type: 2}
 --- !u!1 &715646240
 GameObject:
   m_ObjectHideFlags: 0
@@ -2631,7 +2647,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &777066334
 Transform:
   m_ObjectHideFlags: 0
@@ -3028,7 +3044,7 @@ GameObject:
   - component: {fileID: 1019070150}
   m_Layer: 3
   m_Name: Terrain
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
@@ -3904,7 +3920,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1239273133
 Transform:
   m_ObjectHideFlags: 0
@@ -4295,7 +4311,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1379304535
 Transform:
   m_ObjectHideFlags: 0
@@ -6918,7 +6934,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &7985488353182852982
 MonoBehaviour:
   m_ObjectHideFlags: 0

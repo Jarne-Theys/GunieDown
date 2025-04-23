@@ -85,7 +85,6 @@ public class InputActivationComponent : UpgradeComponentBase
             return;
         }
 
-        Debug.Log($"Triggering action for {targetPlayer.name} via external call.");
         onActivate?.Invoke(targetPlayer, activeRuntimeComponents);
     }
     

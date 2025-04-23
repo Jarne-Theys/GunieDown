@@ -18,6 +18,20 @@ public class HitDetection : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Bullet"))
         {
+            if (addRewardToAgent)
+            {
+                if (collision.gameObject.CompareTag("Player"))
+                {
+                    agent.AddExternalReward(1f);
+                    Debug.Log("AI hit (mock) player!");
+                }
+                else
+                {
+                    agent.AddExternalReward(-0.1f);
+                }
+                return;
+            }
+            
             ProjectileStats projectileStats = collision.gameObject.GetComponent<ProjectileStats>();
             if (projectileStats == null)
             {
@@ -26,11 +40,6 @@ public class HitDetection : MonoBehaviour
             else
             {
                 playerStats.Damage(projectileStats.Damage);
-            }
-
-            if (addRewardToAgent)
-            {
-                agent.AddExternalReward(1f);
             }
         }
     }

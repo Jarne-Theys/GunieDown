@@ -10,12 +10,12 @@ public class BulletTracker : MonoBehaviour
 
     public static List<Transform> trackedBullets = new List<Transform>();
 
-    void Update()
-    {
-        DetectBullets();
-    }
+    // void Update()
+    // {
+    //     DetectBullets();
+    // }
 
-    void DetectBullets()
+    public void DetectBullets()
     {
         // Find nearby bullets using a physics sphere
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, detectionRadius, bulletLayer);

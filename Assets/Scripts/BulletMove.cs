@@ -37,13 +37,21 @@ public class BulletMove : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
+        if (collision.gameObject.CompareTag("Ground"))
         {
             if (destroyOnTerrainContact)
             {
                 Destroy(gameObject);
             }
             // Otherwise, let the Physics Material on the collider handle the bounce.
+        }
+
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            if (destroyOnPlayerContact)
+            {
+                Destroy(gameObject);
+            }
         }
     }
 

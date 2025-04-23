@@ -34,6 +34,7 @@ public class AIPlayerAgent : Agent
     [SerializeField] private UpgradeDefinition targetDefinition;
     private ProjectileComponentBase weapon;
     private InputActivationComponent input;
+    private BulletTracker bulletTracker;
 
     public override void OnEpisodeBegin()
     {
@@ -72,6 +73,11 @@ public class AIPlayerAgent : Agent
         {
             weapon = projectileComponentBase;
         }
+        
+        if (upgradeComponentInterface is InputActivationComponent inputActivationComponent)
+        {
+            input = inputActivationComponent;
+        }
     }
     
 
@@ -79,6 +85,7 @@ public class AIPlayerAgent : Agent
     {
         rb = GetComponent<Rigidbody>();
         upgradeManager = GetComponent<UpgradeManager>();
+        bulletTracker = GetComponent<BulletTracker>();
     }
 
     // Add a reward from external scripts
@@ -132,12 +139,16 @@ public class AIPlayerAgent : Agent
         }
 
         // Bullet tracking
+        BulletTracker.ClearTrackedBulletList();
+        bulletTracker.DetectBullets();
         // track 3 bullets
         for (int i = 0; i < bulletTrackCount; i++)
         {
             if (i < BulletTracker.trackedBullets.Count)
             {
-                sensor.AddObservation(BulletTracker.trackedBullets[i].position - transform.position);
+                Vector3 bulletPosition = BulletTracker.trackedBullets[i].position;
+                Vector3 aiPosition = transform.position;
+                sensor.AddObservation(bulletPosition - aiPosition);
             }
             else
             {

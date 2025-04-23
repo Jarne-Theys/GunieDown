@@ -18,8 +18,8 @@ public class MockPlayerMover : MonoBehaviour
 
     private void RandomMove()
     {
-        float moveX = Random.Range(-moveRange, moveRange) / moveSpeed;
-        float moveZ = Random.Range(-moveRange, moveRange) / moveSpeed;
+        float moveX = Random.Range(-moveRange, moveRange) * moveSpeed;
+        float moveZ = Random.Range(-moveRange, moveRange) * moveSpeed;
 
 
         rb.AddForce(new Vector3(moveX, 0, moveZ), ForceMode.Impulse);
