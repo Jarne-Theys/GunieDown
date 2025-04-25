@@ -36,9 +36,14 @@ public class AIPlayerAgent : Agent
     private InputActivationComponent input;
     private BulletTracker bulletTracker;
 
+    private float yawInput;
+    private float pitchInput;
+    [SerializeField] private GameObject weaponGo;
+
     public override void OnEpisodeBegin()
     {
         rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
         transform.position = SpawnPositions.aiPlayerSpawnPosition;
         transform.rotation = Quaternion.Euler(SpawnPositions.aiPlayerSpawnRotation);
 
@@ -46,8 +51,9 @@ public class AIPlayerAgent : Agent
         target.GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
 
         lastKnownPlayerLocation = Vector3.zero;
+        playerVisible = false;
 
-        BulletTracker.ClearTrackedBulletList();
+        bulletTracker.ClearTrackedBulletList();
 
         GameObject[] bullets = GameObject.FindGameObjectsWithTag("Bullet");
         foreach (GameObject bullet in bullets)
@@ -62,22 +68,6 @@ public class AIPlayerAgent : Agent
     {
         base.OnEnable();
         upgradeManager.OnUpgradeAcquired += HandleUpgradeAcquired;
-    }
-    
-    private void HandleUpgradeAcquired(UpgradeDefinition upgradeDefinition, IUpgradeComponent upgradeComponentInterface)
-    {
-        if (upgradeDefinition != targetDefinition) 
-            return;
-
-        if (upgradeComponentInterface is ProjectileComponentBase projectileComponentBase)
-        {
-            weapon = projectileComponentBase;
-        }
-        
-        if (upgradeComponentInterface is InputActivationComponent inputActivationComponent)
-        {
-            input = inputActivationComponent;
-        }
     }
     
 
@@ -139,14 +129,14 @@ public class AIPlayerAgent : Agent
         }
 
         // Bullet tracking
-        BulletTracker.ClearTrackedBulletList();
+        bulletTracker.ClearTrackedBulletList();
         bulletTracker.DetectBullets();
         // track 3 bullets
         for (int i = 0; i < bulletTrackCount; i++)
         {
-            if (i < BulletTracker.trackedBullets.Count)
+            if (i < bulletTracker.trackedBullets.Count)
             {
-                Vector3 bulletPosition = BulletTracker.trackedBullets[i].position;
+                Vector3 bulletPosition = bulletTracker.trackedBullets[i].position;
                 Vector3 aiPosition = transform.position;
                 sensor.AddObservation(bulletPosition - aiPosition);
             }
@@ -189,6 +179,90 @@ public class AIPlayerAgent : Agent
                                                                           // sensor.AddObservation(Vector3.ClampMagnitude(relativeLastKnown, visionRange) / visionRange);
 
         sensor.AddObservation(weapon.ReadyToFire);
+    }
+
+
+    public override void OnActionReceived(ActionBuffers actions)
+    {
+        // Rotation
+        yawInput = actions.ContinuousActions[2];   // Yaw: Value from -1 to 1
+        pitchInput = actions.ContinuousActions[3]; // Pitch: Value from -1 to 1
+        
+        // Movement
+        float moveForwardBackward = actions.ContinuousActions[0]; // Forward/Backward movement
+        float moveLeftRight = actions.ContinuousActions[1];     // Strafing movement
+
+        Vector3 moveDirectionForward = transform.forward * moveForwardBackward * moveSpeed;
+        Vector3 moveDirectionStrafe = transform.right * moveLeftRight * moveSpeed;
+
+        finalMoveDirection = moveDirectionForward + moveDirectionStrafe;
+
+        Vector3 playerCenter = target.GetComponentInChildren<CapsuleCollider>().bounds.center;
+        Vector3 directionToPlayer = (playerCenter - transform.position).normalized;
+        float angleToPlayer = Vector3.Angle(transform.forward, directionToPlayer);
+
+        bool playerInFOV = angleToPlayer < fovAngle / 2 &&
+                           Vector3.Distance(transform.position, target.transform.position) <= visionRange;
+
+        if (playerInFOV)
+        {
+            AddReward(0.01f);
+
+        } else
+        {
+        }
+
+        bool fire = actions.DiscreteActions[0] == 1;
+
+        if (fire)
+        {
+            input.TriggerAction();
+        }
+
+    }
+
+    private void FixedUpdate()
+    {
+        totalTime += Time.fixedDeltaTime;
+        if (totalTime > episodeDuration)
+        {
+            EndEpisode();
+        }
+        
+        rb.AddForce(finalMoveDirection - rb.linearVelocity, ForceMode.VelocityChange);
+        
+        float yawDegrees = yawInput * turnSpeed * Time.fixedDeltaTime;
+        float pitchDegrees = pitchInput * turnSpeed * Time.fixedDeltaTime;
+
+        transform.Rotate(0f, yawDegrees, 0f);
+        weaponGo.transform.Rotate(pitchDegrees, 0f, 0f);
+    }
+
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Wall"))
+        {
+            AddReward(-1f);
+            Debug.DrawLine(collision.transform.position, collision.transform.position + (Vector3.up * 20f), Color.black);
+            EndEpisode();
+        }
+    }
+    
+    private void HandleUpgradeAcquired(UpgradeDefinition upgradeDefinition, IUpgradeComponent upgradeComponentInterface)
+    {
+        if (upgradeDefinition != targetDefinition) 
+            return;
+
+        if (upgradeComponentInterface is ProjectileComponentBase projectileComponentBase)
+        {
+            weapon = projectileComponentBase;
+        }
+        
+        if (upgradeComponentInterface is InputActivationComponent inputActivationComponent)
+        {
+            input = inputActivationComponent;
+        }
     }
     
     void DrawWallDetectionLinesV3()
@@ -250,9 +324,7 @@ public class AIPlayerAgent : Agent
         DrawVisionCone();
 
     }
-
-
-
+    
     private void DrawVisionCone()
     {
         int segments = 10; // How smooth the cone should be
@@ -271,96 +343,6 @@ public class AIPlayerAgent : Agent
             Gizmos.DrawLine(previousPoint, nextPoint);
 
             previousPoint = nextPoint;
-        }
-    }
-
-    public override void OnActionReceived(ActionBuffers actions)
-    {
-        // Rotation
-        float turnInput = actions.ContinuousActions[2]; // Value from -1 to 1
-        float rotateDegrees = turnInput * turnSpeed * Time.fixedDeltaTime;
-        transform.Rotate(0f, rotateDegrees, 0f);
-
-        // Movement
-        float moveForwardBackward = actions.ContinuousActions[0]; // Forward/Backward movement
-        float moveLeftRight = actions.ContinuousActions[1];     // Strafing movement
-
-        Vector3 moveDirectionForward = transform.forward * moveForwardBackward * moveSpeed;
-        Vector3 moveDirectionStrafe = transform.right * moveLeftRight * moveSpeed;
-
-        finalMoveDirection = moveDirectionForward + moveDirectionStrafe;
-
-        Vector3 playerCenter = target.GetComponentInChildren<CapsuleCollider>().bounds.center;
-        Vector3 directionToPlayer = (playerCenter - transform.position).normalized;
-        float angleToPlayer = Vector3.Angle(transform.forward, directionToPlayer);
-
-        bool playerInFOV = angleToPlayer < fovAngle / 2 &&
-                           Vector3.Distance(transform.position, target.transform.position) <= visionRange;
-
-        if (playerInFOV)
-        {
-            AddReward(0.01f);
-
-            var angleReward = 1 - (angleToPlayer / (fovAngle / 2));
-            // TODO: check if this is properly big
-            //AddReward(angleReward/10);
-
-
-            // Removed, as reward should be given when looking at the player and hitting them, not just looking at the player and clicking on them.
-            /*
-            Ray ray = new Ray(transform.position, directionToPlayer);
-
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, visionRange))
-            {
-                if (hit.collider.CompareTag("Player"))
-                {
-                    Debug.DrawLine(transform.position, hit.point, Color.green, 15f);
-                    AddReward(0.01f);
-                }
-                else
-                {
-                    
-                }
-            }
-            */
-        } else
-        {
-            AddReward(-0.01f);
-        }
-
-        bool fire = actions.DiscreteActions[0] == 1;
-
-        if (fire)
-        {
-            // TODO: replace with upgrade weapon version
-            input.TriggerAction();
-            //shootHandler.Shoot();
-        }
-
-    }
-
-    private void FixedUpdate()
-    {
-        //rb.linearVelocity = new Vector3(finalMoveDirection.x, rb.linearVelocity.y, finalMoveDirection.z);
-        rb.AddForce(finalMoveDirection - rb.linearVelocity, ForceMode.VelocityChange);
-
-        totalTime += Time.fixedDeltaTime;
-        if (totalTime > episodeDuration)
-        {
-            EndEpisode();
-        }
-
-    }
-
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Wall"))
-        {
-            AddReward(-1f);
-            Debug.DrawLine(collision.transform.position, collision.transform.position + (Vector3.up * 20f), Color.black);
-            return;
         }
     }
 }

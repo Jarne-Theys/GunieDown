@@ -16,6 +16,10 @@ public class BulletMove : MonoBehaviour
     private bool destroyOnTerrainContact;
 
     private Rigidbody rb;
+    
+    public bool addRewardToAgent;
+    public AIPlayerAgent agent;
+
 
     void Start()
     {
@@ -35,12 +39,22 @@ public class BulletMove : MonoBehaviour
         rb.AddForce(transform.forward * bulletSpeed, ForceMode.Impulse);
     }
 
+    public void Init(AIPlayerAgent aiAgent, bool rewardAgent)
+    {
+        this.agent = aiAgent;
+        this.addRewardToAgent = rewardAgent;
+    }
+
     void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Wall"))
         {
             if (destroyOnTerrainContact)
             {
+                if (addRewardToAgent)
+                {
+                    agent.AddExternalReward(-0.01f);
+                }
                 Destroy(gameObject);
             }
             // Otherwise, let the Physics Material on the collider handle the bounce.
@@ -48,11 +62,33 @@ public class BulletMove : MonoBehaviour
 
         if (collision.gameObject.CompareTag("Player"))
         {
+            // TODO: make this method deal damage to the player hit
             if (destroyOnPlayerContact)
             {
+                if (addRewardToAgent)
+                {
+                    agent.AddExternalReward(1f);
+                }
                 Destroy(gameObject);
             }
         }
+
+        if (collision.gameObject.CompareTag("AIPlayer"))
+        {
+            if (destroyOnPlayerContact)
+            {
+                if (addRewardToAgent)
+                {
+                    agent.AddExternalReward(-0.1f);
+                }
+                Destroy(gameObject);
+            }
+        }
+    }
+
+    void OnDestroy()
+    {
+        
     }
 
     /*    public void OnTriggerEnter(Collider other)

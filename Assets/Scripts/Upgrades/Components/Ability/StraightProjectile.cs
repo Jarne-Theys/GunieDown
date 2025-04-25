@@ -20,6 +20,13 @@ public class StraightProjectile : ProjectileComponentBase
         projectileStats.Damage = projectileDamage;
         projectileStats.Speed = projectileSpeed;
 
+        if (player.CompareTag("AIPlayer"))
+        {
+            BulletMove projectileMover = projectile.GetComponent<BulletMove>();
+            AIPlayerAgent playerAgent = player.gameObject.GetComponent<AIPlayerAgent>();
+            projectileMover.Init(playerAgent,true);
+        }
+
         LastProjectilePositions = new Vector3[] { projectile.transform.position};
 
         GameObject.Destroy(projectile, projectileLifeTime);

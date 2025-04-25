@@ -8,12 +8,7 @@ public class BulletTracker : MonoBehaviour
     public int maxTrackedBullets = 5;   // Max bullets AI can track at a time
     public LayerMask bulletLayer;       // Only check bullet layer for performance
 
-    public static List<Transform> trackedBullets = new List<Transform>();
-
-    // void Update()
-    // {
-    //     DetectBullets();
-    // }
+    public List<Transform> trackedBullets = new List<Transform>();
 
     public void DetectBullets()
     {
@@ -37,7 +32,7 @@ public class BulletTracker : MonoBehaviour
         trackedBullets = bullets.Take(maxTrackedBullets).ToList();
     }
 
-    public static void ClearTrackedBulletList()
+    public void ClearTrackedBulletList()
     {
         trackedBullets.Clear();
     }

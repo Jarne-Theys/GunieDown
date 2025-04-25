@@ -18,9 +18,10 @@ public class HitDetection : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Bullet"))
         {
+            // set this to true during training
             if (addRewardToAgent)
             {
-                if (collision.gameObject.CompareTag("Player"))
+                if (gameObject.CompareTag("Player"))
                 {
                     agent.AddExternalReward(1f);
                     Debug.Log("AI hit (mock) player!");
