@@ -24,7 +24,7 @@ MonoBehaviour:
       type: {class: InputActivationComponent, ns: , asm: Assembly-CSharp}
       data:
         activationDelay: 0
-        inputAction: {fileID: 1120369429361536294, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+        inputAction: {fileID: 0}
     - rid: 3584564414065410049
       type: {class: StraightProjectile, ns: , asm: Assembly-CSharp}
       data:
