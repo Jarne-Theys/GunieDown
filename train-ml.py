@@ -16,11 +16,12 @@ command = [
     "mlagents-learn",
     "config.yaml",
     "--env=C:\\UnityProjects\\Powor\\Build\\Powor.exe",
-    "--results-dir=Assets/resultsv4",
-    "--resume", # Or "--force" if you want to start fresh each time
+    "--results-dir=Assets/resultsv6-fasterbullet",
+    #"--resume", # Or "--force" if you want to start fresh each time
     #"--force",
     "--no-graphics",
-    "--run-id=AIPlayer-full",
+    "--run-id=AIPlayer-fasterbullet",
+    #"--initialize-from=AIPlayer-full",
     "--torch-device", "cuda"
 ]
 

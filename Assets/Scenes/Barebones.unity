@@ -275,6 +275,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Bullet
       objectReference: {fileID: 0}
+    - target: {fileID: 6004424930538156989, guid: 1ae39d0f8bf2796428ff9ae1e3fdabb4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -504,7 +508,7 @@ GameObject:
   - component: {fileID: 191124186}
   - component: {fileID: 191124185}
   - component: {fileID: 191124184}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube (3)
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -612,7 +616,7 @@ GameObject:
   - component: {fileID: 194721274}
   - component: {fileID: 194721273}
   - component: {fileID: 194721272}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube (3)
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -1083,7 +1087,7 @@ GameObject:
   - component: {fileID: 264981504}
   - component: {fileID: 264981503}
   - component: {fileID: 264981502}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube (2)
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -1422,7 +1426,7 @@ GameObject:
   - component: {fileID: 405492142}
   - component: {fileID: 405492141}
   - component: {fileID: 405492140}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -1744,7 +1748,7 @@ GameObject:
   - component: {fileID: 481385781}
   - component: {fileID: 481385780}
   - component: {fileID: 481385779}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube (1)
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -2283,7 +2287,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 38
+    VectorObservationSize: 59
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 4
@@ -2322,13 +2326,16 @@ MonoBehaviour:
   raycastDistance: 5
   numWallRaycasts: 4
   target: {fileID: 553180555}
-  bulletTrackCount: 6
+  episodeDuration: 60
   fovAngle: 60
   visionRange: 120
-  fireRate: 1
   turnSpeed: 180
   targetDefinition: {fileID: 11400000, guid: 55fef2a8f32c04f48b3e914df0edd9cb, type: 2}
   weaponGo: {fileID: 643574585}
+  maxFiringAngleThreshold: 45
+  poorAimPenalty: -0.02
+  fireWhenNotReadyPenalty: -0.005
+  fireCost: -0.001
 --- !u!114 &690825389
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3355,7 +3362,7 @@ GameObject:
   - component: {fileID: 1019070150}
   m_Layer: 3
   m_Name: Terrain
-  m_TagString: Wall
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
@@ -3555,7 +3562,7 @@ GameObject:
   - component: {fileID: 1123882587}
   - component: {fileID: 1123882586}
   - component: {fileID: 1123882585}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube (2)
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -4262,9 +4269,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1246618589}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Walls
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4889,7 +4896,7 @@ GameObject:
   - component: {fileID: 1417196457}
   - component: {fileID: 1417196456}
   - component: {fileID: 1417196455}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -5929,7 +5936,7 @@ GameObject:
   - component: {fileID: 1813613567}
   - component: {fileID: 1813613566}
   - component: {fileID: 1813613565}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube (1)
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -6616,7 +6623,7 @@ GameObject:
   - component: {fileID: 2019953922}
   - component: {fileID: 2019953921}
   - component: {fileID: 2019953920}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube (4)
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -6834,7 +6841,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2057122720
 Transform:
   m_ObjectHideFlags: 0
@@ -7069,9 +7076,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2099489055}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Obstacles
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7107,6 +7114,10 @@ PrefabInstance:
     - target: {fileID: 1577897037669584342, guid: 9ca38706e9ce3bf479096d6d55a12263, type: 3}
       propertyPath: m_Name
       value: GrenadeExplosion
+      objectReference: {fileID: 0}
+    - target: {fileID: 1577897037669584342, guid: 9ca38706e9ce3bf479096d6d55a12263, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1752644786743799506, guid: 9ca38706e9ce3bf479096d6d55a12263, type: 3}
       propertyPath: m_LocalPosition.x
@@ -7237,6 +7248,10 @@ PrefabInstance:
     - target: {fileID: 443297166693637261, guid: 9b5f40f65b349604f99a32ff7897606a, type: 3}
       propertyPath: m_Name
       value: Grenade
+      objectReference: {fileID: 0}
+    - target: {fileID: 443297166693637261, guid: 9b5f40f65b349604f99a32ff7897606a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6039536459613047959, guid: 9b5f40f65b349604f99a32ff7897606a, type: 3}
       propertyPath: m_LocalPosition.x
@@ -7497,7 +7512,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &7985488353182852982
 MonoBehaviour:
   m_ObjectHideFlags: 0

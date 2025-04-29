@@ -4,6 +4,8 @@ behaviors:
     max_steps: 3_000_000
     summary_freq: 10000
     checkpoint_interval: 10000
-    # hyperparameters:
-    #   batch_size: 4096
-    #   buffer_size: 81920
+    hyperparameters:
+      batch_size: 4096
+      buffer_size: 40960
+    network_settings:
+      hidden_units: 256

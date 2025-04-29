@@ -1,0 +1,65 @@
+{
+    "AIPlayer": {
+        "checkpoints": [
+            {
+                "steps": 2969977,
+                "file_path": "Assets/resultsv6-fasterbullet\\AIPlayer-fasterbullet\\AIPlayer\\AIPlayer-2969977.onnx",
+                "reward": -1.138970576445846,
+                "creation_time": 1745934586.4993937,
+                "auxillary_file_paths": [
+                    "Assets/resultsv6-fasterbullet\\AIPlayer-fasterbullet\\AIPlayer\\AIPlayer-2969977.pt"
+                ]
+            },
+            {
+                "steps": 2979998,
+                "file_path": "Assets/resultsv6-fasterbullet\\AIPlayer-fasterbullet\\AIPlayer\\AIPlayer-2979998.onnx",
+                "reward": -1.1509615251651177,
+                "creation_time": 1745934639.173457,
+                "auxillary_file_paths": [
+                    "Assets/resultsv6-fasterbullet\\AIPlayer-fasterbullet\\AIPlayer\\AIPlayer-2979998.pt"
+                ]
+            },
+            {
+                "steps": 2989963,
+                "file_path": "Assets/resultsv6-fasterbullet\\AIPlayer-fasterbullet\\AIPlayer\\AIPlayer-2989963.onnx",
+                "reward": -1.1514492625559585,
+                "creation_time": 1745934690.7904556,
+                "auxillary_file_paths": [
+                    "Assets/resultsv6-fasterbullet\\AIPlayer-fasterbullet\\AIPlayer\\AIPlayer-2989963.pt"
+                ]
+            },
+            {
+                "steps": 2999997,
+                "file_path": "Assets/resultsv6-fasterbullet\\AIPlayer-fasterbullet\\AIPlayer\\AIPlayer-2999997.onnx",
+                "reward": -1.128571415586131,
+                "creation_time": 1745934746.3934178,
+                "auxillary_file_paths": [
+                    "Assets/resultsv6-fasterbullet\\AIPlayer-fasterbullet\\AIPlayer\\AIPlayer-2999997.pt"
+                ]
+            },
+            {
+                "steps": 3000061,
+                "file_path": "Assets/resultsv6-fasterbullet\\AIPlayer-fasterbullet\\AIPlayer\\AIPlayer-3000061.onnx",
+                "reward": -1.128571415586131,
+                "creation_time": 1745934746.4494176,
+                "auxillary_file_paths": [
+                    "Assets/resultsv6-fasterbullet\\AIPlayer-fasterbullet\\AIPlayer\\AIPlayer-3000061.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 3000061,
+            "file_path": "Assets/resultsv6-fasterbullet\\AIPlayer-fasterbullet\\AIPlayer.onnx",
+            "reward": -1.128571415586131,
+            "creation_time": 1745934746.4494176,
+            "auxillary_file_paths": [
+                "Assets/resultsv6-fasterbullet\\AIPlayer-fasterbullet\\AIPlayer\\AIPlayer-3000061.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "1.1.0",
+        "torch_version": "2.2.2+cu121"
+    }
+}

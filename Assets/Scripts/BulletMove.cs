@@ -17,7 +17,7 @@ public class BulletMove : MonoBehaviour
 
     private Rigidbody rb;
     
-    public bool addRewardToAgent;
+    public bool addRewardToAgent = false;
     public AIPlayerAgent agent;
 
 
@@ -47,7 +47,7 @@ public class BulletMove : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Wall"))
+        if (collision.gameObject.CompareTag("Wall") || collision.gameObject.CompareTag("Ground"))
         {
             if (destroyOnTerrainContact)
             {
@@ -57,10 +57,8 @@ public class BulletMove : MonoBehaviour
                 }
                 Destroy(gameObject);
             }
-            // Otherwise, let the Physics Material on the collider handle the bounce.
         }
-
-        if (collision.gameObject.CompareTag("Player"))
+        else if (collision.gameObject.CompareTag("Player"))
         {
             // TODO: make this method deal damage to the player hit
             if (destroyOnPlayerContact)
@@ -72,18 +70,20 @@ public class BulletMove : MonoBehaviour
                 Destroy(gameObject);
             }
         }
-
-        if (collision.gameObject.CompareTag("AIPlayer"))
+        else if (collision.gameObject.CompareTag("AIPlayer"))
         {
             if (destroyOnPlayerContact)
             {
-                if (addRewardToAgent)
-                {
-                    agent.AddExternalReward(-0.1f);
-                }
                 Destroy(gameObject);
             }
         }
+
+        else
+        {
+            Debug.LogWarning($"Bullet collided with something that's not a 'Wall', 'Player' or 'AIPlayer': \n {collision.gameObject.name}");
+            Destroy(gameObject);
+        }
+        
     }
 
     void OnDestroy()

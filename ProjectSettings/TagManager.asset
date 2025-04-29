@@ -9,6 +9,7 @@ TagManager:
   - Bullet
   - AIPlayer
   - Weapon
+  - Ground
   layers:
   - Default
   - TransparentFX
@@ -17,7 +18,7 @@ TagManager:
   - Water
   - UI
   - bulletLayer
-  - 
+  - terrainLayer
   - 
   - 
   - 
