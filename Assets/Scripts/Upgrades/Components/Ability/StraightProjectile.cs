@@ -19,6 +19,12 @@ public class StraightProjectile : ProjectileComponentBase
         var projectileStats = projectile.GetComponent<ProjectileStats>();
         projectileStats.Damage = projectileDamage;
         projectileStats.Speed = projectileSpeed;
+        
+        // Make sure the bullet can't hit the person that fired it
+        Collider projectileCollider = projectile.GetComponent<Collider>();
+        Collider playerCollider = player.GetComponent<Collider>();
+
+        Physics.IgnoreCollision(projectileCollider, playerCollider);
 
         if (player.CompareTag("AIPlayer"))
         {

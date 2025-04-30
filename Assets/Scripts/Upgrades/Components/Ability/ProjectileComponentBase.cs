@@ -79,6 +79,11 @@ public abstract class ProjectileComponentBase : UpgradeComponentBase, IProjectil
 
         CurrentAmmo--;
         nextFireTime = Time.time + (60f / fireRate);
+        
+        if (CurrentAmmo <= 0)
+        {
+            BeginReload();
+        }
     }
     
     private void BeginReload()

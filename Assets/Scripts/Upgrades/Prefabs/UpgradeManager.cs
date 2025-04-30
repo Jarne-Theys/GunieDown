@@ -36,7 +36,7 @@ public class UpgradeManager : MonoBehaviour
             OnUpgradeAcquired?.Invoke(upgradeDefinition, component);
         }
         
-        Debug.Log("Applied upgrade: " + upgradeDefinition.upgradeName);
+        // Debug.Log("Applied upgrade: " + upgradeDefinition.upgradeName);
     }
 
     public override string ToString()

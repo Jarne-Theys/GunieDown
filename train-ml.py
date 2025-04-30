@@ -15,13 +15,13 @@ import subprocess
 command = [
     "mlagents-learn",
     "config.yaml",
-    #"--env=C:\\UnityProjects\\Powor\\Build\\Powor.exe",
-    "--env=/home/jarne/Documents/Unity_projects/GunieDown/Build/Build.x86_64",
+    "--env=C:\\UnityProjects\\Powor\\Build\\Powor.exe",
+    #"--env=/home/jarne/Documents/Unity_projects/GunieDown/Build/Build.x86_64",
     "--results-dir=AI",
-    #"--resume", # Or "--force" if you want to start fresh each time
-    "--force",
+    "--resume", # Or "--force" if you want to start fresh each time
+    #"--force",
     "--no-graphics",
-    "--run-id=outerwalls-shooting",
+    "--run-id=outerwalls-shooting-stationary",
     #"--initialize-from=AIPlayer-fasterbullet",
     "--torch-device", "cuda"
 ]

@@ -121,7 +121,7 @@ public class UpgradeDefinition : ScriptableObject
         JsonUtility.FromJsonOverwrite(json, destination);
 
         // Optional: log out one field to confirm
-        Debug.Log($"Component: {source.GetType()} \n JSON data: {json}");
+        // Debug.Log($"Component: {source.GetType()} \n JSON data: {json}");
     }
     
     

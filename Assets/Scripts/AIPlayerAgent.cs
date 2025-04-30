@@ -289,7 +289,7 @@ public class AIPlayerAgent : Agent
             {
                 if (playerVisible)
                 {
-                    AddReward(0.05f);
+                    //AddReward(0.05f);
                 }
                 // Penalize trying to fire when weapon isn't ready
                 //AddReward(fireWhenNotReadyPenalty);
@@ -304,8 +304,8 @@ public class AIPlayerAgent : Agent
 
             if (canFire && input != null)
             {
-                Debug.Log("AI fired!");
-                AddReward(-0.001f);
+                //Debug.Log("AI fired!");
+                //AddReward(-0.001f);
                 // Manually trigger the InputAction component, as the AI can't use InputActions
                 input.TriggerAction();
             }
@@ -315,10 +315,14 @@ public class AIPlayerAgent : Agent
             }
         }
 
-        if (playerVisible && targetAimGood) { AddReward(0.005f); }
+        if (playerVisible && targetAimGood)
+        {
+            //Debug.Log("Looking at player directly!");
+            AddReward(0.001f);
+        }
 
          // Small penalty for existing to encourage ending the episode faster (hit player)
-         AddReward(-0.0001f);
+         //AddReward(-0.0001f);
     }
 
     private void FixedUpdate()
