@@ -15,13 +15,13 @@ import subprocess
 command = [
     "mlagents-learn",
     "config.yaml",
-    "--env=C:\\UnityProjects\\Powor\\Build\\Powor.exe",
-    "--results-dir=Assets/resultsv6-fasterbullet",
+    #"--env=C:\\UnityProjects\\Powor\\Build\\Powor.exe",
+    "--results-dir=AI",
     #"--resume", # Or "--force" if you want to start fresh each time
-    #"--force",
+    "--force",
     "--no-graphics",
-    "--run-id=AIPlayer-fasterbullet",
-    #"--initialize-from=AIPlayer-full",
+    "--run-id=outerwalls-shooting",
+    #"--initialize-from=AIPlayer-fasterbullet",
     "--torch-device", "cuda"
 ]
 

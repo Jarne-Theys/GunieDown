@@ -170,6 +170,7 @@ MonoBehaviour:
   bulletSpeed: 3
   bulletDamage: 0
   waitTime: 2.5
+  aiAgent: {fileID: 0}
 --- !u!23 &25682724
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -443,6 +444,7 @@ MonoBehaviour:
   bulletSpeed: 3
   bulletDamage: 0
   waitTime: 2
+  aiAgent: {fileID: 0}
 --- !u!23 &133596925
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1912,7 +1914,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 553180555}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fa8da1b49fcbdb447a1c3e51115f7a14, type: 3}
   m_Name: 
@@ -1970,6 +1972,7 @@ MonoBehaviour:
   bulletSpeed: 3
   bulletDamage: 0
   waitTime: 3
+  aiAgent: {fileID: 690825388}
 --- !u!23 &598245398
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2333,9 +2336,6 @@ MonoBehaviour:
   targetDefinition: {fileID: 11400000, guid: 55fef2a8f32c04f48b3e914df0edd9cb, type: 2}
   weaponGo: {fileID: 643574585}
   maxFiringAngleThreshold: 45
-  poorAimPenalty: -0.02
-  fireWhenNotReadyPenalty: -0.005
-  fireCost: -0.001
 --- !u!114 &690825389
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2681,6 +2681,7 @@ MonoBehaviour:
   bulletSpeed: 3
   bulletDamage: 0
   waitTime: 2
+  aiAgent: {fileID: 0}
 --- !u!23 &724485635
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -3296,6 +3297,7 @@ MonoBehaviour:
   bulletSpeed: 3
   bulletDamage: 0
   waitTime: 3
+  aiAgent: {fileID: 0}
 --- !u!23 &846554304
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -3709,6 +3711,7 @@ MonoBehaviour:
   bulletSpeed: 5
   bulletDamage: 0
   waitTime: 2
+  aiAgent: {fileID: 690825388}
 --- !u!23 &1136227000
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -4238,7 +4241,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1239273133
 Transform:
   m_ObjectHideFlags: 0
@@ -4346,6 +4349,7 @@ MonoBehaviour:
   bulletSpeed: 3
   bulletDamage: 0
   waitTime: 2.5
+  aiAgent: {fileID: 690825388}
 --- !u!23 &1263782752
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -4558,6 +4562,7 @@ MonoBehaviour:
   bulletSpeed: 3
   bulletDamage: 0
   waitTime: 2
+  aiAgent: {fileID: 690825388}
 --- !u!23 &1321644593
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -5043,6 +5048,7 @@ MonoBehaviour:
   bulletSpeed: 3
   bulletDamage: 0
   waitTime: 2
+  aiAgent: {fileID: 690825388}
 --- !u!23 &1467831045
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -5147,6 +5153,7 @@ MonoBehaviour:
   bulletSpeed: 5
   bulletDamage: 0
   waitTime: 2
+  aiAgent: {fileID: 0}
 --- !u!23 &1556357250
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -6191,6 +6198,7 @@ MonoBehaviour:
   bulletSpeed: 3
   bulletDamage: 0
   waitTime: 2
+  aiAgent: {fileID: 690825388}
 --- !u!23 &1871900197
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -6770,6 +6778,7 @@ MonoBehaviour:
   bulletSpeed: 3
   bulletDamage: 0
   waitTime: 2
+  aiAgent: {fileID: 0}
 --- !u!23 &2047421343
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -7082,7 +7091,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2099489055
 Transform:
   m_ObjectHideFlags: 0
@@ -7512,7 +7521,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &7985488353182852982
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7736,6 +7745,7 @@ MonoBehaviour:
   destroyOnPlayerContact: 0
   destroyOnTerrainContact: 0
   addRewardToAgent: 0
+  subtractRewardFromAgent: 0
   agent: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

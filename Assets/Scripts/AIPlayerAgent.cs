@@ -41,12 +41,6 @@ public class AIPlayerAgent : Agent
     [Header("Reward Shaping")]
     [Tooltip("Maximum angle (degrees) off target the agent can fire without penalty.")]
     public float maxFiringAngleThreshold = 10.0f;
-    [Tooltip("Penalty for firing when aim angle exceeds the threshold.")]
-    public float poorAimPenalty = -0.02f;
-    [Tooltip("Penalty for attempting to fire when weapon is not ready.")]
-    public float fireWhenNotReadyPenalty = -0.005f;
-    [Tooltip("Small cost for firing any shot (encourages ammo conservation). Set to 0 to disable.")]
-    public float fireCost = -0.001f;
 
     public override void OnEpisodeBegin()
     {
@@ -106,6 +100,12 @@ public class AIPlayerAgent : Agent
     public void AddExternalReward(float reward)
     {
         AddReward(reward);
+    }
+
+    public void EndEpisodeExternal(string reason)
+    {
+        Debug.Log($"Ending episode because {reason}");
+        EndEpisode();
     }
 
     public override void CollectObservations(VectorSensor sensor)
@@ -261,13 +261,15 @@ public class AIPlayerAgent : Agent
 
         // Shooting
         bool wantsToFire = actions.DiscreteActions[0] == 1;
+        
+        bool targetAimGood = false;
 
         if (wantsToFire)
         {
+            // Debug.Log("AI trying to fire");
             bool canFire = weapon != null && weapon.ReadyToFire;
-            bool targetAimGood = false;
+            // Debug.Log($"Can AI fire? {canFire}");
 
-            // Check aim quality only if the player is currently visible
              if (playerVisible && target != null)
              {
                  Collider targetCollider = target.GetComponentInChildren<Collider>();
@@ -283,51 +285,49 @@ public class AIPlayerAgent : Agent
              }
 
 
-            // Apply penalties based on checks
             if (!canFire)
             {
+                if (playerVisible)
+                {
+                    AddReward(0.05f);
+                }
                 // Penalize trying to fire when weapon isn't ready
-                AddReward(fireWhenNotReadyPenalty);
+                //AddReward(fireWhenNotReadyPenalty);
             }
             // Only penalize poor aim if the player is visible (otherwise agent might be predicting/pre-firing)
             else if (playerVisible && !targetAimGood)
             {
-                // Penalize firing when aim is poor and player is visible
-                 AddReward(poorAimPenalty);
+                 // Debug.Log("AI tried to fire with bad aim");
+                 AddReward(-0.02f);
                  // Debug.Log($"AI fired with poor aim ({currentAngleToPlayer} degrees). Penalty applied.");
             }
 
-            // If checks pass (or if firing blind), attempt to fire
-            if (canFire && input != null) // Ensure input component exists
+            if (canFire && input != null)
             {
-                // Apply the general cost for firing a shot
-                AddReward(fireCost);
-
-                // Trigger the weapon
+                Debug.Log("AI fired!");
+                AddReward(-0.001f);
+                // Manually trigger the InputAction component, as the AI can't use InputActions
                 input.TriggerAction();
             }
             else if (input == null)
             {
                  Debug.LogWarning("AI tried to fire, but InputActivationComponent is missing.", this);
             }
-             // Note: Penalties for !canFire and poor aim are handled above.
         }
 
-        // Optional: Small reward for facing the player when visible?
-        // Be careful not to make it override hitting/dodging rewards.
-        // if (playerVisible && targetAimGood) { AddReward(0.001f); }
+        if (playerVisible && targetAimGood) { AddReward(0.005f); }
 
-         // Small penalty for existing to encourage ending the episode faster? Usually not needed.
-         // AddReward(-0.0001f);
+         // Small penalty for existing to encourage ending the episode faster (hit player)
+         AddReward(-0.0001f);
     }
 
     private void FixedUpdate()
     {
-        totalTime += Time.fixedDeltaTime;
-        if (totalTime > episodeDuration)
-        {
-            EndEpisode();
-        }
+        // totalTime += Time.fixedDeltaTime;
+        // if (totalTime > episodeDuration)
+        // {
+        //     EndEpisode();
+        // }
      
         // Bullet tracking
         bulletTracker.ClearTrackedBulletList();
@@ -351,14 +351,14 @@ public class AIPlayerAgent : Agent
         if (collision.gameObject.CompareTag("Wall"))
         {
             AddReward(-1f);
-            Debug.DrawLine(collision.transform.position, collision.transform.position + (Vector3.up * 20f), Color.black);
+            Debug.DrawLine(collision.transform.position, collision.transform.position + (Vector3.up * 20f), Color.black, 20f);
             EndEpisode();
         }
 
         if (collision.gameObject.CompareTag("Bullet"))
         {
             AddReward(-0.5f);
-            Debug.DrawLine(collision.transform.position, collision.transform.position + (Vector3.up * 20f), Color.yellow);
+            Debug.DrawLine(collision.transform.position, collision.transform.position + (Vector3.up * 20f), Color.yellow, 20f);
         }
     }
     

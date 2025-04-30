@@ -18,6 +18,7 @@ public class BulletMove : MonoBehaviour
     private Rigidbody rb;
     
     public bool addRewardToAgent = false;
+    public bool subtractRewardFromAgent = false;
     public AIPlayerAgent agent;
 
 
@@ -39,10 +40,11 @@ public class BulletMove : MonoBehaviour
         rb.AddForce(transform.forward * bulletSpeed, ForceMode.Impulse);
     }
 
-    public void Init(AIPlayerAgent aiAgent, bool rewardAgent)
+    public void Init(AIPlayerAgent aiAgent, bool rewardAgentForHitting, bool punishAgentForGettingHit)
     {
         this.agent = aiAgent;
-        this.addRewardToAgent = rewardAgent;
+        this.addRewardToAgent = rewardAgentForHitting;
+        this.subtractRewardFromAgent = punishAgentForGettingHit;
     }
 
     void OnCollisionEnter(Collision collision)
@@ -65,7 +67,9 @@ public class BulletMove : MonoBehaviour
             {
                 if (addRewardToAgent)
                 {
-                    agent.AddExternalReward(1f);
+                    // Increase from 1 to 10 for more motivation
+                    agent.AddExternalReward(10f);
+                    agent.EndEpisodeExternal("AI hit player!");
                 }
                 Destroy(gameObject);
             }
@@ -74,6 +78,10 @@ public class BulletMove : MonoBehaviour
         {
             if (destroyOnPlayerContact)
             {
+                if (subtractRewardFromAgent)
+                {
+                    agent.AddExternalReward(-0.1f);
+                }
                 Destroy(gameObject);
             }
         }

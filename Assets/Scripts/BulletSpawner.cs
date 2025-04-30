@@ -15,6 +15,8 @@ public class BulletSpawner : MonoBehaviour
     private float timer = 0f;
     public float waitTime = 3f;
 
+    public AIPlayerAgent aiAgent;
+    
     void Update()
     {
         timer += Time.deltaTime;
@@ -26,6 +28,9 @@ public class BulletSpawner : MonoBehaviour
             projectileStats.Speed = bulletSpeed;
             projectileStats.Damage = bulletDamage;
             timer = 0f;
+            
+            BulletMove projectileMover = bullet.GetComponent<BulletMove>();
+            projectileMover.Init(aiAgent,false, true);
         }
     }
 }

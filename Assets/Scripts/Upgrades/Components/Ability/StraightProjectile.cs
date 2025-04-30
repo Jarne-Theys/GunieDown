@@ -24,7 +24,7 @@ public class StraightProjectile : ProjectileComponentBase
         {
             BulletMove projectileMover = projectile.GetComponent<BulletMove>();
             AIPlayerAgent playerAgent = player.gameObject.GetComponent<AIPlayerAgent>();
-            projectileMover.Init(playerAgent,true);
+            projectileMover.Init(playerAgent,true, false);
         }
 
         LastProjectilePositions = new Vector3[] { projectile.transform.position};
