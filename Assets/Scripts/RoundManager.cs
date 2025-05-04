@@ -8,6 +8,9 @@ using UnityEngine.UI;
 
 public class RoundManager : MonoBehaviour
 {
+    [Tooltip("Set this to false when training AI, else the game will get stuck on the powerup screen")]
+    public bool showPowerupScreen = false;
+    
     public int humanPlayerScore;
     public int aiPlayerScore;
 
@@ -113,7 +116,7 @@ public class RoundManager : MonoBehaviour
 
         ResetStats();
         // TODO: uncomment when not training AI
-        // ShowPowerupSelection();
+        if (showPowerupScreen) ShowPowerupSelection();
     }
 
     public void ShowPowerupSelection()
@@ -121,7 +124,7 @@ public class RoundManager : MonoBehaviour
         humanPlayer.GetComponent<PlayerMovement>().enabled = false;
         humanPlayer.GetComponent<PlayerLook>().enabled = false;
         //TODO: Disable AI player movement
-        //aiPlayer.GetComponent<PlayerMovement>().enabled = false;
+        aiPlayer.GetComponent<AIPlayerAgent>().enabled = false;
 
         PowerupScreen.SetActive(true);
 
@@ -151,6 +154,8 @@ public class RoundManager : MonoBehaviour
 
             button.onClick.AddListener(() => ApplyPowerupAndContinue(upgrade));
         }
+        
+        // TODO: Apply stat upgrade to AI
     }
 
     public void ApplyPowerupAndContinue(UpgradeDefinition selectedUpgrade)

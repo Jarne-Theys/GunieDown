@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class BulletMove : MonoBehaviour
 {
@@ -17,8 +18,9 @@ public class BulletMove : MonoBehaviour
 
     private Rigidbody rb;
     
-    public bool addRewardToAgent = false;
-    public bool subtractRewardFromAgent = false;
+    public bool addRewardToAgentOnTargetHit = false;
+    public bool subtractRewardFromAgentOnAgentHit = false;
+    public bool subtractRewardFromAgentOnTerrainHit = false;
     public AIPlayerAgent agent;
 
 
@@ -40,11 +42,12 @@ public class BulletMove : MonoBehaviour
         rb.AddForce(transform.forward * bulletSpeed, ForceMode.Impulse);
     }
 
-    public void Init(AIPlayerAgent aiAgent, bool rewardAgentForHitting, bool punishAgentForGettingHit)
+    public void Init(AIPlayerAgent aiAgent, bool rewardAgentForHitting, bool punishAgentForGettingHit, bool punishAgentForMiss)
     {
         this.agent = aiAgent;
-        this.addRewardToAgent = rewardAgentForHitting;
-        this.subtractRewardFromAgent = punishAgentForGettingHit;
+        this.addRewardToAgentOnTargetHit = rewardAgentForHitting;
+        this.subtractRewardFromAgentOnAgentHit = punishAgentForGettingHit;
+        this.subtractRewardFromAgentOnTerrainHit = punishAgentForMiss;
     }
 
     void OnCollisionEnter(Collision collision)
@@ -53,9 +56,9 @@ public class BulletMove : MonoBehaviour
         {
             if (destroyOnTerrainContact)
             {
-                if (addRewardToAgent)
+                if (subtractRewardFromAgentOnTerrainHit)
                 {
-                    agent.AddExternalReward(-0.01f);
+                    agent.AddExternalReward(-0.01f, "Punished for hitting terrain");
                 }
                 Destroy(gameObject);
             }
@@ -65,12 +68,19 @@ public class BulletMove : MonoBehaviour
             // TODO: make this method deal damage to the player hit
             if (destroyOnPlayerContact)
             {
-                if (addRewardToAgent)
+                if (addRewardToAgentOnTargetHit)
                 {
                     // Increase from 1 to 10 for more motivation
                     agent.AddExternalReward(10f);
                     agent.EndEpisodeExternal("AI hit player!");
                 }
+
+                else
+                {
+                    PlayerStats playerStats = collision.gameObject.GetComponent<PlayerStats>();
+                    playerStats.Damage(bulletDamage); 
+                }
+                
                 Destroy(gameObject);
             }
         }
@@ -78,10 +88,17 @@ public class BulletMove : MonoBehaviour
         {
             if (destroyOnPlayerContact)
             {
-                if (subtractRewardFromAgent)
+                if (subtractRewardFromAgentOnAgentHit)
                 {
-                    agent.AddExternalReward(-0.1f);
+                    agent.AddExternalReward(-0.1f, "Punished for getting hit");
                 }
+
+                else
+                {
+                    PlayerStats playerStats = collision.gameObject.GetComponent<PlayerStats>();
+                    playerStats.Damage(bulletDamage);
+                }
+                
                 Destroy(gameObject);
             }
         }

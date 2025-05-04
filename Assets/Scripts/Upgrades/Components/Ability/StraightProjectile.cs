@@ -5,6 +5,11 @@ using UnityEngine;
 [Serializable]
 public class StraightProjectile : ProjectileComponentBase
 {
+    [Header("Agent settings")]
+    public bool rewardAgentForHittingTarget;
+    public bool punishAgentForGettingHit;
+    public bool punishAgentForMiss;
+    
     public StraightProjectile() {}
 
     protected override void ExecuteActivation(GameObject player, List<IUpgradeComponent> runtimeComponents)
@@ -30,7 +35,7 @@ public class StraightProjectile : ProjectileComponentBase
         {
             BulletMove projectileMover = projectile.GetComponent<BulletMove>();
             AIPlayerAgent playerAgent = player.gameObject.GetComponent<AIPlayerAgent>();
-            projectileMover.Init(playerAgent,true, false);
+            projectileMover.Init(playerAgent,rewardAgentForHittingTarget, punishAgentForGettingHit, punishAgentForMiss);
         }
 
         LastProjectilePositions = new Vector3[] { projectile.transform.position};

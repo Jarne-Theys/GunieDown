@@ -7,6 +7,9 @@ using System.Threading;
 
 public class AIPlayerAgent : Agent
 {
+    public bool endEpisodes = true;
+    private float[] wallDistances;
+    
     public Rigidbody rb;
     
     private Vector3 finalMoveDirection;
@@ -93,19 +96,22 @@ public class AIPlayerAgent : Agent
         rb = GetComponent<Rigidbody>();
         upgradeManager = GetComponent<UpgradeManager>();
         bulletTracker = GetComponent<BulletTracker>();
+        wallDistances = new float[numWallRaycasts];
     }
 
     // Add a reward from external scripts
     // currently only used by bullets (when they hit the agent)
-    public void AddExternalReward(float reward)
+    public void AddExternalReward(float reward, string message = "")
     {
         AddReward(reward);
+        //if (message != "") Debug.Log(message);
     }
 
     public void EndEpisodeExternal(string reason)
     {
         Debug.Log($"Ending episode because {reason}");
-        EndEpisode();
+        if (endEpisodes) EndEpisode();
+        else Debug.Log("Not ending episode, as endEpisode is set to false");
     }
 
     public override void CollectObservations(VectorSensor sensor)
@@ -128,8 +134,6 @@ public class AIPlayerAgent : Agent
             float currentAngle = i * angleStep;
             Quaternion rotation = Quaternion.Euler(0, currentAngle, 0);
             Vector3 rayDirection = transform.rotation * rotation * Vector3.forward;
-            // Simplified direction calculation, test?:
-            // Vector3 rayDirection = Quaternion.Euler(0, currentAngle, 0) * transform.forward;
             
             Vector3 rayFrom = transform.position - Vector3.up * 0.5f;
             RaycastHit hit;
@@ -150,6 +154,7 @@ public class AIPlayerAgent : Agent
             }
             sensor.AddObservation(wallDetected); // Bool observation
             sensor.AddObservation(distanceToHitNormalized); // Normalized distance
+            wallDistances[i] = distanceToHitNormalized;
         }
 
 
@@ -204,9 +209,7 @@ public class AIPlayerAgent : Agent
                     // Check Line of Sight (LOS) - start ray slightly above agent center to avoid ground clipping
                     Ray ray = new Ray(transform.position + Vector3.up * 0.5f, directionToPlayer);
                     RaycastHit hit;
-                    // Raycast only against relevant layers (e.g., Player, Wall, Obstacles) for performance
-                    // int targetCheckLayers = LayerMask.GetMask("Player", "Wall", "Default"); // Example
-                    // if (Physics.Raycast(ray, out hit, visionRange, targetCheckLayers))
+                    
                     if (Physics.Raycast(ray, out hit, visionRange))
                     {
                         // Check if the first thing hit is the Player (or part of the player)
@@ -214,6 +217,8 @@ public class AIPlayerAgent : Agent
                         {
                             lastKnownPlayerLocation = playerCenter; // Use center for LKP
                             playerVisible = true; // Set the flag
+                            Debug.DrawRay(ray.origin, ray.direction * distanceToPlayer, Color.magenta, 20f);
+
                         }
                          // else: something obstructs the view
                     }
@@ -263,49 +268,34 @@ public class AIPlayerAgent : Agent
         bool wantsToFire = actions.DiscreteActions[0] == 1;
         
         bool targetAimGood = false;
+        
+        Collider targetCollider = target.GetComponentInChildren<Collider>();
+
+        Vector3 currentTargetCenter = targetCollider.bounds.center;
+        Vector3 currentDirectionToPlayer = (currentTargetCenter - transform.position).normalized;
+        
+        // Compare agent's forward direction with direction to target
+        float currentAngleToPlayer = Vector3.Angle(transform.forward, currentDirectionToPlayer);
+
+        targetAimGood = currentAngleToPlayer <= maxFiringAngleThreshold;
 
         if (wantsToFire)
         {
-            // Debug.Log("AI trying to fire");
             bool canFire = weapon != null && weapon.ReadyToFire;
-            // Debug.Log($"Can AI fire? {canFire}");
-
-             if (playerVisible && target != null)
-             {
-                 Collider targetCollider = target.GetComponentInChildren<Collider>();
-                 if (targetCollider != null)
-                 {
-                    Vector3 currentTargetCenter = targetCollider.bounds.center;
-                    Vector3 currentDirectionToPlayer = (currentTargetCenter - transform.position).normalized;
-                    // Compare agent's forward direction with direction to target
-                    float currentAngleToPlayer = Vector3.Angle(transform.forward, currentDirectionToPlayer);
-
-                    targetAimGood = currentAngleToPlayer <= maxFiringAngleThreshold;
-                 }
-             }
-
 
             if (!canFire)
             {
-                if (playerVisible)
-                {
-                    //AddReward(0.05f);
-                }
-                // Penalize trying to fire when weapon isn't ready
-                //AddReward(fireWhenNotReadyPenalty);
+                // later: Penalize trying to fire when weapon isn't ready
             }
-            // Only penalize poor aim if the player is visible (otherwise agent might be predicting/pre-firing)
             else if (playerVisible && !targetAimGood)
             {
-                 // Debug.Log("AI tried to fire with bad aim");
-                 AddReward(-0.02f);
-                 // Debug.Log($"AI fired with poor aim ({currentAngleToPlayer} degrees). Penalty applied.");
+                 // AI tried to fire with bad aim
+                 // AddReward(-0.02f);
+                 Debug.Log($"AI fired with poor aim ({currentAngleToPlayer} degrees). Penalty applied.");
             }
-
+            
             if (canFire && input != null)
             {
-                //Debug.Log("AI fired!");
-                //AddReward(-0.001f);
                 // Manually trigger the InputAction component, as the AI can't use InputActions
                 input.TriggerAction();
             }
@@ -315,23 +305,37 @@ public class AIPlayerAgent : Agent
             }
         }
 
-        if (playerVisible && targetAimGood)
+        if (playerVisible)
         {
-            //Debug.Log("Looking at player directly!");
             AddReward(0.001f);
         }
+        
+        // 0 = 0.001
+        // 10 = 0.00031
+        // 45 = 0.00022
+        // 90 = 0.00019
+        AddReward(0.001f / (1 + Mathf.Log(1 + Mathf.Pow(currentAngleToPlayer, 0.9f))));
+        
+        
+        
+        foreach (float wallDistance in wallDistances)
+        {
+            AddReward(-wallDistance * 0.0001f);
+        }
+        
+        
 
          // Small penalty for existing to encourage ending the episode faster (hit player)
-         //AddReward(-0.0001f);
+         //AddReward(-0.0002f);
     }
 
     private void FixedUpdate()
     {
-        // totalTime += Time.fixedDeltaTime;
-        // if (totalTime > episodeDuration)
-        // {
-        //     EndEpisode();
-        // }
+        totalTime += Time.fixedDeltaTime;
+        if (totalTime > episodeDuration)
+        {
+            EndEpisode();
+        }
      
         // Bullet tracking
         bulletTracker.ClearTrackedBulletList();
@@ -354,9 +358,9 @@ public class AIPlayerAgent : Agent
     {
         if (collision.gameObject.CompareTag("Wall"))
         {
-            AddReward(-1f);
+            AddReward(-10f);
             Debug.DrawLine(collision.transform.position, collision.transform.position + (Vector3.up * 20f), Color.black, 20f);
-            EndEpisode();
+            if (endEpisodes) EndEpisode();
         }
 
         if (collision.gameObject.CompareTag("Bullet"))

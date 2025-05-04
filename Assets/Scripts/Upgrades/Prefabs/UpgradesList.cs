@@ -10,4 +10,5 @@ public class UpgradesList : ScriptableObject
     {
         return upgrades[Random.Range(0, upgrades.Length)];
     }
+    
 }

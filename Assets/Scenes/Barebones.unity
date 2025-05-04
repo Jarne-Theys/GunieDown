@@ -1214,6 +1214,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae817f692bbbb074dbecffce7634a4a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  showPowerupScreen: 0
   humanPlayerScore: 0
   aiPlayerScore: 0
   humanPlayer: {fileID: 7043731237193986913}
@@ -2290,7 +2291,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 59
+    VectorObservationSize: 41
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 4
@@ -2324,6 +2325,7 @@ MonoBehaviour:
     maxStep: 0
   hasUpgradedFromAgentParameters: 1
   MaxStep: 0
+  endEpisodes: 0
   rb: {fileID: 690825390}
   moveSpeed: 5
   raycastDistance: 5
@@ -2491,7 +2493,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   detectionRadius: 10
-  maxTrackedBullets: 6
+  maxTrackedBullets: 3
   bulletLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -7744,8 +7746,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   destroyOnPlayerContact: 0
   destroyOnTerrainContact: 0
-  addRewardToAgent: 0
-  subtractRewardFromAgent: 0
+  addRewardToAgentOnTargetHit: 0
+  subtractRewardFromAgentOnAgentHit: 0
+  subtractRewardFromAgentOnTerrainHit: 0
   agent: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

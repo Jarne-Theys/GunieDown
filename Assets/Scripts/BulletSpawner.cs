@@ -30,7 +30,7 @@ public class BulletSpawner : MonoBehaviour
             timer = 0f;
             
             BulletMove projectileMover = bullet.GetComponent<BulletMove>();
-            projectileMover.Init(aiAgent,false, true);
+            projectileMover.Init(aiAgent,false, true, false);
         }
     }
 }

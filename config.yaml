@@ -1,12 +1,13 @@
 behaviors:
   AIPlayer:
     trainer_type: ppo
-    # Train for 1 million steps on just not running into (outer) walls and shooting at STATIONARY target
-    max_steps: 1_000_000
+    # Train for n million steps on just not running into (outer) walls and shooting at STATIONARY target
+    max_steps: 5_000_000
     summary_freq: 10000
     checkpoint_interval: 10000
     hyperparameters:
       batch_size: 4096
       buffer_size: 40960
+      beta: 0.01
     network_settings:
       hidden_units: 256
