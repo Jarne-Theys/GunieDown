@@ -18,7 +18,7 @@ command = [
     "--env=C:\\UnityProjects\\Powor\\Build\\Powor.exe",
     #"--env=/home/jarne/Documents/Unity_projects/GunieDown/Build/Build.x86_64",
     "--results-dir=Assets/AI",
-    #"--resume", # Or "--force" if you want to start fresh each time
+    "--resume", # Or "--force" if you want to start fresh each time
     #"--force",
     "--no-graphics",
     "--run-id=outerwalls-shooting-stationary-shaped-timed",
