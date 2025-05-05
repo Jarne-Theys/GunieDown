@@ -8,6 +8,6 @@ behaviors:
     hyperparameters:
       batch_size: 4096
       buffer_size: 40960
-      beta: 0.01
+      #beta: 0.01
     network_settings:
       hidden_units: 256

@@ -2,58 +2,58 @@
     "AIPlayer": {
         "checkpoints": [
             {
-                "steps": 2899981,
-                "file_path": "Assets/AI\\outerwalls-shooting-stationary-shaped-timed\\AIPlayer\\AIPlayer-2899981.onnx",
-                "reward": 33.798274603721346,
-                "creation_time": 1746390378.3359087,
+                "steps": 4239998,
+                "file_path": "Assets/AI\\outerwalls-shooting-stationary-shaped-timed\\AIPlayer\\AIPlayer-4239998.onnx",
+                "reward": 63.260643620975316,
+                "creation_time": 1746481728.6916883,
                 "auxillary_file_paths": [
-                    "Assets/AI\\outerwalls-shooting-stationary-shaped-timed\\AIPlayer\\AIPlayer-2899981.pt"
+                    "Assets/AI\\outerwalls-shooting-stationary-shaped-timed\\AIPlayer\\AIPlayer-4239998.pt"
                 ]
             },
             {
-                "steps": 2909989,
-                "file_path": "Assets/AI\\outerwalls-shooting-stationary-shaped-timed\\AIPlayer\\AIPlayer-2909989.onnx",
-                "reward": 31.784905932843685,
-                "creation_time": 1746390432.0560343,
+                "steps": 4249942,
+                "file_path": "Assets/AI\\outerwalls-shooting-stationary-shaped-timed\\AIPlayer\\AIPlayer-4249942.onnx",
+                "reward": 57.291182864796035,
+                "creation_time": 1746481793.4690397,
                 "auxillary_file_paths": [
-                    "Assets/AI\\outerwalls-shooting-stationary-shaped-timed\\AIPlayer\\AIPlayer-2909989.pt"
+                    "Assets/AI\\outerwalls-shooting-stationary-shaped-timed\\AIPlayer\\AIPlayer-4249942.pt"
                 ]
             },
             {
-                "steps": 2919997,
-                "file_path": "Assets/AI\\outerwalls-shooting-stationary-shaped-timed\\AIPlayer\\AIPlayer-2919997.onnx",
-                "reward": 23.768495897883955,
-                "creation_time": 1746390482.0458884,
+                "steps": 4259950,
+                "file_path": "Assets/AI\\outerwalls-shooting-stationary-shaped-timed\\AIPlayer\\AIPlayer-4259950.onnx",
+                "reward": 56.977940626740455,
+                "creation_time": 1746481858.5462964,
                 "auxillary_file_paths": [
-                    "Assets/AI\\outerwalls-shooting-stationary-shaped-timed\\AIPlayer\\AIPlayer-2919997.pt"
+                    "Assets/AI\\outerwalls-shooting-stationary-shaped-timed\\AIPlayer\\AIPlayer-4259950.pt"
                 ]
             },
             {
-                "steps": 2929981,
-                "file_path": "Assets/AI\\outerwalls-shooting-stationary-shaped-timed\\AIPlayer\\AIPlayer-2929981.onnx",
-                "reward": 29.46167879800002,
-                "creation_time": 1746390532.071121,
+                "steps": 4269998,
+                "file_path": "Assets/AI\\outerwalls-shooting-stationary-shaped-timed\\AIPlayer\\AIPlayer-4269998.onnx",
+                "reward": 55.47856546261094,
+                "creation_time": 1746481923.751373,
                 "auxillary_file_paths": [
-                    "Assets/AI\\outerwalls-shooting-stationary-shaped-timed\\AIPlayer\\AIPlayer-2929981.pt"
+                    "Assets/AI\\outerwalls-shooting-stationary-shaped-timed\\AIPlayer\\AIPlayer-4269998.pt"
                 ]
             },
             {
-                "steps": 2939581,
-                "file_path": "Assets/AI\\outerwalls-shooting-stationary-shaped-timed\\AIPlayer\\AIPlayer-2939581.onnx",
-                "reward": 28.567237852649257,
-                "creation_time": 1746390583.5819366,
+                "steps": 4278422,
+                "file_path": "Assets/AI\\outerwalls-shooting-stationary-shaped-timed\\AIPlayer\\AIPlayer-4278422.onnx",
+                "reward": 52.422943009861875,
+                "creation_time": 1746481982.6450176,
                 "auxillary_file_paths": [
-                    "Assets/AI\\outerwalls-shooting-stationary-shaped-timed\\AIPlayer\\AIPlayer-2939581.pt"
+                    "Assets/AI\\outerwalls-shooting-stationary-shaped-timed\\AIPlayer\\AIPlayer-4278422.pt"
                 ]
             }
         ],
         "final_checkpoint": {
-            "steps": 2939581,
+            "steps": 4278422,
             "file_path": "Assets/AI\\outerwalls-shooting-stationary-shaped-timed\\AIPlayer.onnx",
-            "reward": 28.567237852649257,
-            "creation_time": 1746390583.5819366,
+            "reward": 52.422943009861875,
+            "creation_time": 1746481982.6450176,
             "auxillary_file_paths": [
-                "Assets/AI\\outerwalls-shooting-stationary-shaped-timed\\AIPlayer\\AIPlayer-2939581.pt"
+                "Assets/AI\\outerwalls-shooting-stationary-shaped-timed\\AIPlayer\\AIPlayer-4278422.pt"
             ]
         }
     },
