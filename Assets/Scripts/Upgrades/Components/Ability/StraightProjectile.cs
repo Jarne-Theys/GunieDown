@@ -37,6 +37,8 @@ public class StraightProjectile : ProjectileComponentBase
             AIPlayerAgent playerAgent = player.gameObject.GetComponent<AIPlayerAgent>();
             projectileMover.Init(playerAgent,rewardAgentForHittingTarget, punishAgentForGettingHit, punishAgentForMiss);
         }
+        
+        
 
         LastProjectilePositions = new Vector3[] { projectile.transform.position};
 

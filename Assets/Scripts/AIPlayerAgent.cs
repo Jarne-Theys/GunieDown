@@ -126,6 +126,7 @@ public class AIPlayerAgent : Agent
         sensor.AddObservation(transform.forward);
         sensor.AddObservation(rb.linearVelocity / moveSpeed); // Observe normalized velocity
 
+
         // Raycast Observations
         // do 4 raycasts
         float angleStep = 360f / numWallRaycasts;
@@ -230,24 +231,28 @@ public class AIPlayerAgent : Agent
                  Debug.LogWarning("Target has no Collider component in its children.", target);
              } 
              
-            // Calculate relative LKP regardless of current visibility
-            if (lastKnownPlayerLocation != Vector3.zero) // Only calculate if we have a valid LKP
-            {
-                relativeLastKnown = lastKnownPlayerLocation - transform.position;
-                // Normalize magnitude relative to vision range
-                relativeLastKnownMagNormalized = Mathf.Clamp01(relativeLastKnown.magnitude / visionRange);
-            }
+             // Calculate relative LKP regardless of current visibility
+             if (lastKnownPlayerLocation != Vector3.zero) // Only calculate if we have a valid LKP
+             {
+                 relativeLastKnown = lastKnownPlayerLocation - transform.position;
+                 // Normalize magnitude relative to vision range
+                 relativeLastKnownMagNormalized = Mathf.Clamp01(relativeLastKnown.magnitude / visionRange);
+             }
         }
         else {
              // Handle case where target is null
              Debug.LogWarning("Target is null in CollectObservations.");
         }
-
+        
 
         sensor.AddObservation(playerVisible); // Bool observation: Is the player currently visible?
         sensor.AddObservation(relativeLastKnown.normalized); // Direction to Last Known Position (zero vector if never seen)
         sensor.AddObservation(relativeLastKnownMagNormalized); // Normalized distance to LKP
         sensor.AddObservation(weapon.ReadyToFire);
+        
+        var weaponAngleToTarget = Vector3.Angle(transform.forward, relativeLastKnown);
+        sensor.AddObservation(weaponGo.transform.localRotation);
+        sensor.AddObservation(weaponAngleToTarget);
     }
 
 
@@ -265,7 +270,9 @@ public class AIPlayerAgent : Agent
         finalMoveDirection = (moveDirectionForward + moveDirectionStrafe).normalized * moveSpeed; // Normalize to prevent faster diagonal movement
 
         // Shooting
-        bool wantsToFire = actions.DiscreteActions[0] == 1;
+        //bool wantsToFire = actions.DiscreteActions[0] == 1;
+        //TODO: replace this with shooting logic once aiming is sufficiently trained
+        bool wantsToFire = false;
         
         bool targetAimGood = false;
         
@@ -290,7 +297,7 @@ public class AIPlayerAgent : Agent
             else if (playerVisible && !targetAimGood)
             {
                  // AI tried to fire with bad aim
-                 // AddReward(-0.02f);
+                 AddReward(-(0.1f - (0.1f / (1 + Mathf.Log(1 + Mathf.Pow(currentAngleToPlayer, 0.9f))))));
                  Debug.Log($"AI fired with poor aim ({currentAngleToPlayer} degrees). Penalty applied.");
             }
             
@@ -328,7 +335,61 @@ public class AIPlayerAgent : Agent
          // Small penalty for existing to encourage ending the episode faster (hit player)
          //AddReward(-0.0002f);
     }
+    
+    public override void Heuristic(in ActionBuffers actionsOut)
+    {
+        var continuousActionsOut = actionsOut.ContinuousActions;
+        var discreteActionsOut = actionsOut.DiscreteActions;
 
+        // --- Movement ---
+        // Input.GetAxis("Vertical") maps to W/S keys and Up/Down arrow keys by default. Range: -1 to 1
+        continuousActionsOut[0] = Input.GetAxis("Vertical");
+
+        // Input.GetAxis("Horizontal") maps to A/D keys and Left/Right arrow keys by default. Range: -1 to 1
+        continuousActionsOut[1] = Input.GetAxis("Horizontal");
+
+        // --- Rotation (Mouse Look) ---
+        // Input.GetAxis("Mouse X") for yaw.
+        // The sensitivity of this might need tuning based on your turnSpeed.
+        // If mouse movement is too fast/slow, you might multiply Input.GetAxis by a sensitivity factor here,
+        // or adjust your turnSpeed.
+        continuousActionsOut[2] = Input.GetAxis("Mouse X");
+
+        // Input.GetAxis("Mouse Y") for pitch.
+        // Your FixedUpdate uses -pitchInput, so a positive Mouse Y (mouse moved up) should result in looking up.
+        // Input.GetAxis("Mouse Y") is positive when mouse moves up.
+        continuousActionsOut[3] = Input.GetAxis("Mouse Y");
+
+
+        // --- Example: Shooting (if you add a discrete action) ---
+        // Assuming your Behavior Parameters has 1 Discrete Action Branch with Size 2 (0: No Shoot, 1: Shoot)
+        // And you want to use the Space bar or Left Mouse Button to shoot.
+        // discreteActionsOut.Clear(); // Clear previous discrete actions
+        if (Input.GetKey(KeyCode.Space) || Input.GetMouseButton(0)) // 0 is Left Mouse Button
+        {
+            discreteActionsOut[0] = 1; // Action value for "Shoot"
+        }
+        else
+        {
+            discreteActionsOut[0] = 0; // Action value for "Don't Shoot"
+        }
+
+        // --- Optional: For better mouse look during Heuristic mode ---
+        // if (Time.frameCount % 20 == 0) // Do this less frequently if you see performance issues
+        // {
+        //     if (Input.GetKey(KeyCode.Escape))
+        //     {
+        //         Cursor.lockState = CursorLockMode.None;
+        //         Cursor.visible = true;
+        //     }
+        //     else if (UnityEngine.Device.Application.isFocused) // Only lock if game window is focused
+        //     {
+        //          Cursor.lockState = CursorLockMode.Locked;
+        //          Cursor.visible = false;
+        //     }
+        // }
+    }
+    
     private void FixedUpdate()
     {
         totalTime += Time.fixedDeltaTime;
@@ -341,16 +402,33 @@ public class AIPlayerAgent : Agent
         bulletTracker.ClearTrackedBulletList();
         bulletTracker.DetectBullets();
         
+        
         Vector3 desiredVelocity = finalMoveDirection;
         desiredVelocity.y = rb.linearVelocity.y; // Keep the vertical (gravity) velocity untouched
         Vector3 velocityChange = desiredVelocity - rb.linearVelocity;
         rb.AddForce(velocityChange, ForceMode.VelocityChange);
         
+        
         float yawDegrees = yawInput * turnSpeed * Time.fixedDeltaTime;
         float pitchDegrees = -pitchInput * turnSpeed * Time.fixedDeltaTime;
 
         transform.Rotate(0f, yawDegrees, 0f);
-        weaponGo.transform.Rotate(pitchDegrees, 0f, 0f);
+        //sweaponGo.transform.Rotate(pitchDegrees, 0f, 0f);
+        
+        // Get current pitch and convert to signed angle (-180 to +180)
+        float currentPitch = weaponGo.transform.localEulerAngles.x;
+        if (currentPitch > 180f) currentPitch -= 360f;
+
+        // Add pitch input
+        float newPitch = currentPitch + pitchDegrees;
+
+        // Clamp between -90 (down) and +90 (up)
+        newPitch = Mathf.Clamp(newPitch, -90f, 90f);
+
+        // Apply the new pitch, keeping yaw and roll unchanged
+        Vector3 euler = weaponGo.transform.localEulerAngles;
+        euler.x = newPitch;
+        weaponGo.transform.localEulerAngles = euler;
     }
 
 

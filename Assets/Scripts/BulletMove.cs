@@ -20,7 +20,7 @@ public class BulletMove : MonoBehaviour
     
     public bool addRewardToAgentOnTargetHit = false;
     public bool subtractRewardFromAgentOnAgentHit = false;
-    public bool subtractRewardFromAgentOnTerrainHit = false;
+    public bool subtractRewardFromAgentOnMiss = false;
     public AIPlayerAgent agent;
 
 
@@ -47,7 +47,7 @@ public class BulletMove : MonoBehaviour
         this.agent = aiAgent;
         this.addRewardToAgentOnTargetHit = rewardAgentForHitting;
         this.subtractRewardFromAgentOnAgentHit = punishAgentForGettingHit;
-        this.subtractRewardFromAgentOnTerrainHit = punishAgentForMiss;
+        this.subtractRewardFromAgentOnMiss = punishAgentForMiss;
     }
 
     void OnCollisionEnter(Collision collision)
@@ -56,7 +56,7 @@ public class BulletMove : MonoBehaviour
         {
             if (destroyOnTerrainContact)
             {
-                if (subtractRewardFromAgentOnTerrainHit)
+                if (subtractRewardFromAgentOnMiss)
                 {
                     agent.AddExternalReward(-0.01f, "Punished for hitting terrain");
                 }
@@ -70,9 +70,8 @@ public class BulletMove : MonoBehaviour
             {
                 if (addRewardToAgentOnTargetHit)
                 {
-                    // Increase from 1 to 10 for more motivation
-                    agent.AddExternalReward(10f);
-                    agent.EndEpisodeExternal("AI hit player!");
+                    agent.AddExternalReward(1f);
+                    //agent.EndEpisodeExternal("AI hit player!");
                 }
 
                 else
@@ -90,7 +89,7 @@ public class BulletMove : MonoBehaviour
             {
                 if (subtractRewardFromAgentOnAgentHit)
                 {
-                    agent.AddExternalReward(-0.1f, "Punished for getting hit");
+                    agent.AddExternalReward(-0.5f, "Punished for getting hit");
                 }
 
                 else
@@ -113,7 +112,10 @@ public class BulletMove : MonoBehaviour
 
     void OnDestroy()
     {
-        
+        if (subtractRewardFromAgentOnMiss)
+        {
+            agent.AddExternalReward(-0.1f, "Punished for miss");
+        }
     }
 
     /*    public void OnTriggerEnter(Collider other)
