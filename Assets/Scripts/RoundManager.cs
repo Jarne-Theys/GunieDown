@@ -30,6 +30,9 @@ public class RoundManager : MonoBehaviour
     
     [SerializeField]
     private UpgradesList upgradesList;
+    
+    [SerializeField]
+    private StatUpgradesList statUpgradesList;
 
     [SerializeField]
     private InputActionReference cheatButton;
@@ -155,7 +158,9 @@ public class RoundManager : MonoBehaviour
             button.onClick.AddListener(() => ApplyPowerupAndContinue(upgrade));
         }
         
-        // TODO: Apply stat upgrade to AI
+        // Apply stat upgrade to AI
+        UpgradeDefinition statUpgrade = statUpgradesList.GetRandomUpgrade();
+        statUpgrade.ApplyUpgrade(aiPlayer);
     }
 
     public void ApplyPowerupAndContinue(UpgradeDefinition selectedUpgrade)
@@ -173,5 +178,8 @@ public class RoundManager : MonoBehaviour
 
         humanPlayer.GetComponent<PlayerMovement>().enabled = true;
         humanPlayer.GetComponent<PlayerLook>().enabled = true;
+        
+        //TODO: check if this works
+        aiPlayer.GetComponent<AIPlayerAgent>().enabled = true;
     }
 }

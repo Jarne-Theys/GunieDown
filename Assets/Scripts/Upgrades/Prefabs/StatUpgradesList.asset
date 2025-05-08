@@ -9,10 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4c7f79071d2b73cd2b37ae59ccddcf81, type: 3}
-  m_Name: UpgradesList
+  m_Script: {fileID: 11500000, guid: da760fe96c3c23955811aeef35ec82df, type: 3}
+  m_Name: StatUpgradesList
   m_EditorClassIdentifier: 
   upgrades:
-  - {fileID: 11400000, guid: 00f9712320d4fca40a244b8caffdee95, type: 2}
-  - {fileID: 11400000, guid: 986e97f22a493cb438d4ce95d07c185e, type: 2}
   - {fileID: 11400000, guid: 8630c29ab401b5b1d81e636ed059c5d6, type: 2}

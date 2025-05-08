@@ -40,4 +40,4 @@ MonoBehaviour:
         reloadAction: {fileID: 0}
         rewardAgentForHittingTarget: 0
         punishAgentForGettingHit: 0
-        punishAgentForMiss: 1
+        punishAgentForMiss: 0

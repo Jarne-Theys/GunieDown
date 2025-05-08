@@ -38,6 +38,6 @@ MonoBehaviour:
         fireRate: 240
         currentAmmo: 30
         reloadAction: {fileID: 0}
-        rewardAgentForHittingTarget: 0
+        rewardAgentForHittingTarget: 1
         punishAgentForGettingHit: 0
-        punishAgentForMiss: 0
+        punishAgentForMiss: 1

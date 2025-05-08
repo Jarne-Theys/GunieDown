@@ -122,9 +122,9 @@ public class AIPlayerAgent : Agent
             throw new ArgumentException("VectorSensor is null");
         }
         
-        sensor.AddObservation(transform.position);
-        sensor.AddObservation(transform.forward);
-        sensor.AddObservation(rb.linearVelocity / moveSpeed); // Observe normalized velocity
+        //sensor.AddObservation(transform.position);
+        //sensor.AddObservation(transform.forward);
+        //sensor.AddObservation(rb.linearVelocity / moveSpeed); // Observe normalized velocity
 
 
         // Raycast Observations
@@ -153,7 +153,7 @@ public class AIPlayerAgent : Agent
                 // Optional: Observe other object types? (e.g., obstacles, cover)
                 // sensor.AddObservation(hit.collider.CompareTag("Obstacle")); // Example
             }
-            sensor.AddObservation(wallDetected); // Bool observation
+            // sensor.AddObservation(wallDetected); // Bool observation
             sensor.AddObservation(distanceToHitNormalized); // Normalized distance
             wallDistances[i] = distanceToHitNormalized;
         }
@@ -168,12 +168,12 @@ public class AIPlayerAgent : Agent
                 // (relative) position
                 Vector3 bulletPosition = bulletTracker.trackedBullets[i].position;
                 Vector3 aiPosition = transform.position;
-                sensor.AddObservation(bulletPosition - aiPosition);
+                sensor.AddObservation((bulletPosition - aiPosition).normalized);
 
                 // velocity
-                Rigidbody bulletRb = bulletTracker.trackedBullets[i].GetComponent<Rigidbody>();
-                Vector3 bulletVelocity = bulletRb.linearVelocity;
-                sensor.AddObservation(bulletVelocity);
+                // Rigidbody bulletRb = bulletTracker.trackedBullets[i].GetComponent<Rigidbody>();
+                // Vector3 bulletVelocity = bulletRb.linearVelocity;
+                // sensor.AddObservation(bulletVelocity);
             }
             else
             {
@@ -181,7 +181,7 @@ public class AIPlayerAgent : Agent
                 sensor.AddObservation(Vector3.zero);
                 
                 // velocity
-                sensor.AddObservation(Vector3.zero);
+                // sensor.AddObservation(Vector3.zero);
 
             }
         }
@@ -251,26 +251,54 @@ public class AIPlayerAgent : Agent
         sensor.AddObservation(weapon.ReadyToFire);
         
         var weaponAngleToTarget = Vector3.Angle(transform.forward, relativeLastKnown);
-        sensor.AddObservation(weaponGo.transform.localRotation);
+        //sensor.AddObservation(weaponGo.transform.localRotation);
         sensor.AddObservation(weaponAngleToTarget);
     }
 
 
     public override void OnActionReceived(ActionBuffers actions)
     {
-        // Movement and rotation 
-        float moveForwardBackward = actions.ContinuousActions[0];
-        float moveLeftRight = actions.ContinuousActions[1];
-        yawInput = actions.ContinuousActions[2];
-        pitchInput = actions.ContinuousActions[3];
+        // Movement
+        // --- Read discrete actions ---
+        int forwardAction = actions.DiscreteActions[0]; // 0 = no move, 1 = forward, 2 = backward
+        int strafeAction = actions.DiscreteActions[1];  // 0 = no move, 1 = right, 2 = left
 
-        // Calculate move direction based on agent's current orientation
+        // --- Convert discrete actions to movement values ---
+        float moveForwardBackward = 0f;
+        float moveLeftRight = 0f;
+
+        switch (forwardAction)
+        {
+            case 1:
+                moveForwardBackward = 1f;
+                break;
+            case 2:
+                moveForwardBackward = -1f;
+                break;
+        }
+
+        switch (strafeAction)
+        {
+            case 1:
+                moveLeftRight = 1f;
+                break;
+            case 2:
+                moveLeftRight = -1f;
+                break;
+        }
+
+        // --- Rotation (assumes you keep yawInput/pitchInput continuous) ---
+        yawInput = actions.ContinuousActions[0];
+        pitchInput = actions.ContinuousActions[1];
+
+        // --- Combine movement ---
         Vector3 moveDirectionForward = transform.forward * moveForwardBackward;
         Vector3 moveDirectionStrafe = transform.right * moveLeftRight;
-        finalMoveDirection = (moveDirectionForward + moveDirectionStrafe).normalized * moveSpeed; // Normalize to prevent faster diagonal movement
-
+        finalMoveDirection = (moveDirectionForward + moveDirectionStrafe).normalized * moveSpeed;
+ 
+        
         // Shooting
-        //bool wantsToFire = actions.DiscreteActions[0] == 1;
+        //bool wantsToFire = actions.DiscreteActions[2] == 1;
         //TODO: replace this with shooting logic once aiming is sufficiently trained
         bool wantsToFire = false;
         
@@ -342,23 +370,33 @@ public class AIPlayerAgent : Agent
         var discreteActionsOut = actionsOut.DiscreteActions;
 
         // --- Movement ---
-        // Input.GetAxis("Vertical") maps to W/S keys and Up/Down arrow keys by default. Range: -1 to 1
-        continuousActionsOut[0] = Input.GetAxis("Vertical");
+        // Forward/Backward
+        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
+            discreteActionsOut[0] = 1; // forward
+        else if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
+            discreteActionsOut[0] = 2; // backward
+        else
+            discreteActionsOut[0] = 0; // no movement
 
-        // Input.GetAxis("Horizontal") maps to A/D keys and Left/Right arrow keys by default. Range: -1 to 1
-        continuousActionsOut[1] = Input.GetAxis("Horizontal");
+        // Left/Right
+        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+            discreteActionsOut[1] = 1; // right
+        else if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+            discreteActionsOut[1] = 2; // left
+        else
+            discreteActionsOut[1] = 0; // no movement
 
         // --- Rotation (Mouse Look) ---
         // Input.GetAxis("Mouse X") for yaw.
         // The sensitivity of this might need tuning based on your turnSpeed.
         // If mouse movement is too fast/slow, you might multiply Input.GetAxis by a sensitivity factor here,
         // or adjust your turnSpeed.
-        continuousActionsOut[2] = Input.GetAxis("Mouse X");
+        continuousActionsOut[0] = Input.GetAxis("Mouse X");
 
         // Input.GetAxis("Mouse Y") for pitch.
         // Your FixedUpdate uses -pitchInput, so a positive Mouse Y (mouse moved up) should result in looking up.
         // Input.GetAxis("Mouse Y") is positive when mouse moves up.
-        continuousActionsOut[3] = Input.GetAxis("Mouse Y");
+        continuousActionsOut[1] = Input.GetAxis("Mouse Y");
 
 
         // --- Example: Shooting (if you add a discrete action) ---
@@ -367,11 +405,11 @@ public class AIPlayerAgent : Agent
         // discreteActionsOut.Clear(); // Clear previous discrete actions
         if (Input.GetKey(KeyCode.Space) || Input.GetMouseButton(0)) // 0 is Left Mouse Button
         {
-            discreteActionsOut[0] = 1; // Action value for "Shoot"
+            discreteActionsOut[2] = 1; // Action value for "Shoot"
         }
         else
         {
-            discreteActionsOut[0] = 0; // Action value for "Don't Shoot"
+            discreteActionsOut[2] = 0; // Action value for "Don't Shoot"
         }
 
         // --- Optional: For better mouse look during Heuristic mode ---

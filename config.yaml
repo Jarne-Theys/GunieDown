@@ -13,8 +13,12 @@ behaviors:
     network_settings:
       hidden_units: 256
     reward_signals:
-          extrinsic:
-            gamma: 0.995
+      extrinsic:
+        gamma: 0.995
+        strength: 1.0
+      gail:
+        strength: 0.5
+        demo_path:  
     behavioral_cloning:
-      strength: 0.9
-      gamma : 0.995
+      strength: 0.5
+      demo_path:
