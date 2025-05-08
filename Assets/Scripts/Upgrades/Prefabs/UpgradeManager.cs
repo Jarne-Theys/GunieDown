@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class UpgradeManager : MonoBehaviour
 {
-    [SerializeField] private UpgradesList upgradesList;
     private List<IUpgradeComponent> activeUpgradeInstances = new List<IUpgradeComponent>();
 
     /**

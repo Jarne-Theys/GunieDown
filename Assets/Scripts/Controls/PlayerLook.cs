@@ -51,13 +51,15 @@ public class PlayerLook : MonoBehaviour
     [SerializeField] 
     private Transform weaponTransform;
 
-    public float maxDownAngle = 70f;
+    public float maxDownAngle = 90f;
     public float maxUpAngle = -90f;
     private float cameraXRotation = 0f;
 
     public float mouseSensitivity = 100f;
 
     private InputAction mouseMovement;
+
+    [SerializeField] private Camera mainCamera;
 
     void Start()
     {
@@ -75,10 +77,7 @@ public class PlayerLook : MonoBehaviour
         cameraXRotation -= mouseInput.y * mouseSensitivity / 100;
         cameraXRotation = Mathf.Clamp(cameraXRotation, maxUpAngle, maxDownAngle);
 
-        weaponTransform.localEulerAngles = new Vector3(cameraXRotation, 0f, 0f);
-        if (isOnMainPlayer)
-        {
-            Camera.main.transform.localEulerAngles = new Vector3(cameraXRotation, 0f, 0f);
-        }
+        if (weaponTransform != null) weaponTransform.localEulerAngles = new Vector3(cameraXRotation, 0f, 0f);
+        if (mainCamera != null) mainCamera.transform.localEulerAngles = new Vector3(cameraXRotation, 0f, 0f);
     }
 }

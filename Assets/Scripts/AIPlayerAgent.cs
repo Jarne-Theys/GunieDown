@@ -4,6 +4,7 @@ using Unity.MLAgents;
 using Unity.MLAgents.Sensors;
 using Unity.MLAgents.Actuators;
 using System.Threading;
+using TMPro;
 
 public class AIPlayerAgent : Agent
 {
@@ -40,6 +41,16 @@ public class AIPlayerAgent : Agent
     private float pitchInput;
     [SerializeField] private GameObject weaponGo;
     
+    [SerializeField] private GameObject mainCamera;
+    public bool pitchCamera;
+
+    [SerializeField] private GameObject debugTextGo;
+    private TMP_Text debugText;
+
+    private float lastMouseX;
+    private float lastMouseY;
+    
+    
     // --- Reward Shaping Parameter ---
     [Header("Reward Shaping")]
     [Tooltip("Maximum angle (degrees) off target the agent can fire without penalty.")]
@@ -67,6 +78,9 @@ public class AIPlayerAgent : Agent
         bulletTracker.ClearTrackedBulletList();
 
         totalTime = 0f;
+
+        lastMouseX = 0;
+        lastMouseY = 0;
     }
     
     protected override void OnEnable()
@@ -80,6 +94,7 @@ public class AIPlayerAgent : Agent
         {
             Debug.LogWarning("UpgradeManager not found on Enable, subscription skipped.", this);
         }
+        debugText = debugTextGo.GetComponentInChildren<TMP_Text>();
     }
     
     protected override void OnDisable()
@@ -298,9 +313,9 @@ public class AIPlayerAgent : Agent
  
         
         // Shooting
-        //bool wantsToFire = actions.DiscreteActions[2] == 1;
+        bool wantsToFire = actions.DiscreteActions[2] == 1;
         //TODO: replace this with shooting logic once aiming is sufficiently trained
-        bool wantsToFire = false;
+        //bool wantsToFire = false;
         
         bool targetAimGood = false;
         
@@ -317,12 +332,8 @@ public class AIPlayerAgent : Agent
         if (wantsToFire)
         {
             bool canFire = weapon != null && weapon.ReadyToFire;
-
-            if (!canFire)
-            {
-                // later: Penalize trying to fire when weapon isn't ready
-            }
-            else if (playerVisible && !targetAimGood)
+            
+             if (playerVisible && !targetAimGood)
             {
                  // AI tried to fire with bad aim
                  AddReward(-(0.1f - (0.1f / (1 + Mathf.Log(1 + Mathf.Pow(currentAngleToPlayer, 0.9f))))));
@@ -366,6 +377,8 @@ public class AIPlayerAgent : Agent
     
     public override void Heuristic(in ActionBuffers actionsOut)
     {
+        Cursor.lockState = CursorLockMode.Confined;
+        
         var continuousActionsOut = actionsOut.ContinuousActions;
         var discreteActionsOut = actionsOut.DiscreteActions;
 
@@ -386,17 +399,23 @@ public class AIPlayerAgent : Agent
         else
             discreteActionsOut[1] = 0; // no movement
 
-        // --- Rotation (Mouse Look) ---
-        // Input.GetAxis("Mouse X") for yaw.
-        // The sensitivity of this might need tuning based on your turnSpeed.
-        // If mouse movement is too fast/slow, you might multiply Input.GetAxis by a sensitivity factor here,
-        // or adjust your turnSpeed.
-        continuousActionsOut[0] = Input.GetAxis("Mouse X");
 
-        // Input.GetAxis("Mouse Y") for pitch.
-        // Your FixedUpdate uses -pitchInput, so a positive Mouse Y (mouse moved up) should result in looking up.
-        // Input.GetAxis("Mouse Y") is positive when mouse moves up.
-        continuousActionsOut[1] = Input.GetAxis("Mouse Y");
+        if (Input.GetKey(KeyCode.E))
+        {
+            continuousActionsOut[0] = Input.GetAxis("Mouse X");
+        
+            continuousActionsOut[1] = Input.GetAxis("Mouse Y");
+            
+            lastMouseX = Input.GetAxis("Mouse X");
+            
+            lastMouseY = Input.GetAxis("Mouse Y");
+        }
+        else
+        {
+            continuousActionsOut[0] = lastMouseX;
+            continuousActionsOut[1] = lastMouseY;
+        }
+
 
 
         // --- Example: Shooting (if you add a discrete action) ---
@@ -426,6 +445,29 @@ public class AIPlayerAgent : Agent
         //          Cursor.visible = false;
         //     }
         // }
+
+        // Ray ray = new Ray();
+        // ray.origin = transform.position;
+        // ray.direction = transform.forward;
+        //
+        // RaycastHit hit;
+        //             
+        // if (Physics.Raycast(ray, out hit, visionRange))
+        // {
+        //     // Check if the first thing hit is the Player (or part of the player)
+        //     if (hit.collider.CompareTag("Player")) // Or check hit.collider.CompareTag("Player")
+        //     {
+        //         //Debug.DrawRay(ray.origin, ray.direction, Color.green, 0.5f);
+        //         debugText.text = "HIT";
+        //         return;
+        //     }
+        //     // else: something obstructs the view
+        // }
+        //
+        // //Debug.DrawRay(ray.origin, ray.direction, Color.red, 0.5f);
+        // debugText.text = "MSS";
+        
+        debugText.text = weapon.ReadyToFire.ToString();
     }
     
     private void FixedUpdate()
@@ -467,6 +509,13 @@ public class AIPlayerAgent : Agent
         Vector3 euler = weaponGo.transform.localEulerAngles;
         euler.x = newPitch;
         weaponGo.transform.localEulerAngles = euler;
+
+        if (pitchCamera)
+        {
+            euler = mainCamera.transform.localEulerAngles;
+            euler.x = newPitch;
+            mainCamera.transform.localEulerAngles = euler;
+        }
     }
 
 

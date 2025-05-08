@@ -74,7 +74,7 @@ public class RoundManager : MonoBehaviour
         
         // Previously in OnEnable
         cheatButton.action.performed += ApplyAllUpgrades;
-        upgradeManagerHuman.AcquireUpgrade(baseWeaponHuman);
+        //upgradeManagerHuman.AcquireUpgrade(baseWeaponHuman);
         upgradeManagerAi.AcquireUpgrade(baseWeaponAi);
     }
 
