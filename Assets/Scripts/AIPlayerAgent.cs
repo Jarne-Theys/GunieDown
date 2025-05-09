@@ -37,7 +37,7 @@ public class AIPlayerAgent : Agent
     private InputActivationComponent input;
     private BulletTracker bulletTracker;
 
-    private float yawInput;
+    private int yawInput;
     private float pitchInput;
     [SerializeField] private GameObject weaponGo;
     
@@ -49,6 +49,9 @@ public class AIPlayerAgent : Agent
 
     private float lastMouseX;
     private float lastMouseY;
+    [SerializeField] private float mouseSens;
+    
+    [SerializeField] bool lockCursor = true;
     
     
     // --- Reward Shaping Parameter ---
@@ -95,6 +98,13 @@ public class AIPlayerAgent : Agent
             Debug.LogWarning("UpgradeManager not found on Enable, subscription skipped.", this);
         }
         debugText = debugTextGo.GetComponentInChildren<TMP_Text>();
+        if (lockCursor)
+        {
+            //Cursor.lockState = CursorLockMode.Confined;
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+
+        }
     }
     
     protected override void OnDisable()
@@ -303,8 +313,9 @@ public class AIPlayerAgent : Agent
         }
 
         // --- Rotation (assumes you keep yawInput/pitchInput continuous) ---
-        yawInput = actions.ContinuousActions[0];
-        pitchInput = actions.ContinuousActions[1];
+        // yawInput = actions.ContinuousActions[0];
+        yawInput = actions.DiscreteActions[3];
+        // pitchInput = actions.ContinuousActions[1];
 
         // --- Combine movement ---
         Vector3 moveDirectionForward = transform.forward * moveForwardBackward;
@@ -377,44 +388,59 @@ public class AIPlayerAgent : Agent
     
     public override void Heuristic(in ActionBuffers actionsOut)
     {
-        Cursor.lockState = CursorLockMode.Confined;
         
         var continuousActionsOut = actionsOut.ContinuousActions;
         var discreteActionsOut = actionsOut.DiscreteActions;
 
         // --- Movement ---
         // Forward/Backward
-        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
+        if (Input.GetKey(KeyCode.W))
             discreteActionsOut[0] = 1; // forward
-        else if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
+        else if (Input.GetKey(KeyCode.S))
             discreteActionsOut[0] = 2; // backward
         else
             discreteActionsOut[0] = 0; // no movement
 
         // Left/Right
-        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+        if (Input.GetKey(KeyCode.D))
             discreteActionsOut[1] = 1; // right
-        else if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+        else if (Input.GetKey(KeyCode.A))
             discreteActionsOut[1] = 2; // left
         else
             discreteActionsOut[1] = 0; // no movement
-
-
-        if (Input.GetKey(KeyCode.E))
-        {
-            continuousActionsOut[0] = Input.GetAxis("Mouse X");
         
-            continuousActionsOut[1] = Input.GetAxis("Mouse Y");
-            
-            lastMouseX = Input.GetAxis("Mouse X");
-            
-            lastMouseY = Input.GetAxis("Mouse Y");
-        }
-        else
-        {
-            continuousActionsOut[0] = lastMouseX;
-            continuousActionsOut[1] = lastMouseY;
-        }
+        int x = 0;
+        // float y = 0f;
+
+        if (Input.GetKey(KeyCode.LeftArrow))  x = -1;
+        if (Input.GetKey(KeyCode.RightArrow)) x =  1;
+        // if (Input.GetKey(KeyCode.UpArrow))    y =  1f * mouseSens;
+        // if (Input.GetKey(KeyCode.DownArrow))  y = -1f * mouseSens;
+
+        // Normalize the vector to avoid diagonal speed boost
+        // Vector2 direction = new Vector2(x, y);
+        // if (direction.magnitude > 1f)
+        //     direction.Normalize();
+
+        discreteActionsOut[3] = x;
+        // continuousActionsOut[1] = direction.y;
+
+        
+        // if (Input.GetKey(KeyCode.E))
+        // {
+        //     continuousActionsOut[0] = Input.GetAxis("Mouse X");
+        //
+        //     continuousActionsOut[1] = Input.GetAxis("Mouse Y");
+        //     
+        //     lastMouseX = Input.GetAxis("Mouse X");
+        //     
+        //     lastMouseY = Input.GetAxis("Mouse Y");
+        // }
+        // else
+        // {
+        //     continuousActionsOut[0] = lastMouseX;
+        //     continuousActionsOut[1] = lastMouseY;
+        // }
 
 
 
@@ -490,7 +516,7 @@ public class AIPlayerAgent : Agent
         
         
         float yawDegrees = yawInput * turnSpeed * Time.fixedDeltaTime;
-        float pitchDegrees = -pitchInput * turnSpeed * Time.fixedDeltaTime;
+        // float pitchDegrees = -pitchInput * turnSpeed * Time.fixedDeltaTime;
 
         transform.Rotate(0f, yawDegrees, 0f);
         //sweaponGo.transform.Rotate(pitchDegrees, 0f, 0f);
@@ -499,23 +525,23 @@ public class AIPlayerAgent : Agent
         float currentPitch = weaponGo.transform.localEulerAngles.x;
         if (currentPitch > 180f) currentPitch -= 360f;
 
-        // Add pitch input
-        float newPitch = currentPitch + pitchDegrees;
+        // // Add pitch input
+        // float newPitch = currentPitch + pitchDegrees;
+        //
+        // // Clamp between -90 (down) and +90 (up)
+        // newPitch = Mathf.Clamp(newPitch, -90f, 90f);
+        //
+        // // Apply the new pitch, keeping yaw and roll unchanged
+        // Vector3 euler = weaponGo.transform.localEulerAngles;
+        // euler.x = newPitch;
+        // weaponGo.transform.localEulerAngles = euler;
 
-        // Clamp between -90 (down) and +90 (up)
-        newPitch = Mathf.Clamp(newPitch, -90f, 90f);
-
-        // Apply the new pitch, keeping yaw and roll unchanged
-        Vector3 euler = weaponGo.transform.localEulerAngles;
-        euler.x = newPitch;
-        weaponGo.transform.localEulerAngles = euler;
-
-        if (pitchCamera)
-        {
-            euler = mainCamera.transform.localEulerAngles;
-            euler.x = newPitch;
-            mainCamera.transform.localEulerAngles = euler;
-        }
+        // if (pitchCamera)
+        // {
+        //     euler = mainCamera.transform.localEulerAngles;
+        //     euler.x = newPitch;
+        //     mainCamera.transform.localEulerAngles = euler;
+        // }
     }
 
 

@@ -1870,7 +1870,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &429427961
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2236,7 +2236,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &530143462
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2423,7 +2423,7 @@ Transform:
   m_GameObject: {fileID: 553180555}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 58.97, y: 1, z: 85.48}
+  m_LocalPosition: {x: 59, y: 1, z: 85}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2832,6 +2832,8 @@ MonoBehaviour:
   mainCamera: {fileID: 1129115465}
   pitchCamera: 1
   debugTextGo: {fileID: 2058448464}
+  mouseSens: 0.2
+  lockCursor: 1
   maxFiringAngleThreshold: 45
 --- !u!114 &690825389
 MonoBehaviour:
@@ -5282,7 +5284,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1408289432
 RectTransform:
   m_ObjectHideFlags: 0
