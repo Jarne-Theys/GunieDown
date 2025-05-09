@@ -118,7 +118,6 @@ public class RoundManager : MonoBehaviour
         }
 
         ResetStats();
-        // TODO: uncomment when not training AI
         if (showPowerupScreen) ShowPowerupSelection();
     }
 
@@ -126,7 +125,6 @@ public class RoundManager : MonoBehaviour
     {
         humanPlayer.GetComponent<PlayerMovement>().enabled = false;
         humanPlayer.GetComponent<PlayerLook>().enabled = false;
-        //TODO: Disable AI player movement
         aiPlayer.GetComponent<AIPlayerAgent>().enabled = false;
 
         PowerupScreen.SetActive(true);
@@ -179,7 +177,6 @@ public class RoundManager : MonoBehaviour
         humanPlayer.GetComponent<PlayerMovement>().enabled = true;
         humanPlayer.GetComponent<PlayerLook>().enabled = true;
         
-        //TODO: check if this works
         aiPlayer.GetComponent<AIPlayerAgent>().enabled = true;
     }
 }

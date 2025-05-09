@@ -12,10 +12,8 @@ public class BulletTracker : MonoBehaviour
 
     public void DetectBullets()
     {
-        // Find nearby bullets using a physics sphere
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, detectionRadius, bulletLayer);
 
-        // Convert colliders to a list of bullet transforms
         List<Transform> bullets = new List<Transform>();
         foreach (Collider collider in hitColliders)
         {
@@ -37,7 +35,6 @@ public class BulletTracker : MonoBehaviour
         trackedBullets.Clear();
     }
 
-    // For Debugging in Scene View
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;

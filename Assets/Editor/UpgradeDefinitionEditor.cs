@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 
-[CustomEditor(typeof(UpgradeDefinition), true)] // Apply to UpgradeDefinition and subclasses
+[CustomEditor(typeof(UpgradeDefinition), true)]
 public class UpgradeDefinitionEditor : Editor
 {
     private SerializedProperty componentsProperty;
@@ -13,14 +13,10 @@ public class UpgradeDefinitionEditor : Editor
 
     public override void OnInspectorGUI()
     {
-        serializedObject.Update(); // Update SerializedObject at the start
+        serializedObject.Update();
 
-        DrawDefaultInspector(); // Draw other properties of UpgradeDefinition
+        DrawDefaultInspector();
 
-        // Draw the components list using EditorGUILayout.PropertyField, which will use the IUpgradeComponentPropertyDrawer
-        //EditorGUILayout.PropertyField(componentsProperty, true);
-
-
-        serializedObject.ApplyModifiedProperties(); // Apply changes at the end
+        serializedObject.ApplyModifiedProperties();
     }
 }

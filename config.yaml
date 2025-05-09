@@ -14,11 +14,11 @@ behaviors:
       hidden_units: 256
     reward_signals:
       extrinsic:
-        gamma: 0.995
+        gamma: 0.99
         strength: 1.0
       gail:
         strength: 0.5
-        demo_path:  
+        demo_path:  TrainingDemos
     behavioral_cloning:
       strength: 0.5
-      demo_path:
+      demo_path: TrainingDemos

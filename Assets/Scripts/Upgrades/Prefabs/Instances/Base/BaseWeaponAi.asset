@@ -29,8 +29,8 @@ MonoBehaviour:
       type: {class: StraightProjectile, ns: , asm: Assembly-CSharp}
       data:
         activationDelay: 0
-        projectilePrefab: {fileID: 6004424930538156989, guid: b79b60ac6e9db9b80b36d81a0275cad3, type: 3}
-        projectileSpeed: 15
+        projectilePrefab: {fileID: 6004424930538156989, guid: 1ae39d0f8bf2796428ff9ae1e3fdabb4, type: 3}
+        projectileSpeed: 30
         projectileDamage: 0
         projectileLifeTime: 5
         weaponMaxAmmo: 30

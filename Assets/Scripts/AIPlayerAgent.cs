@@ -5,6 +5,7 @@ using Unity.MLAgents.Sensors;
 using Unity.MLAgents.Actuators;
 using System.Threading;
 using TMPro;
+using Random = UnityEngine.Random;
 
 public class AIPlayerAgent : Agent
 {
@@ -28,7 +29,7 @@ public class AIPlayerAgent : Agent
     public float visionRange;
     private Vector3 lastKnownPlayerLocation;
 
-    public float turnSpeed = 180f; // Max degrees turned per fixed update
+    public float turnSpeed = 180f;
     bool playerVisible = false;
     private UpgradeManager upgradeManager;
     [Tooltip("Which UpgradeDefinition counts as the base weapon?")]
@@ -44,7 +45,6 @@ public class AIPlayerAgent : Agent
     [SerializeField] private GameObject mainCamera;
     public bool pitchCamera;
 
-    [SerializeField] private GameObject debugTextGo;
     private TMP_Text debugText;
 
     private float lastMouseX;
@@ -54,7 +54,6 @@ public class AIPlayerAgent : Agent
     [SerializeField] bool lockCursor = true;
     
     
-    // --- Reward Shaping Parameter ---
     [Header("Reward Shaping")]
     [Tooltip("Maximum angle (degrees) off target the agent can fire without penalty.")]
     public float maxFiringAngleThreshold = 10.0f;
@@ -63,11 +62,22 @@ public class AIPlayerAgent : Agent
     {
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
-        transform.position = SpawnPositions.aiPlayerSpawnPosition;
-        transform.rotation = Quaternion.Euler(SpawnPositions.aiPlayerSpawnRotation);
-
-        target.transform.position = SpawnPositions.mockHumanPlayerSpawn;
         target.GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
+        target.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+
+        
+        // transform.position = SpawnPositions.aiPlayerSpawnPosition;
+        // transform.rotation = Quaternion.Euler(SpawnPositions.aiPlayerSpawnRotation);
+        // target.transform.position = SpawnPositions.mockHumanPlayerSpawn;
+
+        int randomZCoord = Random.Range(5, 45);
+        int randomZCoordTarget = Random.Range(55, 95);
+        
+        Vector3 randomCoord = new Vector3(50, 1, randomZCoord);
+        Vector3 randomCoordTarget = new Vector3(50, 1, randomZCoordTarget);
+
+        transform.position = randomCoord;
+        target.transform.position = randomCoordTarget;
 
         lastKnownPlayerLocation = Vector3.zero;
         playerVisible = false;
@@ -97,7 +107,6 @@ public class AIPlayerAgent : Agent
         {
             Debug.LogWarning("UpgradeManager not found on Enable, subscription skipped.", this);
         }
-        debugText = debugTextGo.GetComponentInChildren<TMP_Text>();
         if (lockCursor)
         {
             //Cursor.lockState = CursorLockMode.Confined;
@@ -125,7 +134,6 @@ public class AIPlayerAgent : Agent
     }
 
     // Add a reward from external scripts
-    // currently only used by bullets (when they hit the agent)
     public void AddExternalReward(float reward, string message = "")
     {
         AddReward(reward);
@@ -164,7 +172,7 @@ public class AIPlayerAgent : Agent
             Vector3 rayFrom = transform.position - Vector3.up * 0.5f;
             RaycastHit hit;
             bool wallDetected = false;
-            float distanceToHitNormalized = raycastDistance; // Default to max distance
+            float distanceToHitNormalized = raycastDistance;
             var terrainLayerMask = LayerMask.GetMask("terrainLayer");
             
             if (Physics.Raycast(rayFrom, rayDirection, out hit, raycastDistance))
@@ -175,11 +183,8 @@ public class AIPlayerAgent : Agent
                     wallDetected = true;
                     distanceToHitNormalized = hit.distance / raycastDistance;
                 }
-                // Optional: Observe other object types? (e.g., obstacles, cover)
-                // sensor.AddObservation(hit.collider.CompareTag("Obstacle")); // Example
             }
-            // sensor.AddObservation(wallDetected); // Bool observation
-            sensor.AddObservation(distanceToHitNormalized); // Normalized distance
+            sensor.AddObservation(distanceToHitNormalized);
             wallDistances[i] = distanceToHitNormalized;
         }
 
@@ -194,30 +199,21 @@ public class AIPlayerAgent : Agent
                 Vector3 bulletPosition = bulletTracker.trackedBullets[i].position;
                 Vector3 aiPosition = transform.position;
                 sensor.AddObservation((bulletPosition - aiPosition).normalized);
-
-                // velocity
-                // Rigidbody bulletRb = bulletTracker.trackedBullets[i].GetComponent<Rigidbody>();
-                // Vector3 bulletVelocity = bulletRb.linearVelocity;
-                // sensor.AddObservation(bulletVelocity);
             }
             else
             {
                 // (relative) position
                 sensor.AddObservation(Vector3.zero);
                 
-                // velocity
-                // sensor.AddObservation(Vector3.zero);
-
             }
         }
 
         // Target Observations
-        // Cache player visibility check result here for use in OnActionReceived reward shaping
-        playerVisible = false; // Reset for this observation step
-        Vector3 relativeLastKnown = Vector3.zero; // Default if player not visible
-        float relativeLastKnownMagNormalized = 0f; // Default
+        playerVisible = false;
+        Vector3 relativeLastKnown = Vector3.zero;
+        float relativeLastKnownMagNormalized = 0f;
 
-        if (target != null) // Check if target exists
+        if (target != null)
         {
              Collider targetCollider = target.GetComponentInChildren<Collider>(); // More robust way to find collider
              if (targetCollider != null)
@@ -225,30 +221,27 @@ public class AIPlayerAgent : Agent
                 Vector3 playerCenter = targetCollider.bounds.center;
                 Vector3 directionToPlayer = (playerCenter - transform.position); // Keep non-normalized for distance
                 float distanceToPlayer = directionToPlayer.magnitude;
-                directionToPlayer.Normalize(); // Normalize now
+                directionToPlayer.Normalize();
 
                 float angleToPlayer = Vector3.Angle(transform.forward, directionToPlayer);
 
-                // Check FOV and Range
+                // Check FOV  Range
                 if (angleToPlayer < fovAngle / 2f && distanceToPlayer <= visionRange)
                 {
-                    // Check Line of Sight (LOS) - start ray slightly above agent center to avoid ground clipping
                     Ray ray = new Ray(transform.position + Vector3.up * 0.5f, directionToPlayer);
                     RaycastHit hit;
                     
                     if (Physics.Raycast(ray, out hit, visionRange))
                     {
                         // Check if the first thing hit is the Player (or part of the player)
-                        if (hit.transform.root == target.transform) // Or check hit.collider.CompareTag("Player")
+                        if (hit.transform.root == target.transform) 
                         {
-                            lastKnownPlayerLocation = playerCenter; // Use center for LKP
-                            playerVisible = true; // Set the flag
+                            lastKnownPlayerLocation = playerCenter;
+                            playerVisible = true; 
                             Debug.DrawRay(ray.origin, ray.direction * distanceToPlayer, Color.magenta, 20f);
 
                         }
-                         // else: something obstructs the view
                     }
-                    // else: Raycast didn't hit anything within range 
                 }
              }
              else 
@@ -256,8 +249,7 @@ public class AIPlayerAgent : Agent
                  Debug.LogWarning("Target has no Collider component in its children.", target);
              } 
              
-             // Calculate relative LKP regardless of current visibility
-             if (lastKnownPlayerLocation != Vector3.zero) // Only calculate if we have a valid LKP
+             if (lastKnownPlayerLocation != Vector3.zero) 
              {
                  relativeLastKnown = lastKnownPlayerLocation - transform.position;
                  // Normalize magnitude relative to vision range
@@ -270,9 +262,9 @@ public class AIPlayerAgent : Agent
         }
         
 
-        sensor.AddObservation(playerVisible); // Bool observation: Is the player currently visible?
-        sensor.AddObservation(relativeLastKnown.normalized); // Direction to Last Known Position (zero vector if never seen)
-        sensor.AddObservation(relativeLastKnownMagNormalized); // Normalized distance to LKP
+        sensor.AddObservation(playerVisible);
+        sensor.AddObservation(relativeLastKnown.normalized); 
+        sensor.AddObservation(relativeLastKnownMagNormalized);
         sensor.AddObservation(weapon.ReadyToFire);
         
         var weaponAngleToTarget = Vector3.Angle(transform.forward, relativeLastKnown);
@@ -284,11 +276,9 @@ public class AIPlayerAgent : Agent
     public override void OnActionReceived(ActionBuffers actions)
     {
         // Movement
-        // --- Read discrete actions ---
         int forwardAction = actions.DiscreteActions[0]; // 0 = no move, 1 = forward, 2 = backward
         int strafeAction = actions.DiscreteActions[1];  // 0 = no move, 1 = right, 2 = left
 
-        // --- Convert discrete actions to movement values ---
         float moveForwardBackward = 0f;
         float moveLeftRight = 0f;
 
@@ -312,12 +302,8 @@ public class AIPlayerAgent : Agent
                 break;
         }
 
-        // --- Rotation (assumes you keep yawInput/pitchInput continuous) ---
-        // yawInput = actions.ContinuousActions[0];
         yawInput = actions.DiscreteActions[3];
-        // pitchInput = actions.ContinuousActions[1];
 
-        // --- Combine movement ---
         Vector3 moveDirectionForward = transform.forward * moveForwardBackward;
         Vector3 moveDirectionStrafe = transform.right * moveLeftRight;
         finalMoveDirection = (moveDirectionForward + moveDirectionStrafe).normalized * moveSpeed;
@@ -325,31 +311,19 @@ public class AIPlayerAgent : Agent
         
         // Shooting
         bool wantsToFire = actions.DiscreteActions[2] == 1;
-        //TODO: replace this with shooting logic once aiming is sufficiently trained
-        //bool wantsToFire = false;
         
-        bool targetAimGood = false;
         
         Collider targetCollider = target.GetComponentInChildren<Collider>();
 
         Vector3 currentTargetCenter = targetCollider.bounds.center;
         Vector3 currentDirectionToPlayer = (currentTargetCenter - transform.position).normalized;
         
-        // Compare agent's forward direction with direction to target
         float currentAngleToPlayer = Vector3.Angle(transform.forward, currentDirectionToPlayer);
 
-        targetAimGood = currentAngleToPlayer <= maxFiringAngleThreshold;
 
         if (wantsToFire)
         {
             bool canFire = weapon != null && weapon.ReadyToFire;
-            
-             if (playerVisible && !targetAimGood)
-            {
-                 // AI tried to fire with bad aim
-                 AddReward(-(0.1f - (0.1f / (1 + Mathf.Log(1 + Mathf.Pow(currentAngleToPlayer, 0.9f))))));
-                 Debug.Log($"AI fired with poor aim ({currentAngleToPlayer} degrees). Penalty applied.");
-            }
             
             if (canFire && input != null)
             {
@@ -361,39 +335,36 @@ public class AIPlayerAgent : Agent
                  Debug.LogWarning("AI tried to fire, but InputActivationComponent is missing.", this);
             }
         }
-
-        if (playerVisible)
-        {
-            AddReward(0.001f);
-        }
-        
-        // 0 = 0.001
-        // 10 = 0.00031
-        // 45 = 0.00022
-        // 90 = 0.00019
-        AddReward(0.001f / (1 + Mathf.Log(1 + Mathf.Pow(currentAngleToPlayer, 0.9f))));
-        
-        
         
         foreach (float wallDistance in wallDistances)
         {
             AddReward(-wallDistance * 0.0001f);
         }
-        
-        
 
-         // Small penalty for existing to encourage ending the episode faster (hit player)
-         //AddReward(-0.0002f);
+        double lookReward = Math.Pow(currentAngleToPlayer / 180, 2);
+        AddReward((float)lookReward * 0.01f);
+        
+        float maxRadius = bulletTracker.detectionRadius;
+        float penaltyScale = 0.1f;
+
+        for (int i = 0; i < bulletTracker.trackedBullets.Count; i++)
+        {
+            Vector3 bulletPos = bulletTracker.trackedBullets[i].position;
+            float distanceToBullet = Vector3.Distance(transform.position, bulletPos);
+
+            if (distanceToBullet < maxRadius)
+            {
+                float distanceFraction = (maxRadius - distanceToBullet) / maxRadius;
+                AddReward(-penaltyScale * distanceFraction * distanceFraction);
+            }
+        }
     }
     
     public override void Heuristic(in ActionBuffers actionsOut)
     {
         
-        var continuousActionsOut = actionsOut.ContinuousActions;
         var discreteActionsOut = actionsOut.DiscreteActions;
-
-        // --- Movement ---
-        // Forward/Backward
+        
         if (Input.GetKey(KeyCode.W))
             discreteActionsOut[0] = 1; // forward
         else if (Input.GetKey(KeyCode.S))
@@ -410,90 +381,26 @@ public class AIPlayerAgent : Agent
             discreteActionsOut[1] = 0; // no movement
         
         int x = 0;
-        // float y = 0f;
 
         if (Input.GetKey(KeyCode.LeftArrow))  x = -1;
         if (Input.GetKey(KeyCode.RightArrow)) x =  1;
-        // if (Input.GetKey(KeyCode.UpArrow))    y =  1f * mouseSens;
-        // if (Input.GetKey(KeyCode.DownArrow))  y = -1f * mouseSens;
 
-        // Normalize the vector to avoid diagonal speed boost
-        // Vector2 direction = new Vector2(x, y);
-        // if (direction.magnitude > 1f)
-        //     direction.Normalize();
 
         discreteActionsOut[3] = x;
-        // continuousActionsOut[1] = direction.y;
 
         
-        // if (Input.GetKey(KeyCode.E))
-        // {
-        //     continuousActionsOut[0] = Input.GetAxis("Mouse X");
-        //
-        //     continuousActionsOut[1] = Input.GetAxis("Mouse Y");
-        //     
-        //     lastMouseX = Input.GetAxis("Mouse X");
-        //     
-        //     lastMouseY = Input.GetAxis("Mouse Y");
-        // }
-        // else
-        // {
-        //     continuousActionsOut[0] = lastMouseX;
-        //     continuousActionsOut[1] = lastMouseY;
-        // }
 
 
-
-        // --- Example: Shooting (if you add a discrete action) ---
-        // Assuming your Behavior Parameters has 1 Discrete Action Branch with Size 2 (0: No Shoot, 1: Shoot)
-        // And you want to use the Space bar or Left Mouse Button to shoot.
-        // discreteActionsOut.Clear(); // Clear previous discrete actions
         if (Input.GetKey(KeyCode.Space) || Input.GetMouseButton(0)) // 0 is Left Mouse Button
         {
-            discreteActionsOut[2] = 1; // Action value for "Shoot"
+            discreteActionsOut[2] = 1;
         }
         else
         {
-            discreteActionsOut[2] = 0; // Action value for "Don't Shoot"
+            discreteActionsOut[2] = 0;
         }
 
-        // --- Optional: For better mouse look during Heuristic mode ---
-        // if (Time.frameCount % 20 == 0) // Do this less frequently if you see performance issues
-        // {
-        //     if (Input.GetKey(KeyCode.Escape))
-        //     {
-        //         Cursor.lockState = CursorLockMode.None;
-        //         Cursor.visible = true;
-        //     }
-        //     else if (UnityEngine.Device.Application.isFocused) // Only lock if game window is focused
-        //     {
-        //          Cursor.lockState = CursorLockMode.Locked;
-        //          Cursor.visible = false;
-        //     }
-        // }
 
-        // Ray ray = new Ray();
-        // ray.origin = transform.position;
-        // ray.direction = transform.forward;
-        //
-        // RaycastHit hit;
-        //             
-        // if (Physics.Raycast(ray, out hit, visionRange))
-        // {
-        //     // Check if the first thing hit is the Player (or part of the player)
-        //     if (hit.collider.CompareTag("Player")) // Or check hit.collider.CompareTag("Player")
-        //     {
-        //         //Debug.DrawRay(ray.origin, ray.direction, Color.green, 0.5f);
-        //         debugText.text = "HIT";
-        //         return;
-        //     }
-        //     // else: something obstructs the view
-        // }
-        //
-        // //Debug.DrawRay(ray.origin, ray.direction, Color.red, 0.5f);
-        // debugText.text = "MSS";
-        
-        debugText.text = weapon.ReadyToFire.ToString();
     }
     
     private void FixedUpdate()
@@ -516,32 +423,11 @@ public class AIPlayerAgent : Agent
         
         
         float yawDegrees = yawInput * turnSpeed * Time.fixedDeltaTime;
-        // float pitchDegrees = -pitchInput * turnSpeed * Time.fixedDeltaTime;
 
         transform.Rotate(0f, yawDegrees, 0f);
-        //sweaponGo.transform.Rotate(pitchDegrees, 0f, 0f);
         
-        // Get current pitch and convert to signed angle (-180 to +180)
         float currentPitch = weaponGo.transform.localEulerAngles.x;
         if (currentPitch > 180f) currentPitch -= 360f;
-
-        // // Add pitch input
-        // float newPitch = currentPitch + pitchDegrees;
-        //
-        // // Clamp between -90 (down) and +90 (up)
-        // newPitch = Mathf.Clamp(newPitch, -90f, 90f);
-        //
-        // // Apply the new pitch, keeping yaw and roll unchanged
-        // Vector3 euler = weaponGo.transform.localEulerAngles;
-        // euler.x = newPitch;
-        // weaponGo.transform.localEulerAngles = euler;
-
-        // if (pitchCamera)
-        // {
-        //     euler = mainCamera.transform.localEulerAngles;
-        //     euler.x = newPitch;
-        //     mainCamera.transform.localEulerAngles = euler;
-        // }
     }
 
 
@@ -612,8 +498,10 @@ public class AIPlayerAgent : Agent
             Ray ray = new Ray(transform.position, directionToPlayer);
             //Debug.DrawRay(transform.position, directionToPlayer * visionRange, Color.blue);
 
+            string[] layerNames = {"playerLayer", "terrainLayer"};
+            LayerMask layerMask = LayerMask.GetMask(layerNames);
             RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, visionRange))
+            if (Physics.Raycast(ray, out hit, visionRange, layerMask))
             {
                 Gizmos.color = Color.magenta;
                 Gizmos.DrawLine(transform.position, hit.point);

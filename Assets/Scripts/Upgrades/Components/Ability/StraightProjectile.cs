@@ -26,7 +26,8 @@ public class StraightProjectile : ProjectileComponentBase
         projectileStats.Speed = projectileSpeed;
         
         // Make sure the bullet can't hit the person that fired it
-        Collider projectileCollider = projectile.GetComponent<Collider>();
+        Transform bulletPlayerCollider = projectile.transform.Find("BulletCollider");
+        Collider projectileCollider = bulletPlayerCollider.GetComponent<Collider>();
         Collider playerCollider = player.GetComponent<Collider>();
 
         Physics.IgnoreCollision(projectileCollider, playerCollider);
@@ -35,7 +36,7 @@ public class StraightProjectile : ProjectileComponentBase
         {
             BulletMove projectileMover = projectile.GetComponent<BulletMove>();
             AIPlayerAgent playerAgent = player.gameObject.GetComponent<AIPlayerAgent>();
-            projectileMover.Init(playerAgent,rewardAgentForHittingTarget, punishAgentForGettingHit, punishAgentForMiss);
+            projectileMover.Init(playerAgent, rewardAgentForHittingTarget, punishAgentForGettingHit, punishAgentForMiss);
         }
         
         

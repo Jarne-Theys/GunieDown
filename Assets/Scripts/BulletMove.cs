@@ -4,8 +4,6 @@ using UnityEngine.Serialization;
 
 public class BulletMove : MonoBehaviour
 {
-
-
     float bulletSpeed;
     int bulletDamage;
 
@@ -48,67 +46,21 @@ public class BulletMove : MonoBehaviour
         this.addRewardToAgentOnTargetHit = rewardAgentForHitting;
         this.subtractRewardFromAgentOnAgentHit = punishAgentForGettingHit;
         this.subtractRewardFromAgentOnMiss = punishAgentForMiss;
-    }
-
-    void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Wall") || collision.gameObject.CompareTag("Ground"))
-        {
-            if (destroyOnTerrainContact)
-            {
-                if (subtractRewardFromAgentOnMiss)
-                {
-                    agent.AddExternalReward(-0.01f, "Punished for hitting terrain");
-                }
-                Destroy(gameObject);
-            }
-        }
-        else if (collision.gameObject.CompareTag("Player"))
-        {
-            // TODO: make this method deal damage to the player hit
-            if (destroyOnPlayerContact)
-            {
-                if (addRewardToAgentOnTargetHit)
-                {
-                    agent.AddExternalReward(1f);
-                    //agent.EndEpisodeExternal("AI hit player!");
-                }
-
-                else
-                {
-                    PlayerStats playerStats = collision.gameObject.GetComponent<PlayerStats>();
-                    playerStats.Damage(bulletDamage); 
-                }
-                
-                Destroy(gameObject);
-            }
-        }
-        else if (collision.gameObject.CompareTag("AIPlayer"))
-        {
-            if (destroyOnPlayerContact)
-            {
-                if (subtractRewardFromAgentOnAgentHit)
-                {
-                    agent.AddExternalReward(-0.5f, "Punished for getting hit");
-                }
-
-                else
-                {
-                    PlayerStats playerStats = collision.gameObject.GetComponent<PlayerStats>();
-                    playerStats.Damage(bulletDamage);
-                }
-                
-                Destroy(gameObject);
-            }
-        }
-
-        else
-        {
-            Debug.LogWarning($"Bullet collided with something that's not a 'Wall', 'Player' or 'AIPlayer': \n {collision.gameObject.name}");
-            Destroy(gameObject);
-        }
         
+        var bulletCollision = GetComponentInChildren<BulletCollision>();
+        
+        bulletCollision.subtractRewardFromAgentOnMiss = this.subtractRewardFromAgentOnMiss;
+        bulletCollision.destroyOnTerrainContact = this.destroyOnTerrainContact;
+        
+        bulletCollision.addRewardToAgentOnTargetHit = this.addRewardToAgentOnTargetHit;
+        bulletCollision.subtractRewardFromAgentOnAgentHit = this.subtractRewardFromAgentOnAgentHit;
+        bulletCollision.destroyOnPlayerContact = this.destroyOnPlayerContact;
+        
+        bulletCollision.bulletDamage = this.bulletDamage;
+        
+        bulletCollision.agent = aiAgent;
     }
+    
 
     void OnDestroy()
     {
@@ -117,64 +69,4 @@ public class BulletMove : MonoBehaviour
             agent.AddExternalReward(-0.1f, "Punished for miss");
         }
     }
-
-    /*    public void OnTriggerEnter(Collider other)
-        {
-            if (other.CompareTag("Player") || other.CompareTag("AIPlayer"))
-            {
-                PlayerStats playerStats = other.GetComponent<PlayerStats>();
-                if (playerStats != null)
-                {
-                    playerStats.Damage(bulletDamage);
-                }
-
-                AIPlayerAgent aIPlayer = other.GetComponent<AIPlayerAgent>();
-                if (aIPlayer != null)
-                {
-                    aIPlayer.AddExternalReward(-1f);
-                }
-
-                // Training
-                MockPlayerMover mockPlayerMover = other.GetComponent<MockPlayerMover>();
-                if (mockPlayerMover != null)
-                {
-                    aIPlayer.AddExternalReward(1f);
-                }
-
-
-                if (destroyOnPlayerContact)
-                {
-                    BulletTracker.trackedBullets.Remove(transform);
-                    Destroy(gameObject);
-                }
-
-                else
-                {
-                    // To avoid damaging the target multiple times.
-                    bulletDamage = 0;
-                }
-            }
-
-            if (other.gameObject.layer == LayerMask.NameToLayer("Wall") && destroyOnTerrainContact)
-            {
-                Debug.Log("Hit terrain!");
-                BulletTracker.trackedBullets.Remove(transform);
-                Destroy(gameObject);
-            }
-        }*/
-
-    /*    private void FixedUpdate()
-        {
-            Vector3 movement = transform.forward * bulletSpeed;
-
-            if (fallRate > 0f)
-            {
-                currentFallRate += fallRate * Time.fixedDeltaTime;
-                movement += Vector3.down * currentFallRate;
-            }
-
-
-            rb.linearVelocity = movement;
-
-        }*/
 }

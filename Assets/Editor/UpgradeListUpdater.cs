@@ -18,7 +18,7 @@ public class UpgradeListUpdater : AssetPostprocessor
             return;
         }
         
-        // ** StatUpgrade section **
+        // StatUpgrade section
         
         string[] statUpgradesListGUIDs = AssetDatabase.FindAssets("t:StatUpgradesList");
         if (statUpgradesListGUIDs.Length <= 0)
@@ -34,7 +34,7 @@ public class UpgradeListUpdater : AssetPostprocessor
             Debug.LogError("StatUpgradesList ScriptableObject not found at: " + statUpgradesListPath);
         }
 
-        // ** Upgrade section **
+        // Upgrade section
         
         string[] upgradesListGUIDs = AssetDatabase.FindAssets("t:UpgradesList"); // Find assets of type UpgradesList
         if (upgradesListGUIDs.Length <= 0)
@@ -51,19 +51,18 @@ public class UpgradeListUpdater : AssetPostprocessor
             Debug.LogError("UpgradesList ScriptableObject not found at path: " + upgradesListPath);
         }
         
-        // ** Common logic **
+        // Common logic
         // Doing the iteration over all upgrades once, and filtering them into the appropriate lists
         // instead of doing the loop twice, for better maintainability and performance
         
         // Find all UpgradeDefinition ScriptableObjects
         string[] upgradeDefinitionGUIDs = 
-            AssetDatabase.FindAssets("t:UpgradeDefinition"); // Find assets of type UpgradeDefinition
+            AssetDatabase.FindAssets("t:UpgradeDefinition"); 
         UpgradeDefinition[] foundUpgrades = new UpgradeDefinition[upgradeDefinitionGUIDs.Length];
 
         string[] statUpgradeDefinitionGUIDs = AssetDatabase.FindAssets("t:UpgradeDefinition",
             new[] { "Assets/Scripts/Upgrades/Prefabs/Instances/Stats" }); 
         
-        //UpgradeDefinition[] foundStatUpgrades = new UpgradeDefinition[statUpgradeDefinitionGUIDs.Length];
         List<UpgradeDefinition> foundStatUpgrades = new List<UpgradeDefinition>();
             
         // This loops over all upgrade definitions, so we need to filter out the pure stat upgrades
@@ -92,8 +91,6 @@ public class UpgradeListUpdater : AssetPostprocessor
 
 
 
-        // TODO: detect null items and filter them out
-        // after your for‑loop that populates foundUpgrades[i] (with some nulls) …
         foundUpgrades = foundUpgrades
             .Where(u => u != null)
             .ToArray();
@@ -102,23 +99,22 @@ public class UpgradeListUpdater : AssetPostprocessor
             .Where(u => u != null)
             .ToList();
 
-        // now the upgrades lists have only the non‑null entries, so Length is correct
 
 
-        // **Change Detection Logic:**
+        // Change detection logic
         bool upgradeListChanged = false;
         if (upgradesList.upgrades == null || upgradesList.upgrades.Length != foundUpgrades.Length)
         {
-            upgradeListChanged = true; // Lengths are different, list has changed
+            upgradeListChanged = true;
         }
         else
         {
-            // Compare element by element (assuming order doesn't matter, or you can sort if order matters)
+
             for (int i = 0; i < foundUpgrades.Length; i++)
             {
                 if (upgradesList.upgrades[i] != foundUpgrades[i])
                 {
-                    upgradeListChanged = true; // An element is different, list has changed
+                    upgradeListChanged = true; 
                     break;
                 }
             }
@@ -126,10 +122,8 @@ public class UpgradeListUpdater : AssetPostprocessor
 
         if (upgradeListChanged)
         {
-            // Update the upgrades array in UpgradesList only if changed
             upgradesList.upgrades = foundUpgrades;
 
-            // Mark UpgradesList as dirty and save changes
             EditorUtility.SetDirty(upgradesList);
             AssetDatabase.SaveAssets();
 
@@ -149,16 +143,15 @@ public class UpgradeListUpdater : AssetPostprocessor
         bool statUpgradeListChanged = false;
         if (statUpgradesList.upgrades == null || statUpgradesList.upgrades.Length != foundStatUpgrades.Count)
         {
-            statUpgradeListChanged = true; // Lengths are different, list has changed
+            statUpgradeListChanged = true;
         }
         else
         {
-            // Compare element by element (assuming order doesn't matter, or you can sort if order matters)
             for (int i = 0; i < foundStatUpgrades.Count; i++)
             {
                 if (statUpgradesList.upgrades[i] != foundStatUpgrades[i])
                 {
-                    statUpgradeListChanged = true; // An element is different, list has changed
+                    statUpgradeListChanged = true;
                     break;
                 }
             }
@@ -166,10 +159,8 @@ public class UpgradeListUpdater : AssetPostprocessor
 
         if (statUpgradeListChanged)
         {
-            // Update the upgrades array in UpgradesList only if changed
             statUpgradesList.upgrades = foundStatUpgrades.ToArray();
 
-            // Mark UpgradesList as dirty and save changes
             EditorUtility.SetDirty(statUpgradesList);
             AssetDatabase.SaveAssets();
 

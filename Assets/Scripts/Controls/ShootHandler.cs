@@ -73,13 +73,11 @@ public class ShootHandler : MonoBehaviour
 
         var bulletStats = bullet.GetComponent<ProjectileStats>();
 
-        // Set the bullet stats
         var playerStats = GetComponent<PlayerStats>();
 
         bulletStats.Damage = playerStats.BulletDamage;
         bulletStats.Speed = playerStats.BulletSpeed;
 
-        // Draw the debug line
         Debug.DrawLine(transform.position, transform.position + shootDirection * 10f, Color.red, 5f);
 
         canShoot = false;
