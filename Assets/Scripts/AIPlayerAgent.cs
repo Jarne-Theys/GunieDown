@@ -265,11 +265,11 @@ public class AIPlayerAgent : Agent
         sensor.AddObservation(playerVisible);
         sensor.AddObservation(relativeLastKnown.normalized); 
         sensor.AddObservation(relativeLastKnownMagNormalized);
-        sensor.AddObservation(weapon.ReadyToFire);
+        //sensor.AddObservation(weapon.ReadyToFire);
         
-        var weaponAngleToTarget = Vector3.Angle(transform.forward, relativeLastKnown);
-        //sensor.AddObservation(weaponGo.transform.localRotation);
-        sensor.AddObservation(weaponAngleToTarget);
+        // var weaponAngleToTarget = Vector3.Angle(transform.forward, relativeLastKnown);
+        // //sensor.AddObservation(weaponGo.transform.localRotation);
+        // sensor.AddObservation(weaponAngleToTarget);
     }
 
 
