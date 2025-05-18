@@ -62,20 +62,22 @@ public class RoundManager : MonoBehaviour
 
     private void ResetStats()
     {
-        humanPlayerStats.ResetStats();
-        aiPlayerStats.ResetStats();
+        if (humanPlayerStats != null) humanPlayerStats.ResetStats();
+        if (aiPlayerStats != null) aiPlayerStats.ResetStats();
     }
 
     void Start()
     {
-        humanPlayerStats = humanPlayer.GetComponent<PlayerStats>();
-        aiPlayerStats = aiPlayer.GetComponent<PlayerStats>();
-        PowerupScreen.SetActive(false);
-        
+        if (humanPlayer != null) humanPlayerStats = humanPlayer.GetComponent<PlayerStats>();
+        if (aiPlayer != null) aiPlayerStats = aiPlayer.GetComponent<PlayerStats>();
+        if (PowerupScreen != null) PowerupScreen.SetActive(false);
+
         // Previously in OnEnable
-        cheatButton.action.performed += ApplyAllUpgrades;
+        if (cheatButton != null)
+            if (cheatButton.action != null)
+                cheatButton.action.performed += ApplyAllUpgrades;
         //upgradeManagerHuman.AcquireUpgrade(baseWeaponHuman);
-        upgradeManagerAi.AcquireUpgrade(baseWeaponAi);
+        if (upgradeManagerAi != null) upgradeManagerAi.AcquireUpgrade(baseWeaponAi);
     }
 
 
@@ -102,14 +104,16 @@ public class RoundManager : MonoBehaviour
 
     void Update()
     {
+        if (roundText)
+        {
+            roundText.text = "Round: " + roundNumber + " Score: " + humanPlayerScore + " - " + aiPlayerScore;
+        }
 
-        roundText.text = "Round: " + roundNumber + " Score: " + humanPlayerScore + " - " + aiPlayerScore;
-
-        if (aiPlayerStats.Health <= 0)
+        if (aiPlayerStats != null && aiPlayerStats.Health <= 0)
         {
             humanPlayerScored();
         }
-        else if (humanPlayerStats.Health <= 0)
+        else if (humanPlayerStats != null && humanPlayerStats.Health <= 0)
         {
             aiPlayerScored();
         }

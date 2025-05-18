@@ -16,9 +16,9 @@ behaviors:
       extrinsic:
         gamma: 0.99
         strength: 1.0
-      gail:
-        strength: 0.5
-        demo_path:  TrainingDemos-NoDodging
+#      gail:
+#        strength: 0.5
+#        demo_path:  TrainingDemos-NoDodging
 #    behavioral_cloning:
 #      strength: 0.5
 #      demo_path: TrainingDemos-NoDodging

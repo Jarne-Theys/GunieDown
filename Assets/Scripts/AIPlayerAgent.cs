@@ -70,14 +70,17 @@ public class AIPlayerAgent : Agent
         // transform.rotation = Quaternion.Euler(SpawnPositions.aiPlayerSpawnRotation);
         // target.transform.position = SpawnPositions.mockHumanPlayerSpawn;
 
-        int randomZCoord = Random.Range(5, 45);
-        int randomZCoordTarget = Random.Range(55, 95);
-        
-        Vector3 randomCoord = new Vector3(50, 1, randomZCoord);
-        Vector3 randomCoordTarget = new Vector3(50, 1, randomZCoordTarget);
+        int randomZCoord = Random.Range(20, 35);
+        int randomZCoordTarget = Random.Range(50, 90);
 
-        transform.position = randomCoord;
-        target.transform.position = randomCoordTarget;
+        int randomXCoord = Random.Range(30, 70);
+        int randomXCoordTarget = Random.Range(30, 70);
+        
+        Vector3 randomCoord = new Vector3(randomXCoord, 1, randomZCoord);
+        Vector3 randomCoordTarget = new Vector3(randomXCoordTarget, 1, randomZCoordTarget);
+
+        transform.localPosition = randomCoord;
+        target.transform.localPosition = randomCoordTarget;
 
         lastKnownPlayerLocation = Vector3.zero;
         playerVisible = false;
