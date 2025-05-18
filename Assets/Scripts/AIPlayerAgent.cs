@@ -9,7 +9,6 @@ using Random = UnityEngine.Random;
 
 public class AIPlayerAgent : Agent
 {
-    public bool endEpisodes = true;
     private float[] wallDistances;
     
     public Rigidbody rb;
@@ -140,14 +139,13 @@ public class AIPlayerAgent : Agent
     public void AddExternalReward(float reward, string message = "")
     {
         AddReward(reward);
-        //if (message != "") Debug.Log(message);
+        if (message != "") Debug.Log(message);
     }
 
     public void EndEpisodeExternal(string reason)
     {
         Debug.Log($"Ending episode because {reason}");
-        if (endEpisodes) EndEpisode();
-        else Debug.Log("Not ending episode, as endEpisode is set to false");
+        EndEpisode();
     }
 
     public override void CollectObservations(VectorSensor sensor)
@@ -328,14 +326,16 @@ public class AIPlayerAgent : Agent
         {
             bool canFire = weapon != null && weapon.ReadyToFire;
             
-            if (canFire && input != null)
+            if (input == null) Debug.LogWarning("AI tried to fire, but InputActivationComponent is missing.", this);
+            
+            else if (canFire)
             {
                 // Manually trigger the InputAction component, as the AI can't use InputActions
                 input.TriggerAction();
             }
-            else if (input == null)
+            else
             {
-                 Debug.LogWarning("AI tried to fire, but InputActivationComponent is missing.", this);
+                AddReward(-0.002f);
             }
         }
         
@@ -344,8 +344,8 @@ public class AIPlayerAgent : Agent
             AddReward(-wallDistance * 0.0001f);
         }
 
-        double lookReward = Math.Pow(currentAngleToPlayer / 180, 2);
-        AddReward((float)lookReward * 0.01f);
+        float lookReward = (float) Math.Pow(currentAngleToPlayer / 180, 2);
+        AddReward(0.05f - lookReward * 0.05f);
         
         float maxRadius = bulletTracker.detectionRadius;
         float penaltyScale = 0.1f;
@@ -358,9 +358,13 @@ public class AIPlayerAgent : Agent
             if (distanceToBullet < maxRadius)
             {
                 float distanceFraction = (maxRadius - distanceToBullet) / maxRadius;
-                AddReward(-penaltyScale * distanceFraction * distanceFraction);
+                //Don't use for now, focus on other aspects first
+                //AddReward(-penaltyScale * distanceFraction * distanceFraction);
             }
         }
+        
+        // punish inactivity
+        if (moveForwardBackward == 0 && moveLeftRight == 0) AddReward(-0.001f);
     }
     
     public override void Heuristic(in ActionBuffers actionsOut)
@@ -438,15 +442,9 @@ public class AIPlayerAgent : Agent
     {
         if (collision.gameObject.CompareTag("Wall"))
         {
-            AddReward(-10f);
+            AddReward(-1f);
             Debug.DrawLine(collision.transform.position, collision.transform.position + (Vector3.up * 20f), Color.black, 20f);
-            if (endEpisodes) EndEpisode();
-        }
-
-        if (collision.gameObject.CompareTag("Bullet"))
-        {
-            AddReward(-0.5f);
-            Debug.DrawLine(collision.transform.position, collision.transform.position + (Vector3.up * 20f), Color.yellow, 20f);
+            EndEpisode();
         }
     }
     

@@ -30,7 +30,7 @@ MonoBehaviour:
       data:
         activationDelay: 0
         projectilePrefab: {fileID: 6004424930538156989, guid: 1ae39d0f8bf2796428ff9ae1e3fdabb4, type: 3}
-        projectileSpeed: 30
+        projectileSpeed: 45
         projectileDamage: 0
         projectileLifeTime: 5
         weaponMaxAmmo: 30

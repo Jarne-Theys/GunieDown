@@ -19,11 +19,11 @@ command = [
     "--num-envs=16",
     #"--env=/home/jarne/Documents/Unity_projects/GunieDown/Build/Build.x86_64",
     "--results-dir=Assets/AI",
-    #"--resume", # Or "--force" if you want to start fresh each time
+    "--resume", # Or "--force" if you want to start fresh each time
     #"--force",
     "--no-graphics",
     "--run-id=AINoDodging",
-    "--initialize-from=BCAINoDodging",
+    #"--initialize-from=BCAINoDodging",
     "--torch-device", "cuda"
 ]
 

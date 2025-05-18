@@ -18,10 +18,9 @@ public class BulletCollision : MonoBehaviour
         if (other == null)
         {
             Debug.LogError("other is null");
-            return;
         }
 
-        if (other.gameObject.CompareTag("Ground") || other.gameObject.CompareTag("Wall"))
+        else if (other.gameObject.CompareTag("Ground") || other.gameObject.CompareTag("Wall"))
         {
             if (destroyOnTerrainContact)
             {
@@ -33,15 +32,15 @@ public class BulletCollision : MonoBehaviour
             }
         }
         
-        if (other.gameObject.CompareTag("Player"))
+        else if (other.gameObject.CompareTag("Player"))
         {
             // TODO: make this method deal damage to the player hit
             if (destroyOnPlayerContact)
             {
                 if (addRewardToAgentOnTargetHit)
                 {
-                    agent.AddExternalReward(1f);
-                    //agent.EndEpisodeExternal("AI hit player!");
+                    agent.AddExternalReward(1f, "Rewarded for hitting player");
+                    agent.EndEpisodeExternal("Hitting target!");
                 }
 
                 else
@@ -74,6 +73,7 @@ public class BulletCollision : MonoBehaviour
 
         else
         {
+            Debug.Log($"Hit something else than a player or terrain ({other.gameObject.name}), is this intended?");
             Destroy(gameObject.transform.parent.gameObject);
         }
     }

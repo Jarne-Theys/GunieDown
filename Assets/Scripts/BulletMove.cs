@@ -64,9 +64,9 @@ public class BulletMove : MonoBehaviour
 
     void OnDestroy()
     {
-        if (subtractRewardFromAgentOnMiss)
-        {
-            agent.AddExternalReward(-0.1f, "Punished for miss");
-        }
+        // if (subtractRewardFromAgentOnMiss)
+        // {
+        //     agent.AddExternalReward(-0.1f, "Punished for miss");
+        // }
     }
 }
