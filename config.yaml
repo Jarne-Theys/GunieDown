@@ -18,7 +18,7 @@ behaviors:
         strength: 1.0
       gail:
         strength: 0.5
-        demo_path:  TrainingDemos
-    behavioral_cloning:
-      strength: 0.5
-      demo_path: TrainingDemos
+        demo_path:  TrainingDemos-NoDodging
+#    behavioral_cloning:
+#      strength: 0.5
+#      demo_path: TrainingDemos-NoDodging
