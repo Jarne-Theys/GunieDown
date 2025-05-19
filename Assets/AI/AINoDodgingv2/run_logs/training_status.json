@@ -1,0 +1,65 @@
+{
+    "AIPlayer": {
+        "checkpoints": [
+            {
+                "steps": 659956,
+                "file_path": "Assets/AI\\AINoDodgingv2\\AIPlayer\\AIPlayer-659956.onnx",
+                "reward": -4.13623204043037,
+                "creation_time": 1747687065.9655418,
+                "auxillary_file_paths": [
+                    "Assets/AI\\AINoDodgingv2\\AIPlayer\\AIPlayer-659956.pt"
+                ]
+            },
+            {
+                "steps": 679976,
+                "file_path": "Assets/AI\\AINoDodgingv2\\AIPlayer\\AIPlayer-679976.onnx",
+                "reward": -4.497665099155756,
+                "creation_time": 1747687213.4491124,
+                "auxillary_file_paths": [
+                    "Assets/AI\\AINoDodgingv2\\AIPlayer\\AIPlayer-679976.pt"
+                ]
+            },
+            {
+                "steps": 699941,
+                "file_path": "Assets/AI\\AINoDodgingv2\\AIPlayer\\AIPlayer-699941.onnx",
+                "reward": -4.4021749670306844,
+                "creation_time": 1747687354.376144,
+                "auxillary_file_paths": [
+                    "Assets/AI\\AINoDodgingv2\\AIPlayer\\AIPlayer-699941.pt"
+                ]
+            },
+            {
+                "steps": 719941,
+                "file_path": "Assets/AI\\AINoDodgingv2\\AIPlayer\\AIPlayer-719941.onnx",
+                "reward": -4.741276250369307,
+                "creation_time": 1747687514.1760402,
+                "auxillary_file_paths": [
+                    "Assets/AI\\AINoDodgingv2\\AIPlayer\\AIPlayer-719941.pt"
+                ]
+            },
+            {
+                "steps": 721545,
+                "file_path": "Assets/AI\\AINoDodgingv2\\AIPlayer\\AIPlayer-721545.onnx",
+                "reward": -4.780082786784453,
+                "creation_time": 1747687526.3834996,
+                "auxillary_file_paths": [
+                    "Assets/AI\\AINoDodgingv2\\AIPlayer\\AIPlayer-721545.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 721545,
+            "file_path": "Assets/AI\\AINoDodgingv2\\AIPlayer.onnx",
+            "reward": -4.780082786784453,
+            "creation_time": 1747687526.3834996,
+            "auxillary_file_paths": [
+                "Assets/AI\\AINoDodgingv2\\AIPlayer\\AIPlayer-721545.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "1.1.0",
+        "torch_version": "2.2.2+cu121"
+    }
+}

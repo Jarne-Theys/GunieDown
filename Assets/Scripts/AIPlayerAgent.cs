@@ -51,7 +51,9 @@ public class AIPlayerAgent : Agent
     [SerializeField] private float mouseSens;
     
     [SerializeField] bool lockCursor = true;
-    
+
+    private int maxStep = 500;
+    int stepCount = 0;    
     
     [Header("Reward Shaping")]
     [Tooltip("Maximum angle (degrees) off target the agent can fire without penalty.")]
@@ -93,6 +95,7 @@ public class AIPlayerAgent : Agent
         bulletTracker.ClearTrackedBulletList();
 
         totalTime = 0f;
+        stepCount = 0;
 
         lastMouseX = 0;
         lastMouseY = 0;
@@ -308,6 +311,16 @@ public class AIPlayerAgent : Agent
         Vector3 moveDirectionForward = transform.forward * moveForwardBackward;
         Vector3 moveDirectionStrafe = transform.right * moveLeftRight;
         finalMoveDirection = (moveDirectionForward + moveDirectionStrafe).normalized * moveSpeed;
+        
+        Vector3 desiredVelocity = finalMoveDirection;
+        desiredVelocity.y = rb.linearVelocity.y; // Keep the vertical (gravity) velocity untouched
+        Vector3 velocityChange = desiredVelocity - rb.linearVelocity;
+        rb.AddForce(velocityChange, ForceMode.VelocityChange);
+        
+        
+        float yawDegrees = yawInput * turnSpeed;
+
+        transform.Rotate(0f, yawDegrees, 0f);
  
         
         // Shooting
@@ -325,27 +338,33 @@ public class AIPlayerAgent : Agent
         if (wantsToFire)
         {
             bool canFire = weapon != null && weapon.ReadyToFire;
+
+            if (input == null)
+            {
+                Debug.LogWarning("AI tried to fire, but InputActivationComponent is missing.", this);
+            }
             
-            if (input == null) Debug.LogWarning("AI tried to fire, but InputActivationComponent is missing.", this);
             
             else if (canFire)
             {
                 // Manually trigger the InputAction component, as the AI can't use InputActions
                 input.TriggerAction();
+                float lookReward = (float) Math.Pow(currentAngleToPlayer / 180, 2);
+                AddReward(0.01f - lookReward * 0.01f);
             }
             else
             {
                 AddReward(-0.002f);
             }
+            
+            AddReward(-0.005f);
+            
         }
         
         foreach (float wallDistance in wallDistances)
         {
             AddReward(-wallDistance * 0.0001f);
         }
-
-        float lookReward = (float) Math.Pow(currentAngleToPlayer / 180, 2);
-        AddReward(0.05f - lookReward * 0.05f);
         
         float maxRadius = bulletTracker.detectionRadius;
         float penaltyScale = 0.1f;
@@ -365,6 +384,7 @@ public class AIPlayerAgent : Agent
         
         // punish inactivity
         if (moveForwardBackward == 0 && moveLeftRight == 0) AddReward(-0.001f);
+        
     }
     
     public override void Heuristic(in ActionBuffers actionsOut)
@@ -412,29 +432,19 @@ public class AIPlayerAgent : Agent
     
     private void FixedUpdate()
     {
-        totalTime += Time.fixedDeltaTime;
-        if (totalTime > episodeDuration)
+        stepCount++;
+        if(stepCount > maxStep)      // same value you set in Behaviour Parameters
         {
+            AddReward(-0.2f);
             EndEpisode();
         }
-     
         // Bullet tracking
         bulletTracker.ClearTrackedBulletList();
         bulletTracker.DetectBullets();
         
         
-        Vector3 desiredVelocity = finalMoveDirection;
-        desiredVelocity.y = rb.linearVelocity.y; // Keep the vertical (gravity) velocity untouched
-        Vector3 velocityChange = desiredVelocity - rb.linearVelocity;
-        rb.AddForce(velocityChange, ForceMode.VelocityChange);
-        
-        
-        float yawDegrees = yawInput * turnSpeed * Time.fixedDeltaTime;
-
-        transform.Rotate(0f, yawDegrees, 0f);
-        
-        float currentPitch = weaponGo.transform.localEulerAngles.x;
-        if (currentPitch > 180f) currentPitch -= 360f;
+        // float currentPitch = weaponGo.transform.localEulerAngles.x;
+        // if (currentPitch > 180f) currentPitch -= 360f;
     }
 
 
@@ -442,7 +452,7 @@ public class AIPlayerAgent : Agent
     {
         if (collision.gameObject.CompareTag("Wall"))
         {
-            AddReward(-1f);
+            AddReward(-5f);
             Debug.DrawLine(collision.transform.position, collision.transform.position + (Vector3.up * 20f), Color.black, 20f);
             EndEpisode();
         }

@@ -1,24 +1,24 @@
 behaviors:
   AIPlayer:
     trainer_type: ppo
-    max_steps: 5_000_000
-    summary_freq: 10000
-    checkpoint_interval: 10000
+    max_steps: 5e6
+    summary_freq: 20000
+    checkpoint_interval: 20000
+    time_horizon: 128
     hyperparameters:
+      learning_rate: 3.0e-4
+      beta: 1.0e-2                        # extra exploration, halve later
+      epsilon: 0.2
       batch_size: 4096
       buffer_size: 40960
-      num_epoch: 5
-      epsilon: 0.2
-      #beta: 0.01
+      num_epoch: 3
     network_settings:
       hidden_units: 256
+      normalize: true
     reward_signals:
       extrinsic:
         gamma: 0.99
         strength: 1.0
-#      gail:
-#        strength: 0.5
-#        demo_path:  TrainingDemos-NoDodging
-#    behavioral_cloning:
-#      strength: 0.5
-#      demo_path: TrainingDemos-NoDodging
+      gail:
+       strength: 0.9
+       demo_path: TrainingDemos-NoDodging

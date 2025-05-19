@@ -26,7 +26,7 @@ public class BulletCollision : MonoBehaviour
             {
                 if (subtractRewardFromAgentOnMiss)
                 {
-                    agent.AddExternalReward(-0.01f, "Punished for hitting terrain");
+                    agent.AddExternalReward(-0.1f, "Punished for hitting terrain");
                 }
                 Destroy(gameObject.transform.parent.gameObject);
             }
@@ -39,7 +39,7 @@ public class BulletCollision : MonoBehaviour
             {
                 if (addRewardToAgentOnTargetHit)
                 {
-                    agent.AddExternalReward(1f, "Rewarded for hitting player");
+                    agent.AddExternalReward(5f, "Rewarded for hitting player");
                     agent.EndEpisodeExternal("Hitting target!");
                 }
 

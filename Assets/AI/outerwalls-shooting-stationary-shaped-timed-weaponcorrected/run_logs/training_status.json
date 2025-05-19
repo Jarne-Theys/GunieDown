@@ -1,0 +1,65 @@
+{
+    "AIPlayer": {
+        "checkpoints": [
+            {
+                "steps": 1239985,
+                "file_path": "Assets/AI\\outerwalls-shooting-stationary-shaped-timed-weaponcorrected\\AIPlayer\\AIPlayer-1239985.onnx",
+                "reward": -20.553122520446777,
+                "creation_time": 1746541397.2410984,
+                "auxillary_file_paths": [
+                    "Assets/AI\\outerwalls-shooting-stationary-shaped-timed-weaponcorrected\\AIPlayer\\AIPlayer-1239985.pt"
+                ]
+            },
+            {
+                "steps": 1249993,
+                "file_path": "Assets/AI\\outerwalls-shooting-stationary-shaped-timed-weaponcorrected\\AIPlayer\\AIPlayer-1249993.onnx",
+                "reward": -20.530301655916606,
+                "creation_time": 1746541455.9235306,
+                "auxillary_file_paths": [
+                    "Assets/AI\\outerwalls-shooting-stationary-shaped-timed-weaponcorrected\\AIPlayer\\AIPlayer-1249993.pt"
+                ]
+            },
+            {
+                "steps": 1259977,
+                "file_path": "Assets/AI\\outerwalls-shooting-stationary-shaped-timed-weaponcorrected\\AIPlayer\\AIPlayer-1259977.onnx",
+                "reward": -20.448396094441414,
+                "creation_time": 1746541515.8404214,
+                "auxillary_file_paths": [
+                    "Assets/AI\\outerwalls-shooting-stationary-shaped-timed-weaponcorrected\\AIPlayer\\AIPlayer-1259977.pt"
+                ]
+            },
+            {
+                "steps": 1269985,
+                "file_path": "Assets/AI\\outerwalls-shooting-stationary-shaped-timed-weaponcorrected\\AIPlayer\\AIPlayer-1269985.onnx",
+                "reward": -20.844179654299325,
+                "creation_time": 1746541576.035356,
+                "auxillary_file_paths": [
+                    "Assets/AI\\outerwalls-shooting-stationary-shaped-timed-weaponcorrected\\AIPlayer\\AIPlayer-1269985.pt"
+                ]
+            },
+            {
+                "steps": 1274185,
+                "file_path": "Assets/AI\\outerwalls-shooting-stationary-shaped-timed-weaponcorrected\\AIPlayer\\AIPlayer-1274185.onnx",
+                "reward": -19.502629041671753,
+                "creation_time": 1746541608.1252186,
+                "auxillary_file_paths": [
+                    "Assets/AI\\outerwalls-shooting-stationary-shaped-timed-weaponcorrected\\AIPlayer\\AIPlayer-1274185.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 1274185,
+            "file_path": "Assets/AI\\outerwalls-shooting-stationary-shaped-timed-weaponcorrected\\AIPlayer.onnx",
+            "reward": -19.502629041671753,
+            "creation_time": 1746541608.1252186,
+            "auxillary_file_paths": [
+                "Assets/AI\\outerwalls-shooting-stationary-shaped-timed-weaponcorrected\\AIPlayer\\AIPlayer-1274185.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "1.1.0",
+        "torch_version": "2.2.2+cu121"
+    }
+}

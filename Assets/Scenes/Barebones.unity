@@ -1659,25 +1659,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 808071183183502097, guid: 706006b3ba55c2e4c9049416259c1c3c, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 17.44
+    - target: {fileID: 1086727422043876206, guid: 706006b3ba55c2e4c9049416259c1c3c, type: 3}
+      propertyPath: Record
+      value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 808071183183502097, guid: 706006b3ba55c2e4c9049416259c1c3c, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 48.06
+    - target: {fileID: 1134961779058669333, guid: 706006b3ba55c2e4c9049416259c1c3c, type: 3}
+      propertyPath: turnSpeed
+      value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 808071183183502097, guid: 706006b3ba55c2e4c9049416259c1c3c, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.8647135
-      objectReference: {fileID: 0}
-    - target: {fileID: 808071183183502097, guid: 706006b3ba55c2e4c9049416259c1c3c, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0.5022655
-      objectReference: {fileID: 0}
-    - target: {fileID: 808071183183502097, guid: 706006b3ba55c2e4c9049416259c1c3c, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 60.3
+    - target: {fileID: 1134961779058669333, guid: 706006b3ba55c2e4c9049416259c1c3c, type: 3}
+      propertyPath: lockCursor
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5286934023262458288, guid: 706006b3ba55c2e4c9049416259c1c3c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1729,15 +1721,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6937190988849303089, guid: 706006b3ba55c2e4c9049416259c1c3c, type: 3}
       propertyPath: m_BehaviorType
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8104017259145565331, guid: 706006b3ba55c2e4c9049416259c1c3c, type: 3}
       propertyPath: m_IsActive
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 9116734480117061634, guid: 706006b3ba55c2e4c9049416259c1c3c, type: 3}
-      propertyPath: m_Enabled
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
